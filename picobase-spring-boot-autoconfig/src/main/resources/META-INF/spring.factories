@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.picobase.spring.PbBeanRegister,\
+com.picobase.spring.PbBeanInject

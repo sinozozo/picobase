@@ -1,0 +1,25 @@
+# 端口
+server:
+  port: 8081
+
+logging:
+  level:
+    root: INFO
+
+
+# PicoBase 配置
+picobase:
+  # 是否打印日志
+  isLog: true
+
+  # 是否打印 banner
+  isPrint: true
+
+
+pb:
+  auth: true
+
+
+
+
+
