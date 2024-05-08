@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4e97c4a3-b845-428a-a76e-463066db77cc" name="Changes" comment="首次提交">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/.flattened-pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/FieldConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbAdminUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/WebMvcConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/error/BadRequestException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/error/NotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/error/PbConsoleErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminAuthRequestEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminAuthWithPasswordEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminDeleteEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminViewEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminsListEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/TimePosition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/interceptor/InterceptorFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/interceptor/InterceptorNextFunc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/interceptor/Interceptors.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/AbstractBeanPropertyRowMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/AdminMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/MapperManagerWithProxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/ProxyMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/AdminLogin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/AdminLoginResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/FailureResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/PbConsoleExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/SettingsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/mixin/AdminModelMixIn.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/resources/META-INF/services/com.picobase.persistence.mapper.PbMapper" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbEventReceiver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/EnhanceUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/EventReceiverDefaultImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/EventThreadFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/IEventReceiver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/PbEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/PbEventBus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/event/PbEventRegisterProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/AssertException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/PbTypeConvertException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/ServiceLoaderException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/UnknownException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/fun/PbCollFetchFun.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/fun/strategy/PbEventReceiverInvokeExceptionFunction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/fun/strategy/PbNoEventReceiverFunction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/AdminModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/BaseModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/CollectionModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/ColumnValueMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/Model.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/RecordModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/RequestInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/Store.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/MultiValuer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/Schema.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/SchemaField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/BoolOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/CollectionAuthOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/CollectionBaseOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/CollectionViewOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/DateOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/EditorOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/EmailOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/FieldOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/FileOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/JsonOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/NumberOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/RelationOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/SelectOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/TextOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/fieldoptions/UrlOptions.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/BaseBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/BaseQueryBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/ConcatExpr.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/DbxUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/Expression.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/JoinInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/MysqlPbDbxBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/PbDbxBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/Query.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/QueryBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/SelectQuery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx/UnionInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/Expr.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/ExprGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/FexprParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/FexprScanner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/JoinOp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/SignOp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/Token.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/fexpr/TokenType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/AbstractMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/MapperProxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/PbMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/PbMapperManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/model/Index.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/model/IndexColumn.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/model/MapperContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/model/MapperResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/ModifyRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/Page.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/PbDatabaseOperate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/PbPaginationHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/PbRowMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/repository/StorageContextHolder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/DbUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/FieldResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/Join.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/ListUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/MultiMatchSubquery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/RecordFieldResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/ResolverResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/ResolverRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/ResultCouple.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/SimpleFieldResolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search/IdentifierMacros.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search/PbProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search/RecordMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search/SearchFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search/SortField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/spi/PbServiceLoader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/ArrayHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/AssertionHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/ExceptionHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/ReflectionHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/StringEscapeUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/Tokenizer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/TypeSafe.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/.flattened-pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/PbAuthZLogicJwtForMixin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/PbAuthZLogicJwtForSimple.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/PbAuthZLogicJwtForStateless.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/PbJwtTemplate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/PbJwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/error/PbJwtErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-plugin-jwt/src/main/java/com/picobase/jwt/exception/PbJwtException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-servlet/src/main/java/com/picobase/servlet/model/ContentCachingRequestWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-servlet/src/main/java/com/picobase/servlet/model/PbRequestWithContentCache.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJacksonTurbo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/repository/BaseDatabaseOperate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/repository/MysqlDatabaseOperateImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/repository/PaginationHelperImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/.flattened-pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/console/AdminControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/console/EventHandlerForAdminControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/console/EventHandlerForAdminControllerTest2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/BindRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/PbContextForSpringTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/TestController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/event/MyController1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/event/MyController2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/event/MyNoticeEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/event/PbEventTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleInject.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleInject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/config/PbConsoleConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/config/PbConsoleConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/resources/static/console/libs/prism/prism.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/resources/static/console/libs/prism/prism.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/resources/static/console/libs/tinymce/plugins/codesample/plugin.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/resources/static/console/libs/tinymce/plugins/codesample/plugin.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckBasic.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckBasic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckDisable.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckDisable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckLogin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckOr.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckOr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckPermission.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckPermission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaCheckSafe.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbCheckSafe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaIgnore.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbIgnore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/SaMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/annotation/PbMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/ApplicationInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/ApplicationInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/PbGetValueInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/PbGetValueInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/PbSetValueInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/application/PbSetValueInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/basic/SaBasicTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/basic/PbBasicTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/basic/SaBasicUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/basic/PbBasicUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/cache/PbCacheDefaultImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/cache/PbCacheDefaultImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/config/PbConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/config/PbConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/config/PbConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/config/PbConfigFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/PbContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/PbContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/PbContextDefaultImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/PbContextDefaultImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/model/PbCookie.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/model/PbCookie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/model/PbRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/context/model/PbRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/dao/PbDao.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/dao/PbDaoDefaultImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/error/PbErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/error/PbErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/ApiDisabledException.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/ApiDisabledException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotLoginException.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotLoginException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotPermissionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotPermissionException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotRoleException.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/NotRoleException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/PbException.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/exception/PbException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/fun/strategy/PbCreatePbLogicFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/fun/strategy/PbCreatePbLogicFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbEventCenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbEventCenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbListenerForLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/listener/PbListenerForLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/PbLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/authz/PbAuthZLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/PbLoginModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/authz/PbLoginModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/PbPermissionInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/authz/PbPermissionInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/PbTokenInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/authz/PbTokenInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/PermissionInterfaceDefaultImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/logic/authz/PermissionInterfaceDefaultImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/router/PbHttpMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/router/PbHttpMethod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/secure/BCrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/secure/BCrypt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/session/PbSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/session/PbSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/strategy/PbStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/strategy/PbStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/PbConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/PbConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/PbInnerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/CommonHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/SaValue2Box.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/SaValue2Box.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/StrFormatter.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/StrFormatter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/AbsentRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/AbsentRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/DateRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/DateRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/EachRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/EachRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Error.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Err.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/ErrorObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/ErrObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Errors.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Errors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/FieldRules.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/FieldRules.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/InRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/InRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/InlineRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/InlineRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Is.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Is.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/LengthRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/LengthRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/MatchRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/MatchRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/NotInRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/NotInRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/RequiredRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/RequiredRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Rule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Rule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/RuleFunc.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/RuleFunc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/SkipRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/SkipRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/StringRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/StringRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/ThresholdRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/ThresholdRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Validation.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/Validation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/WhenRule.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/validator/WhenRule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-dependencies/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-dependencies/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-dependencies/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-dependencies/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-servlet/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-servlet/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-servlet/src/main/java/com/picobase/servlet/model/PbRequestForServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-servlet/src/main/java/com/picobase/servlet/model/PbRequestForServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/PbBeanInject.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/PbBeanInject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/PbBeanRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/PbBeanRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/context/path/ApplicationContextPathLoading.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/context/path/ApplicationContextPathLoading.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJackson.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJackson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-starter/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-starter/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-starter/src/main/java/com/picobase/spring/PbContextForSpring.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-starter/src/main/java/com/picobase/spring/PbContextForSpring.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-starter/src/main/java/com/picobase/spring/SpringBootVersionCompatibilityChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-starter/src/main/java/com/picobase/spring/SpringBootVersionCompatibilityChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-test/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/springboot/StartUpApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-test/src/test/java/com/picobase/StartUpApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-test/src/test/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-test/src/test/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2etE8f9S3Pe5nEQ1d1rUKmbFUUN" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "jbr-17",
+    "last_opened_file_path": "/Users/zouqiang/Documents/IdeaProjects/java-projects/pico/picobase-core/src/main/java/com/picobase/search",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "/Users/zouqiang/Documents/IdeaProjects/java-projects/pico/picobase-core/src/main/java/com/picobase/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.3",
+    "settings.editor.selected.configurable": "project.propVCSSupport.CommitDialog",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.picobase.console.event" />
+      <recent name="com.picobase" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/search" />
+      <recent name="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/model" />
+      <recent name="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model" />
+      <recent name="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver" />
+      <recent name="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/dbx" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/picobase-console/src/main/resources/static/console" />
+      <recent name="$PROJECT_DIR$/picobase-spring-boot-starter/src/main/java/com/picobase/spring" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.picobase.search" />
+      <recent name="com.picobase.util" />
+      <recent name="com.picobase.persistence.dbx" />
+      <recent name="com.picobase.persistence.resolver" />
+      <recent name="com.picobase.model" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.StartUpApplication">
+    <configuration name="Interceptors" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.interceptor.Interceptors" />
+      <module name="picobase-console" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.interceptor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MapperProxy" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.picobase.persistence.mapper.MapperProxy" />
+      <module name="picobase-core" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.persistence.mapper.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProxyMapper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.mapper.ProxyMapper" />
+      <module name="picobase-console" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.mapper.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdminControllerTest.testAdminAuthWithPasswordForDB" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="picobase-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.picobase.console" />
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.AdminControllerTest" />
+      <option name="METHOD_NAME" value="testAdminAuthWithPasswordForDB(java.lang.String,java.lang.String,int,java.lang.String,int,int,int,boolean)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdminControllerTest.testAdminAuthWithPassword" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="picobase-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.picobase.console" />
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.AdminControllerTest" />
+      <option name="METHOD_NAME" value="testAdminAuthWithPassword(java.lang.String,java.lang.String,int,java.lang.String,int,int,int,boolean)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AdminControllerTest.testAdminAuthWithPassword" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="picobase-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.picobase.console" />
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.AdminControllerTest" />
+      <option name="METHOD_NAME" value="testAdminAuthWithPassword(java.lang.String,java.lang.String,int,java.lang.String)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StartUpApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="picobase-test" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.picobase.StartUpApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.StartUpApplication" />
+        <item itemvalue="Application.Interceptors" />
+        <item itemvalue="JUnit.AdminControllerTest.testAdminAuthWithPasswordForDB" />
+        <item itemvalue="Application.ProxyMapper" />
+        <item itemvalue="Application.MapperProxy" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4e97c4a3-b845-428a-a76e-463066db77cc" name="Changes" comment="" />
+      <created>1712715318501</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712715318501</updated>
+      <workItem from="1712715320725" duration="39416000" />
+      <workItem from="1713320137802" duration="6000" />
+      <workItem from="1713421048424" duration="48816000" />
+      <workItem from="1714358400795" duration="30183000" />
+      <workItem from="1714697750030" duration="114000" />
+      <workItem from="1714697938347" duration="12862000" />
+      <workItem from="1714831480424" duration="59996000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/picobase/Main.java</url>
+          <line>15</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.3.27/spring-webmvc-5.3.27-sources.jar!/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor.java</url>
+          <line>306</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/event/PbEventRegisterInjector.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/repository/BaseDatabaseOperate.java</url>
+          <line>99</line>
+          <option name="timeStamp" value="101" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/MapperProxy.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="107" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/AbstractMapper.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="110" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
