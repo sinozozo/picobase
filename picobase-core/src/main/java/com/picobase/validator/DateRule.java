@@ -3,7 +3,7 @@ package com.picobase.validator;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 /**
  * DateRule is a validation rule that validates date/time string values.
@@ -13,16 +13,16 @@ public class DateRule implements Rule {
     /**
      * ErrDateInvalid is the error that returns in case of an invalid date.
      */
-    private static final Error ErrDateInvalid = newError("validation_date_invalid", "must be a valid date");
+    private static final Err ErrDateInvalid = newError("validation_date_invalid", "must be a valid date");
 
     /**
      * ErrDateOutOfRange is the error that returns in case of an invalid date.
      */
-    private static final Error ErrDateOutOfRange = newError("validation_date_out_of_range", "the date is out of range");
+    private static final Err ErrDateOutOfRange = newError("validation_date_out_of_range", "the date is out of range");
 
     private String layout;
     private LocalTime min, max;
-    private Error err, rangeErr;
+    private Err err, rangeErr;
 
 
     public DateRule(String layout) {
@@ -42,7 +42,7 @@ public class DateRule implements Rule {
     }
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         Object checkedValue = Util.indirect(value);
         if (null == checkedValue || Util.isEmpty(checkedValue)) {
             return null;

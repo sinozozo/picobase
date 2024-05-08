@@ -107,7 +107,7 @@ public class SaValue2Box {
      * @return /
      */
     public boolean value1IsEmpty() {
-        return PbInnerUtil.isEmpty(value1);
+        return CommonHelper.isEmpty(value1);
     }
 
     /**
@@ -116,7 +116,7 @@ public class SaValue2Box {
      * @return /
      */
     public boolean value2IsEmpty() {
-        return PbInnerUtil.isEmpty(value2);
+        return CommonHelper.isEmpty(value2);
     }
 
     /**

@@ -6,17 +6,22 @@ import com.picobase.config.PbConfig;
 import com.picobase.config.PbConfigFactory;
 import com.picobase.context.PbContext;
 import com.picobase.error.PbErrorCode;
+import com.picobase.event.PbEventRegisterProcessor;
+import com.picobase.event.PbEventBus;
 import com.picobase.exception.PbException;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.json.PbJsonTemplateDefaultImpl;
 import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.log.PbLogForConsole;
-import com.picobase.logic.PbLogic;
-import com.picobase.logic.PbPermissionInterface;
-import com.picobase.logic.PermissionInterfaceDefaultImpl;
+import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.logic.authz.PbPermissionInterface;
+import com.picobase.logic.authz.PermissionInterfaceDefaultImpl;
+import com.picobase.persistence.dbx.PbDbxBuilder;
+import com.picobase.persistence.mapper.PbMapperManager;
+import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.strategy.PbStrategy;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,19 +36,18 @@ public class PbManager {
      */
     public volatile static PbConfig config;
 
-
     public static void setConfig(PbConfig config) {
 
         setConfigMethod(config);
 
         // 打印 banner
         if (config != null && config.getIsPrint()) {
-            PbInnerUtil.printBanner();
+            CommonHelper.printBanner();
         }
 
         // 如果此 config 对象没有配置 isColorLog 的值，则框架为它自动判断一下
         if (config != null && config.getIsLog() != null && config.getIsLog() && config.getIsColorLog() == null) {
-            config.setIsColorLog(PbInnerUtil.isCanColorLog());
+            config.setIsColorLog(CommonHelper.isCanColorLog());
         }
 
         // $$ 全局事件
@@ -156,51 +160,51 @@ public class PbManager {
     }
 
     /**
-     * PbLogic 集合, 记录框架所有成功初始化的 PbLogic
+     * PbAuthZLogic 集合, 记录框架所有成功初始化的 PbAuthZLogic
      */
-    public static Map<String, PbLogic> pbLogicMap = new LinkedHashMap<>();
+    public static Map<String, PbAuthZLogic> pbLogicMap = new LinkedHashMap<>();
 
     /**
-     * 向全局集合中 put 一个 PbLogic
+     * 向全局集合中 put 一个 PbAuthZLogic
      *
-     * @param pbLogic PbLogic
+     * @param pbLogic PbAuthZLogic
      */
-    public static void putPbLogic(PbLogic pbLogic) {
+    public static void putPbAuthZLogic(PbAuthZLogic pbLogic) {
         pbLogicMap.put(pbLogic.getLoginType(), pbLogic);
     }
 
     /**
-     * 在全局集合中 移除 一个 PbLogic
+     * 在全局集合中 移除 一个 PbAuthZLogic
      */
-    public static void removePbLogic(String loginType) {
+    public static void removePbAuthZLogic(String loginType) {
         pbLogicMap.remove(loginType);
     }
 
 
     /**
-     * 根据 LoginType 获取对应的 PbLogic，如果不存在则新建并返回
+     * 根据 LoginType 获取对应的 PbAuthZLogic，如果不存在则新建并返回
      *
      * @param loginType 对应的账号类型
-     * @return 对应的 PbLogic
+     * @return 对应的 PbAuthZLogic
      */
-    public static PbLogic getPbLogic(String loginType) {
-        return getPbLogic(loginType, true);
+    public static PbAuthZLogic getPbAuthZLogic(String loginType) {
+        return getPbAuthZLogic(loginType, true);
     }
 
     /**
-     * 根据 LoginType 获取对应的 PbLogic，如果不存在，isCreate = 是否自动创建并返回
+     * 根据 LoginType 获取对应的 PbAuthZLogic，如果不存在，isCreate = 是否自动创建并返回
      *
      * @param loginType 对应的账号类型
-     * @param isCreate  在 PbLogic 不存在时，true=新建并返回，false=抛出异常
-     * @return 对应的 PbLogic
+     * @param isCreate  在 PbAuthZLogic 不存在时，true=新建并返回，false=抛出异常
+     * @return 对应的 PbAuthZLogic
      */
-    private static PbLogic getPbLogic(String loginType, boolean isCreate) {
+    private static PbAuthZLogic getPbAuthZLogic(String loginType, boolean isCreate) {
         // 如果type为空则返回框架默认内置的
         if (loginType == null || loginType.isEmpty()) {
-            return PbUtil.pbLogic;
+            return PbUtil.pbAzLogic;
         }
         // 从集合中获取
-        PbLogic pbLogic = pbLogicMap.get(loginType);
+        PbAuthZLogic pbLogic = pbLogicMap.get(loginType);
         if (pbLogic == null) {
 
             // isCreate=true时，自创建模式：自动创建并返回
@@ -215,7 +219,7 @@ public class PbManager {
             // isCreate=false时，严格校验模式：抛出异常
             else {
                 /*
-                 * 此时有两种情况会造成 PbLogic == null
+                 * 此时有两种情况会造成 PbAuthZLogic == null
                  * 1. loginType拼写错误，请改正 （建议使用常量）
                  * 2. 自定义 PbLoginUtil 尚未初始化（静态类中的属性至少一次调用后才会初始化），解决方法两种
                  * 		(1) 从main方法里调用一次
@@ -250,4 +254,61 @@ public class PbManager {
         return permissionInterface;
     }
 
+    private volatile static PbEventBus pbEventBus;
+
+    private volatile static PbEventRegisterProcessor pbEventRegisterProcessor;
+    public static PbEventBus getPbEventBus() {
+        return pbEventBus;
+    }
+
+    public static void setPbEventBus(PbEventBus eventBus) {
+        if (PbManager.pbEventBus != null) {
+            PbManager.pbEventBus.destroy();
+        }
+        PbManager.pbEventBus = eventBus;
+        if (PbManager.pbEventBus != null) {
+            PbManager.pbEventBus.init();
+        }
+
+        PbEventCenter.doRegisterComponent("PbEventBus", eventBus);
+    }
+
+    public static PbEventRegisterProcessor getPbEventRegisterProcessor() {
+        return pbEventRegisterProcessor;
+    }
+
+    public static void setPbEventRegisterProcessor(PbEventRegisterProcessor pbEventRegisterProcessor) {
+        PbManager.pbEventRegisterProcessor = pbEventRegisterProcessor;
+        PbEventCenter.doRegisterComponent("BpEventRegisterProcessor", pbEventRegisterProcessor);
+    }
+
+    public volatile static PbDatabaseOperate pbDatabaseOperate;
+    public static void setPbDataBaseOperate(PbDatabaseOperate pbDatabaseOperate) {
+        PbManager.pbDatabaseOperate = pbDatabaseOperate;
+        PbEventCenter.doRegisterComponent("PbDatabaseOperate", pbDatabaseOperate);
+    }
+
+    public static PbDatabaseOperate getPbDatabaseOperate() {
+        return pbDatabaseOperate;
+    }
+
+    public volatile static PbMapperManager pbMapperManager;
+
+    public static PbMapperManager getPbMapperManager() {
+        return pbMapperManager;
+    }
+
+    public static void setPbMapperManager(PbMapperManager pbMapperManager) {
+        PbManager.pbMapperManager = pbMapperManager;
+        PbEventCenter.doRegisterComponent("PbMapperManager", pbMapperManager);
+    }
+
+    public volatile static PbDbxBuilder pbDbxBuilder;
+    public static void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder) {
+        PbManager.pbDbxBuilder = pbDbxBuilder;
+        PbEventCenter.doRegisterComponent("PbDbxBuilder", pbDbxBuilder);
+    }
+    public static PbDbxBuilder getPbDbxBuilder() {
+        return pbDbxBuilder;
+    }
 }

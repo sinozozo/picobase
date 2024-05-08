@@ -60,4 +60,8 @@ public enum PbHttpMethod {
         return arr;
     }
 
+    public boolean matches(String method) {
+        return name().equals(method);
+    }
+
 }

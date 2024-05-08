@@ -3,7 +3,8 @@ package com.picobase.listener;
 import com.picobase.config.PbConfig;
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
-import com.picobase.logic.PbLoginModel;
+import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.logic.authz.PbLoginModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,6 +297,16 @@ public class PbEventCenter {
 	public static void doRenewTimeout(String tokenValue, Object loginId, long timeout) {
 		for (PbListener listener : listenerList) {
 			listener.doRenewTimeout(tokenValue, loginId, timeout);
+		}
+	}
+
+	/**
+	 * 事件发布：有新的 PbAuthZLogic 载入到框架中
+	 * @param logic /
+	 */
+	public static void doSetPbAuthZLogic(PbAuthZLogic logic) {
+		for (PbListener listener : listenerList) {
+			listener.doSetPbAuthZLogic(logic);
 		}
 	}
 }

@@ -2,7 +2,7 @@ package com.picobase.config;
 
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +105,7 @@ public class PbConfigFactory {
                 continue;
             }
             try {
-                Object valueConvert = PbInnerUtil.getValueByType(value, field.getType());
+                Object valueConvert = CommonHelper.getValueByType(value, field.getType());
                 field.setAccessible(true);
                 field.set(obj, valueConvert);
             } catch (IllegalArgumentException | IllegalAccessException e) {

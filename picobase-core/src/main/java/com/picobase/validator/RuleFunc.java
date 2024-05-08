@@ -7,5 +7,5 @@ package com.picobase.validator;
 @FunctionalInterface
 public interface RuleFunc {
 
-    Error apply(Object value);
+    Err apply(Object value);
 }

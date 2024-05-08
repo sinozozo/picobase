@@ -5,12 +5,14 @@ import com.picobase.PbManager;
 import com.picobase.exception.PbException;
 import com.picobase.exception.RequestPathInvalidException;
 import com.picobase.fun.strategy.*;
-import com.picobase.logic.PbLogic;
+import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.session.PbSession;
 import com.picobase.util.PbConstants;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.util.UUID;
+
+import static com.picobase.PbManager.log;
 
 public final class PbStrategy {
     private PbStrategy() {
@@ -77,9 +79,9 @@ public final class PbStrategy {
     }
 
     /**
-     * 创建 PbLogic 的算法
+     * 创建 PbAuthZLogic 的算法
      */
-    public PbCreatePbLogicFunction createPbLogic = (loginType) -> new PbLogic(loginType);
+    public PbCreatePbLogicFunction createPbLogic = (loginType) -> new PbAuthZLogic(loginType);
 
     /**
      * 创建 StpLogic 的算法
@@ -137,7 +139,7 @@ public final class PbStrategy {
      */
     public PbCreateTokenFunction createToken = (loginId, loginType) -> {
         // 根据配置的tokenStyle生成不同风格的token
-        String tokenStyle = PbManager.getPbLogic(loginType).getConfigOrGlobal().getTokenStyle();
+        String tokenStyle = PbManager.getPbAuthZLogic(loginType).getConfigOrGlobal().getTokenStyle();
 
         switch (tokenStyle) {
             // uuid
@@ -150,19 +152,19 @@ public final class PbStrategy {
 
             // 32位随机字符串
             case PbConstants.TOKEN_STYLE_RANDOM_32:
-                return PbInnerUtil.getRandomString(32);
+                return CommonHelper.getRandomString(32);
 
             // 64位随机字符串
             case PbConstants.TOKEN_STYLE_RANDOM_64:
-                return PbInnerUtil.getRandomString(64);
+                return CommonHelper.getRandomString(64);
 
             // 128位随机字符串
             case PbConstants.TOKEN_STYLE_RANDOM_128:
-                return PbInnerUtil.getRandomString(128);
+                return CommonHelper.getRandomString(128);
 
             // tik风格 (2_14_16)
             case PbConstants.TOKEN_STYLE_TIK:
-                return PbInnerUtil.getRandomString(2) + "_" + PbInnerUtil.getRandomString(14) + "_" + PbInnerUtil.getRandomString(16) + "__";
+                return CommonHelper.getRandomString(2) + "_" + CommonHelper.getRandomString(14) + "_" + CommonHelper.getRandomString(16) + "__";
 
             // 默认，还是uuid
             default:
@@ -200,7 +202,7 @@ public final class PbStrategy {
 
         // 开始模糊匹配
         for (String patt : list) {
-            if (PbInnerUtil.vagueMatch(patt, element)) {
+            if (CommonHelper.vagueMatch(patt, element)) {
                 return true;
             }
         }
@@ -219,4 +221,32 @@ public final class PbStrategy {
         this.hasElement = hasElement;
         return this;
     }
+
+    /**
+     * 无事件接受者处理函数
+     */
+    public PbNoEventReceiverFunction noEventReceiverFunction = (event) -> {
+        log.warn("没有任何接收者，无法处理事件：{}", event.getClass().getSimpleName());
+    };
+
+    public PbStrategy setNoEventReceiverFunction(PbNoEventReceiverFunction noEventReceiverFunction) {
+        this.noEventReceiverFunction = noEventReceiverFunction;
+        return this;
+    }
+
+    /**
+     * 事件接受者处理事件时异常处理函数
+     */
+    public PbEventReceiverInvokeExceptionFunction eventReceiverInvokeExceptionFunction = (receiver, event,exception) -> {
+        log.error("接收者 {} 处理事件 {} 时出现异常：{}", receiver.getClass().getSimpleName(), event.getClass().getSimpleName(), exception);
+        throw new PbException(exception);
+    };
+
+    public PbStrategy setEventReceiverInvokeExceptionFunction(PbEventReceiverInvokeExceptionFunction eventReceiverInvokeExceptionFunction) {
+        this.eventReceiverInvokeExceptionFunction = eventReceiverInvokeExceptionFunction;
+        return this;
+    }
+
+
+
 }

@@ -3,8 +3,9 @@ package com.picobase.context.model;
 
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public interface PbRequest {
      */
     default String getParam(String name, String defaultValue) {
         String value = getParam(name);
-        if (PbInnerUtil.isEmpty(value)) {
+        if (CommonHelper.isEmpty(value)) {
             return defaultValue;
         }
         return value;
@@ -52,7 +53,7 @@ public interface PbRequest {
      */
     default boolean isParam(String name, String value) {
         String paramValue = getParam(name);
-        return PbInnerUtil.isNotEmpty(paramValue) && paramValue.equals(value);
+        return CommonHelper.isNotEmpty(paramValue) && paramValue.equals(value);
     }
 
     /**
@@ -62,7 +63,7 @@ public interface PbRequest {
      * @return 是否提供
      */
     default boolean hasParam(String name) {
-        return PbInnerUtil.isNotEmpty(getParam(name));
+        return CommonHelper.isNotEmpty(getParam(name));
     }
 
     /**
@@ -73,7 +74,7 @@ public interface PbRequest {
      */
     default String getParamNotNull(String name) {
         String paramValue = getParam(name);
-        if (PbInnerUtil.isEmpty(paramValue)) {
+        if (CommonHelper.isEmpty(paramValue)) {
             throw new PbException("缺少参数：" + name).setCode(PbErrorCode.CODE_12001);
         }
         return paramValue;
@@ -91,7 +92,7 @@ public interface PbRequest {
      *
      * @return 参数列表
      */
-    Map<String, String> getParamMap();
+    Map<String, String[]> getParamMap();
 
     /**
      * 在 [ 请求头 ] 里获取一个值
@@ -110,7 +111,7 @@ public interface PbRequest {
      */
     default String getHeader(String name, String defaultValue) {
         String value = getHeader(name);
-        if (PbInnerUtil.isEmpty(value)) {
+        if (CommonHelper.isEmpty(value)) {
             return defaultValue;
         }
         return value;
@@ -171,5 +172,29 @@ public interface PbRequest {
      * @return 任意值
      */
     Object forward(String path);
+
+
+    /**
+     * 获取请求体长度
+     * @return 请求体长度
+     */
+    int getContentLength();
+
+    /**
+     * 获取请求 ContentType
+     * @return ContentType
+     */
+    String getContentType();
+
+    /**
+     *
+     * @return
+     */
+    default byte[] getCachedContent(){
+        throw new PbException("不支持此方法,请在实现类中自行实现，可参考 ContentCachingRequestWrapper 实现");
+    }
+
+    String getUrlQuery();
+
 
 }

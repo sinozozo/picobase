@@ -1,7 +1,7 @@
 package com.picobase.application;
 
 
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 /**
  * 对取值的一组方法封装
@@ -97,7 +97,7 @@ public interface PbGetValueInterface {
      * @return 值
      */
     default <T> T getModel(String key, Class<T> cs) {
-        return PbInnerUtil.getValueByType(get(key), cs);
+        return CommonHelper.getValueByType(get(key), cs);
     }
 
     /**
@@ -115,7 +115,7 @@ public interface PbGetValueInterface {
         if (valueIsNull(value)) {
             return (T) defaultValue;
         }
-        return PbInnerUtil.getValueByType(value, cs);
+        return CommonHelper.getValueByType(value, cs);
     }
 
     /**
@@ -159,7 +159,7 @@ public interface PbGetValueInterface {
 
         // 开始转换类型
         Class<T> cs = (Class<T>) defaultValue.getClass();
-        return PbInnerUtil.getValueByType(value, cs);
+        return CommonHelper.getValueByType(value, cs);
     }
 
 

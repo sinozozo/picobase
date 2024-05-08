@@ -18,10 +18,28 @@
         <jackson-databind.version>2.13.4.1</jackson-databind.version>
         <jackson-datatype-jsr310.version>2.11.2</jackson-datatype-jsr310.version>
         <servlet-api.version>3.1.0</servlet-api.version>
+        <hutool.version>5.8.27</hutool.version>
+        <!-- bytecode enhancement -->
+        <javassist.version>3.29.2-GA</javassist.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${hutool.version}</version>
+                <type>pom</type>
+                <!-- 注意这里是import -->
+                <scope>import</scope>
+            </dependency>
             <!-- ****************** sa-token-starter 相关依赖 ****************** -->
             <!-- Servlet API -->
             <dependency>
@@ -44,6 +62,12 @@
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${springboot.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${springboot.version}</version>
+                <scope>compile</scope>
+            </dependency>
 
             <!-- jackson-databind -->
             <dependency>
@@ -51,6 +75,8 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson-databind.version}</version>
             </dependency>
+
+
 
             <!--test-->
             <dependency>
@@ -72,6 +98,8 @@
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>${springboot.version}</version>
             </dependency>
+
+
 
             <!-- pb 自身依赖-->
             <dependency>
@@ -97,6 +125,13 @@
                 <artifactId>picobase-spring-boot-starter</artifactId>
                 <version>${revision}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.picobase</groupId>
+                <artifactId>picobase-plugin-jwt</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

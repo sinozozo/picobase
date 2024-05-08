@@ -3,7 +3,7 @@ package com.picobase.context.model;
 
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -233,7 +233,7 @@ public class PbCookie {
     public String toHeaderValue() {
         this.builder();
 
-        if (PbInnerUtil.isEmpty(name)) {
+        if (CommonHelper.isEmpty(name)) {
             throw new PbException("name不能为空").setCode(PbErrorCode.CODE_12002);
         }
         if (value != null && value.contains(";")) {
@@ -255,10 +255,10 @@ public class PbCookie {
             }
             sb.append("; Expires=").append(expires);
         }
-        if (!PbInnerUtil.isEmpty(domain)) {
+        if (!CommonHelper.isEmpty(domain)) {
             sb.append("; Domain=").append(domain);
         }
-        if (!PbInnerUtil.isEmpty(path)) {
+        if (!CommonHelper.isEmpty(path)) {
             sb.append("; Path=").append(path);
         }
         if (secure) {
@@ -267,7 +267,7 @@ public class PbCookie {
         if (httpOnly) {
             sb.append("; HttpOnly");
         }
-        if (!PbInnerUtil.isEmpty(sameSite)) {
+        if (!CommonHelper.isEmpty(sameSite)) {
             sb.append("; SameSite=").append(sameSite);
         }
 

@@ -32,7 +32,7 @@ public interface PbSetValueInterface extends PbGetValueInterface {
     // --------- 接口提供封装的方法
 
     /**
-     * 取值 (如果值为 null，则执行 fun 函数获取值，并把函数返回值写入缓存)
+     * 取值 (如果值为 null，则执行 interceptor 函数获取值，并把函数返回值写入缓存)
      *
      * @param <T> 返回值的类型
      * @param key key

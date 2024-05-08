@@ -1,7 +1,7 @@
 package com.picobase.spring;
 
 import com.picobase.exception.PbException;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 import org.springframework.boot.SpringBootVersion;
 
 /**
@@ -11,7 +11,7 @@ public class SpringBootVersionCompatibilityChecker {
 
     public SpringBootVersionCompatibilityChecker() {
         String version = SpringBootVersion.getVersion();
-        if (PbInnerUtil.isEmpty(version) || version.startsWith("1.") || version.startsWith("2.")) {
+        if (CommonHelper.isEmpty(version) || version.startsWith("1.") || version.startsWith("2.")) {
             return;
         }
         String str = "当前 SpringBoot 版本（" + version + "）与 Picobase 依赖不兼容";

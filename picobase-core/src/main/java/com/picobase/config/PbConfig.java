@@ -110,6 +110,13 @@ public class PbConfig implements Serializable {
     private String basic = "";
 
     /**
+     * jwt秘钥（只有集成 jwt 相关模块时此参数才会生效）
+     */
+    private String jwtSecretKey;
+
+
+
+    /**
      * @return 是否在初始化配置时在控制台打印版本字符画
      */
     public Boolean getIsPrint() {
@@ -515,8 +522,52 @@ public class PbConfig implements Serializable {
         return this;
     }
 
+    /**
+     * @return jwt秘钥（只有集成 jwt 相关模块时此参数才会生效）
+     */
+    public String getJwtSecretKey() {
+        return jwtSecretKey;
+    }
+
+    /**
+     * @param jwtSecretKey jwt秘钥（只有集成 jwt 相关模块时此参数才会生效）
+     * @return 对象自身
+     */
+    public PbConfig setJwtSecretKey(String jwtSecretKey) {
+        this.jwtSecretKey = jwtSecretKey;
+        return this;
+    }
+
+
     @Override
     public String toString() {
-        return "PbConfig{" + "isPrint=" + isPrint + ", isLog=" + isLog + ", isColorLog=" + isColorLog + ", logLevelInt=" + logLevelInt + ", currDomain='" + currDomain + '\'' + ", s3=" + s3 + '}';
+        return "PbConfig{" +
+                "cookie=" + cookie +
+                ", s3=" + s3 +
+                ", tokenName='" + tokenName + '\'' +
+                ", timeout=" + timeout +
+                ", activeTimeout=" + activeTimeout +
+                ", isConcurrent=" + isConcurrent +
+                ", dynamicActiveTimeout=" + dynamicActiveTimeout +
+                ", isShare=" + isShare +
+                ", maxLoginCount=" + maxLoginCount +
+                ", maxTryTimes=" + maxTryTimes +
+                ", isReadBody=" + isReadBody +
+                ", isReadHeader=" + isReadHeader +
+                ", isReadCookie=" + isReadCookie +
+                ", isWriteHeader=" + isWriteHeader +
+                ", tokenStyle='" + tokenStyle + '\'' +
+                ", autoRenew=" + autoRenew +
+                ", tokenPrefix='" + tokenPrefix + '\'' +
+                ", tokenSessionCheckLogin=" + tokenSessionCheckLogin +
+                ", isPrint=" + isPrint +
+                ", isLog=" + isLog +
+                ", isColorLog=" + isColorLog +
+                ", logLevelInt=" + logLevelInt +
+                ", currDomain='" + currDomain + '\'' +
+                ", dataRefreshPeriod=" + dataRefreshPeriod +
+                ", basic='" + basic + '\'' +
+                ", jwtSecretKey='" + jwtSecretKey + '\'' +
+                '}';
     }
 }

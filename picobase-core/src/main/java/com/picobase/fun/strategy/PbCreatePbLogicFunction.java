@@ -1,7 +1,7 @@
 package com.picobase.fun.strategy;
 
 
-import com.picobase.logic.PbLogic;
+import com.picobase.logic.authz.PbAuthZLogic;
 
 import java.util.function.Function;
 
@@ -12,6 +12,6 @@ import java.util.function.Function;
  * <p>  返回：创建好的 StpLogic 对象  </p>
  */
 @FunctionalInterface
-public interface PbCreatePbLogicFunction extends Function<String, PbLogic> {
+public interface PbCreatePbLogicFunction extends Function<String, PbAuthZLogic> {
 
 }

@@ -1,6 +1,8 @@
 package com.picobase.console.config;
 
 
+import com.picobase.config.PbConfig;
+
 /**
  * Admin 模块配置对象
  */
@@ -31,6 +33,11 @@ public class PbConsoleConfig {
      * 配置拦截的路径，逗号分隔
      */
     private String exclude = "";
+
+    /**
+     *  是否打印执行sql
+     */
+    private boolean sqlLogEnable = false;
 
     public Boolean getAuth() {
         return auth;
@@ -74,6 +81,24 @@ public class PbConsoleConfig {
         this.exclude = exclude;
     }
 
+
+    /**
+     * @return 是否打印 mapper 构造的 sql
+     */
+    public boolean isSqlLogEnable() {
+        return sqlLogEnable;
+    }
+
+    /**
+     * 是否打印 mapper 构造的 sql
+     * @param sqlLog true 打印 , false 不打印
+     * @return 对象自身
+     */
+    public PbConsoleConfig setSqlLogEnable(boolean sqlLog) {
+        this.sqlLogEnable = sqlLog;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "PbConsoleConfig{" +
@@ -82,6 +107,7 @@ public class PbConsoleConfig {
                 ", password='" + password + '\'' +
                 ", include='" + include + '\'' +
                 ", exclude='" + exclude + '\'' +
+                ", sqlLogEnable=" + sqlLogEnable +
                 '}';
     }
 }

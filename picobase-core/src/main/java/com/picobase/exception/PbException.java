@@ -1,7 +1,8 @@
 package com.picobase.exception;
 
 import com.picobase.error.PbErrorCode;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
+import com.picobase.util.StrFormatter;
 
 /**
  * Pb 框架内部逻辑发生错误抛出的异常
@@ -38,6 +39,16 @@ public class PbException extends RuntimeException {
      */
     public PbException(String message) {
         super(message);
+    }
+
+    /**
+     * 构建一个异常
+     *
+     * @param template 模版消息
+     * @ args 模版参数
+     */
+    public PbException(String template, Object... args) {
+        super(StrFormatter.format(template, args));
     }
 
     /**
@@ -111,7 +122,7 @@ public class PbException extends RuntimeException {
      * @param code    异常细分状态码
      */
     public static void throwByNull(Object value, String message, int code) {
-        if (PbInnerUtil.isEmpty(value)) {
+        if (CommonHelper.isEmpty(value)) {
             throw new PbException(message).setCode(code);
         }
     }

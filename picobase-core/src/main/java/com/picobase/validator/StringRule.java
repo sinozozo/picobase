@@ -3,7 +3,7 @@ package com.picobase.validator;
 
 import java.util.function.Function;
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 /**
  * StringRule is a rule that checks a string variable using a specified stringValidator.
@@ -15,16 +15,16 @@ public class StringRule implements Rule {
 
     private StringValidator<String, Boolean> validate;
 
-    private Error err;
+    private Err err;
 
     public StringRule(StringValidator stringValidator, String message) {
         this.validate = stringValidator;
         this.err = newError("", message);
     }
 
-    public StringRule(StringValidator stringValidator, Error error) {
+    public StringRule(StringValidator stringValidator, Err err) {
         this.validate = stringValidator;
-        this.err = error;
+        this.err = err;
     }
 
 
@@ -35,7 +35,7 @@ public class StringRule implements Rule {
 
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         if (value == null) {
             return null;
         }
@@ -50,7 +50,7 @@ public class StringRule implements Rule {
         }
     }
 
-    public StringRule setErr(Error err) {
+    public StringRule setErr(Err err) {
         this.err = err;
         return this;
     }

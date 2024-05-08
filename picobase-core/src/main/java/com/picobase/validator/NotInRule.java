@@ -1,6 +1,6 @@
 package com.picobase.validator;
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 /**
  * // NotIn returns a validation rule that checks if a value is absent from the given list of values.
@@ -12,10 +12,10 @@ public class NotInRule implements Rule {
     /**
      * // ErrNotInInvalid is the error that returns when a value is in a list.
      */
-    private static final Error ErrDateInvalid = newError("validation_date_invalid", "must be a valid date");
+    private static final Err ErrDateInvalid = newError("validation_date_invalid", "must be a valid date");
 
     private Object[] elements;
-    private Error err;
+    private Err err;
 
 
     public NotInRule(Object... elements) {
@@ -25,7 +25,7 @@ public class NotInRule implements Rule {
 
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         Object checkedValue = Util.indirect(value);
         if (null == checkedValue || Util.isEmpty(checkedValue)) {
             return null;

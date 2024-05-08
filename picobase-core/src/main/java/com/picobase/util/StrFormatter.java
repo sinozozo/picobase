@@ -49,7 +49,7 @@ public class StrFormatter {
      * @since 1.33.0
      */
     public static String formatWith(String strPattern, String placeHolder, Object... argArray) {
-        if (PbInnerUtil.isEmpty(strPattern) || PbInnerUtil.isEmpty(placeHolder) || PbInnerUtil.isEmpty(argArray)) {
+        if (CommonHelper.isEmpty(strPattern) || CommonHelper.isEmpty(placeHolder) || CommonHelper.isEmpty(argArray)) {
             return strPattern;
         }
         final int strPatternLength = strPattern.length();

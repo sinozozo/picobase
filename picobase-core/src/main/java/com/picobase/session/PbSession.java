@@ -4,7 +4,7 @@ import com.picobase.PbManager;
 import com.picobase.application.PbSetValueInterface;
 import com.picobase.cache.PbCache;
 import com.picobase.listener.PbEventCenter;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.io.Serializable;
 import java.util.*;
@@ -279,7 +279,7 @@ public class PbSession implements PbSetValueInterface, Serializable {
         List<TokenSign> tokenSignList = tokenSignListCopy();
         List<TokenSign> list = new ArrayList<>();
         for (TokenSign tokenSign : tokenSignList) {
-            if (PbInnerUtil.equals(tokenSign.getDevice(), device)) {
+            if (CommonHelper.equals(tokenSign.getDevice(), device)) {
                 list.add(tokenSign);
             }
         }
@@ -312,7 +312,7 @@ public class PbSession implements PbSetValueInterface, Serializable {
      */
     public TokenSign getTokenSign(String tokenValue) {
         for (TokenSign tokenSign : tokenSignListCopy()) {
-            if (PbInnerUtil.equals(tokenSign.getValue(), tokenValue)) {
+            if (CommonHelper.equals(tokenSign.getValue(), tokenValue)) {
                 return tokenSign;
             }
         }

@@ -17,6 +17,7 @@
         <module>picobase-servlet</module>
         <module>picobase-test</module>
         <module>picobase-console</module>
+        <module>picobase-plugin-jwt</module>
     </modules>
 
     <dependencyManagement>

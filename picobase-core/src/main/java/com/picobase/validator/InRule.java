@@ -4,7 +4,7 @@ package com.picobase.validator;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 /**
  * InRule is a validation rule that validates if a value can be found in the given list of values.
@@ -14,18 +14,18 @@ public class InRule implements Rule {
     /**
      * ErrInInvalid is the error that returns in case of an invalid value for "in" rule.
      */
-    private final Error ErrInInvalid = newError("validation_in_invalid", "must be a valid value");
+    private final Err ErrInInvalid = newError("validation_in_invalid", "must be a valid value");
 
     private Object[] elements;
 
-    private Error err = ErrInInvalid;
+    private Err err = ErrInInvalid;
 
     public InRule(Object... values) {
         this.elements = values;
     }
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         if (value == null) {
             return null;
         }
@@ -35,12 +35,12 @@ public class InRule implements Rule {
         return this.err;
     }
 
-    public Error errorMessage(String msg) {
+    public Err errorMessage(String msg) {
         this.err.setMessage(msg);
         return err;
     }
 
-    public InRule setErr(Error err) {
+    public InRule setErr(Err err) {
         this.err = err;
         return this;
     }

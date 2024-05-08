@@ -18,22 +18,9 @@ public class Validation {
      */
     public static final AbsentRule Empty = new AbsentRule(true, true);
 
-    /**
-     * // Required is a validation rule that checks if a value is not empty.
-     * // A value is considered not empty if
-     * // - integer, float: not zero
-     * // - bool: true
-     * // - string, array, slice, map: len() > 0
-     * // - interface, pointer: not nil and the referenced value is not empty
-     * // - any other types
-     */
-    public static final RequiredRule required = new RequiredRule(false, true);
 
-    /**
-     * // NilOrNotEmpty checks if a value is a nil pointer or a value that is not empty.
-     * // NilOrNotEmpty differs from Required in that it treats a nil pointer as valid.
-     */
-    public static final RequiredRule NilOrNotEmpty = new RequiredRule(true, true);
+    public static final RequiredRule required = new RequiredRule();
+
 
     /**
      * When returns a validation rule that executes the given list of rules when the condition is true.
@@ -99,7 +86,7 @@ public class Validation {
         return new NotInRule(values);
     }
 
-    public static Error validate(Object value, Rule... rules) {
+    public static Err validate(Object value, Rule... rules) {
         for (Rule rule : rules) {
             if (rule instanceof SkipRule skipRule) {
                 if (skipRule.isSkip()) {
@@ -107,11 +94,11 @@ public class Validation {
                 }
             }
 
-            Error error = rule.validate(value);
-            if (error instanceof ErrorObject errorObject) {
+            Err err = rule.validate(value);
+            if (err instanceof ErrObject errorObject) {
                 return errorObject;
             }
-            if (error instanceof Errors errors && errors.size() > 0) {
+            if (err instanceof Errors errors && errors.size() > 0) {
                 return errors.filter();
             }
         }
@@ -180,8 +167,8 @@ public class Validation {
         return new StringRule(stringValidator, message);
     }
 
-    public static StringRule newStringRuleWithError(StringRule.StringValidator<String, Boolean> stringValidator, Error error) {
-        return new StringRule(stringValidator, error);
+    public static StringRule newStringRuleWithError(StringRule.StringValidator<String, Boolean> stringValidator, Err err) {
+        return new StringRule(stringValidator, err);
     }
 
 

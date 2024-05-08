@@ -16,7 +16,7 @@ public class WhenRule implements Rule {
     }
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         if (condition) {
             return Validation.validate(value, rules);
         } else {

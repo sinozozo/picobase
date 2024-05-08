@@ -2,7 +2,7 @@ package com.picobase.cache;
 
 
 import com.picobase.PbManager;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -115,7 +115,7 @@ public class PbCacheDefaultImpl implements PbCache {
 
     @Override
     public List<String> searchData(String prefix, String keyword, int start, int size, boolean sortType) {
-        return PbInnerUtil.searchList(expireMap.keySet(), prefix, keyword, start, size, sortType);
+        return CommonHelper.searchList(expireMap.keySet(), prefix, keyword, start, size, sortType);
     }
 
 

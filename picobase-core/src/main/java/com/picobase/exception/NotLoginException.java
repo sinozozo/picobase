@@ -16,7 +16,7 @@
 package com.picobase.exception;
 
 
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -146,7 +146,7 @@ public class NotLoginException extends PbException {
      * @return 构建完毕的异常对象
      */
     public static NotLoginException newInstance(String loginType, String type, String message, String token) {
-        if (PbInnerUtil.isNotEmpty(token)) {
+        if (CommonHelper.isNotEmpty(token)) {
             message = message + "：" + token;
         }
         return new NotLoginException(message, loginType, type);

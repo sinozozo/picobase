@@ -1,22 +1,22 @@
 package com.picobase.validator;
 
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 public class AbsentRule implements Rule {
 
     /**
      * ErrNil is the error that returns when a value is not nil.
      */
-    private static final Error ErrNil = newError("validation_nil", "must be blank");
+    private static final Err ErrNil = newError("validation_nil", "must be blank");
 
     /**
      * ErrEmpty is the error that returns when a not nil value is not empty.
      */
-    private static final Error ErrEmpty = newError("validation_empty", "must be blank");
+    private static final Err ErrEmpty = newError("validation_empty", "must be blank");
 
     private boolean condition;
-    private Error err;
+    private Err err;
     private boolean skipNull;
 
     public AbsentRule(boolean condition, boolean skipNull) {
@@ -26,7 +26,7 @@ public class AbsentRule implements Rule {
 
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         if (condition) {
             Object checkedValue = Util.indirect(value);
             if (!this.skipNull && null != checkedValue || this.skipNull && null != checkedValue && !Util.isEmpty(checkedValue)) {

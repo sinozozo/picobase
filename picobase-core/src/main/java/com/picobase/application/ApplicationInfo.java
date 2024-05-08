@@ -1,7 +1,7 @@
 package com.picobase.application;
 
 
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 /**
  * 应用全局信息
@@ -20,7 +20,7 @@ public class ApplicationInfo {
      * @return /
      */
     public static String cutPathPrefix(String path) {
-        if (!PbInnerUtil.isEmpty(routePrefix) && !routePrefix.equals("/") && path.startsWith(routePrefix)) {
+        if (!CommonHelper.isEmpty(routePrefix) && !routePrefix.equals("/") && path.startsWith(routePrefix)) {
             path = path.substring(routePrefix.length());
         }
         return path;

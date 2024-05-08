@@ -5,19 +5,20 @@ import com.picobase.application.ApplicationInfo;
 import com.picobase.context.model.PbRequest;
 import com.picobase.exception.PbException;
 import com.picobase.servlet.error.PbServletErrorCode;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
 /**
- * 对 SaRequest 包装类的实现（Servlet 版）
+ * 对 PbRequest 包装类的实现（Servlet 版）
  */
-public class PbRequestForServlet implements PbRequest {
+public class PbRequestForServlet  extends PbRequestWithContentCache implements PbRequest {
 
     /**
      * 底层Request对象
@@ -30,6 +31,7 @@ public class PbRequestForServlet implements PbRequest {
      * @param request request对象
      */
     public PbRequestForServlet(HttpServletRequest request) {
+        super(request);
         this.request = request;
     }
 
@@ -70,13 +72,13 @@ public class PbRequestForServlet implements PbRequest {
      * @return 参数列表
      */
     @Override
-    public Map<String, String> getParamMap() {
+    public Map<String, String[]> getParamMap() {
         // 获取所有参数
         Map<String, String[]> parameterMap = request.getParameterMap();
-        Map<String, String> map = new LinkedHashMap<>(parameterMap.size());
+        Map<String, String[]> map = new LinkedHashMap<>(parameterMap.size());
         for (String key : parameterMap.keySet()) {
             String[] values = parameterMap.get(key);
-            map.put(key, values[0]);
+            map.put(key, values);
         }
         return map;
     }
@@ -120,7 +122,7 @@ public class PbRequestForServlet implements PbRequest {
      */
     public String getUrl() {
         String currDomain = PbManager.getConfig().getCurrDomain();
-        if (!PbInnerUtil.isEmpty(currDomain)) {
+        if (!CommonHelper.isEmpty(currDomain)) {
             return currDomain + this.getRequestPath();
         }
         return request.getRequestURL().toString();
@@ -147,5 +149,21 @@ public class PbRequestForServlet implements PbRequest {
             throw new PbException(e).setCode(PbServletErrorCode.CODE_20001);
         }
     }
+
+    @Override
+    public int getContentLength() {
+        return request.getContentLength();
+    }
+
+    @Override
+    public String getContentType() {
+        return request.getContentType();
+    }
+
+    @Override
+    public String getUrlQuery() {
+        return request.getQueryString();
+    }
+
 
 }

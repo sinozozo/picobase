@@ -58,7 +58,7 @@ public class NotPermissionException extends PbException {
 	}
 
 	public NotPermissionException(String permission) {
-		this(permission, PbUtil.pbLogic.loginType);
+		this(permission, PbUtil.pbAzLogic.loginType);
 	}
 
 	public NotPermissionException(String permission, String loginType) {

@@ -35,7 +35,7 @@ public class FieldRules<T, R> {
      * @return
      */
     public Object checkValue() {
-        if (fieldVal == null) {
+        if (fn != null) {
             return fn.apply(checkObj);
         }
         return fieldVal;

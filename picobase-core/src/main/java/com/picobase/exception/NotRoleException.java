@@ -58,7 +58,7 @@ public class NotRoleException extends PbException {
     }
 
     public NotRoleException(String role) {
-        this(role, PbUtil.pbLogic.loginType);
+        this(role, PbUtil.pbAzLogic.loginType);
     }
 
     public NotRoleException(String role, String loginType) {

@@ -1,7 +1,7 @@
 package com.picobase.spring.context.path;
 
 import com.picobase.application.ApplicationInfo;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,7 +22,7 @@ public class ApplicationContextPathLoading implements ApplicationRunner {
 
         String routePrefix = "";
 
-        if (PbInnerUtil.isNotEmpty(contextPath)) {
+        if (CommonHelper.isNotEmpty(contextPath)) {
             if (!contextPath.startsWith("/")) {
                 contextPath = "/" + contextPath;
             }
@@ -32,7 +32,7 @@ public class ApplicationContextPathLoading implements ApplicationRunner {
             routePrefix += contextPath;
         }
 
-        if (PbInnerUtil.isNotEmpty(servletPath)) {
+        if (CommonHelper.isNotEmpty(servletPath)) {
             if (!servletPath.startsWith("/")) {
                 servletPath = "/" + servletPath;
             }
@@ -42,7 +42,7 @@ public class ApplicationContextPathLoading implements ApplicationRunner {
             routePrefix += servletPath;
         }
 
-        if (PbInnerUtil.isNotEmpty(routePrefix) && !routePrefix.equals("/")) {
+        if (CommonHelper.isNotEmpty(routePrefix) && !routePrefix.equals("/")) {
             ApplicationInfo.routePrefix = routePrefix;
         }
     }

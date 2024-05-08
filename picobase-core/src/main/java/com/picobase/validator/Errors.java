@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Errors extends HashMap<String, Error> implements Error {
+public class Errors extends HashMap<String, Err> implements Err {
 
     /**
-     * Error returns the error string of Errors.
+     * Err returns the error string of Errors.
      */
     @Override
     public String error() {
@@ -20,7 +20,7 @@ public class Errors extends HashMap<String, Error> implements Error {
         StringBuilder sb = new StringBuilder();
 
         for (String key : keys) {
-            Error err = get(key);
+            Err err = get(key);
             if (sb.length() > 0) {
                 sb.append("; ");
             }
@@ -42,7 +42,7 @@ public class Errors extends HashMap<String, Error> implements Error {
     }
 
     @Override
-    public Error setMessage(String message) {
+    public Err setMessage(String message) {
         return null;
     }
 
@@ -52,7 +52,7 @@ public class Errors extends HashMap<String, Error> implements Error {
     }
 
     @Override
-    public Error setParams(Map<String, Object> params) {
+    public Err setParams(Map<String, Object> params) {
         return null;
     }
 

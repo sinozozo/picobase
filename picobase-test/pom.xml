@@ -25,6 +25,23 @@
             <groupId>com.picobase</groupId>
             <artifactId>picobase-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- test -->
         <dependency>
@@ -33,6 +50,7 @@
             <version>2.5.15</version>
             <scope>test</scope>
         </dependency>
+
         <!-- config -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -50,6 +68,12 @@
             <artifactId>picobase-console</artifactId>
             <version>0.0.1</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- eventbus 依赖 ，默认可选-->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
         </dependency>
 
     </dependencies>

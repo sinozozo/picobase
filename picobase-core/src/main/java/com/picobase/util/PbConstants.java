@@ -1,6 +1,17 @@
 package com.picobase.util;
 
+import java.util.regex.Pattern;
+
+import static com.picobase.util.PbConstants.FieldName.*;
+
 public final class PbConstants {
+
+
+
+    /**
+     * 数据库中 id 的默认长度
+     */
+    public static final int DEFAULT_ID_LENGTH = 15;
 
     /**
      * 切面、拦截器、过滤器等各种组件的注册优先级顺序
@@ -156,4 +167,115 @@ public final class PbConstants {
      */
     public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json;charset=UTF-8";
 
+    public static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
+    // filter modifiersonst
+    public static final String EachModifier = "each";
+    public static final String IssetModifier = "isset";
+    public static final String LengthModifier = "length";
+
+    public static final Pattern ThumbSizeRegex = Pattern.compile("^(\\d+)x(\\d+)(t|b|f)?$");
+
+
+    public static class TableName{
+        public static final String ADMIN = "pb_admin";
+        public static final String COLLECTION = "pb_collection";
+
+    }
+    public static final String FIELD_VALUE_MODIFIER_ADD = "+";
+    public static final String FIELD_VALUE_MODIFIER_SUBTRACT = "-";
+
+    public static String[] FieldValueModifiers() {
+        return new String[]{FIELD_VALUE_MODIFIER_ADD, FIELD_VALUE_MODIFIER_SUBTRACT};
+    }
+
+    public static final String DefaultDateLayout = "yyyy-MM-dd HH:mm:ss";
+
+    public static class CollectionType{
+        public static final String Base = "base";
+        public static final String Auth = "auth";
+        public static final String View = "view";
+    }
+    public static class FieldType{
+        // All valid field types;
+        public static final String Text = "text";
+        public static final String Number = "number";
+        public static final String Bool = "bool";
+        public static final String Email = "email";
+        public static final String Url = "url";
+        public static final String Editor = "editor";
+        public static final String Date = "date";
+        public static final String Select = "select";
+        public static final String Json = "json";
+        public static final String File = "file";
+        public static final String Relation = "relation";
+    }
+
+    
+    public static class FieldName{
+        // commonly used field names
+        public static final String Id = "id";
+        public static final String Created = "created";
+        public static final String Updated = "updated";
+        public static final String CollectionId = "collectionId";
+        public static final String CollectionName = "collectionName";
+        public static final String Expand = "expand";
+        public static final String Username = "username";
+        public static final String Password = "password";
+        public static final String OldPassword = "oldPassword";
+        public static final String PasswordConfirm = "passwordConfirm";
+        public static final String Email = "email";
+        public static final String EmailVisibility = "emailVisibility";
+        public static final String Verified = "verified";
+        public static final String TokenKey = "tokenKey";
+        public static final String PasswordHash = "passwordHash";
+        public static final String LastResetSentAt = "lastResetSentAt";
+        public static final String LastVerificationSentAt = "lastVerificationSentAt";
+    }
+
+    public static final String[] plainRequestAuthFields = new String[]{
+            "@request.auth." + Id,
+            "@request.auth." + CollectionId,
+            "@request.auth." + CollectionName,
+            "@request.auth." + Username,
+            "@request.auth." + Email,
+            "@request.auth." + EmailVisibility,
+            "@request.auth." + Verified,
+            "@request.auth." + Created,
+            "@request.auth." + Updated
+    };
+
+    public static String[] baseModelFieldNames = new String[]{
+            Id,
+            Created,
+            Updated,
+    };
+
+
+    public static final String[] systemFieldNames = new String[]{
+            CollectionId,
+            CollectionName,
+            Expand
+    };
+
+    public static final String[] authFieldNames = new String[]{
+            Username,
+            Email,
+            EmailVisibility,
+            Verified,
+            TokenKey,
+            PasswordHash,
+            LastResetSentAt,
+            LastVerificationSentAt
+    };
+
+    public static String[] ArraybleFieldTypes() {
+        return new String[]{FieldType.Select, FieldType.File, FieldType.Relation};
+    }
+
+    public static final Pattern IndirectExpandRegexPattern = Pattern.compile("^(\\w+)_via_(\\w+)$");
+
+    public static final int DEFAULT_PER_PAGE = 30;
+
+    public static final int MAX_PER_PAGE = 500;
 }

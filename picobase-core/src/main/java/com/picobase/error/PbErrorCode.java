@@ -3,6 +3,8 @@ package com.picobase.error;
 
 public interface PbErrorCode {
 
+
+
     /**
      * 代表这个异常在抛出时未指定异常细分状态码
      */
@@ -24,6 +26,11 @@ public interface PbErrorCode {
      * JSON 转换器未实现
      */
     int CODE_10003 = 10003;
+
+    /**
+     * PbDatabaseOperate 未实现
+     */
+    int CODE_10004 = 10004;
 
     /**
      * 未能从全局 StpLogic 集合中找到对应 type 的 StpLogic
@@ -270,5 +277,37 @@ public interface PbErrorCode {
      * timestamp 超出允许的范围
      */
     int CODE_12203 = 12203;
+
+    /**
+     *  数据源错误
+     */
+    int CODE_13000 = 13000;
+
+
+    /**
+     *  Not an auth collection record
+     */
+    int CODE_14000 = 14000;
+    /**
+     * The provided plain password is empty
+     */
+    int CODE_14001 = 14001;
+
+    /**
+     * unable to save auth record without username
+     */
+    int CODE_14002 = 14002;
+
+    /**
+     * unable to fetch the auth collections for cross-id unique check
+     */
+    int CODE_14003 = 14003;
+
+    /**
+     * the auth record ID must be unique across all auth collections
+     */
+    int CODE_14004 = 14004;
+
+
 
 }

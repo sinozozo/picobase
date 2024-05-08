@@ -14,7 +14,7 @@ import java.util.Map;
 public class PbJsonTemplateForJackson implements PbJsonTemplate {
 
     /**
-     * 底层 Mapper 对象
+     * 底层 PbMapper 对象
      */
     public ObjectMapper objectMapper = new ObjectMapper();
 

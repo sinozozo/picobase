@@ -7,8 +7,15 @@ import java.util.Map;
 
 public class Util {
 
-    public static int lengthOfValue(Object value) {
-        if (value instanceof String s) {
+    /**
+     * 计算 String、 List、 Map、Array 的长度（length or size）， 如果对象为 null 则返回为 -1
+     * @param value 对象 String、 List、 Map、Array
+     * @return 对象 length or size
+     */
+    public static int lengthOrSizeOfValue(Object value) {
+        if (value == null){
+            return -1;
+        } else if (value instanceof String s) {
             return s.length();
         } else if (value instanceof List l) {
             return l.size();

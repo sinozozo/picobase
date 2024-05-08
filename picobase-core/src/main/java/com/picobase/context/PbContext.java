@@ -5,6 +5,8 @@ import com.picobase.context.model.PbRequest;
 import com.picobase.context.model.PbResponse;
 import com.picobase.context.model.PbStorage;
 
+import java.util.Optional;
+
 /**
  * 上下文处理器
  *
@@ -59,5 +61,14 @@ public interface PbContext {
     default boolean isValid() {
         return false;
     }
+
+
+
+    /**
+     *  将 request 数据(path params, query params and the request body)绑定到对象上 （支持提交的数据格式为 form 或 json）
+     *  @param dto 待进行数据绑定的对象
+     */
+    <T> Optional<T> bindRequest(Class<T> dto);
+
 
 }

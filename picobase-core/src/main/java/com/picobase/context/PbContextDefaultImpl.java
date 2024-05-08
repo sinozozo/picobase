@@ -7,6 +7,9 @@ import com.picobase.context.model.PbStorage;
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.InvalidContextException;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 /**
  * Picobase 上下文处理器 [ 默认实现类 ]
  *
@@ -45,5 +48,11 @@ public class PbContextDefaultImpl implements PbContext {
     public boolean matchPath(String pattern, String path) {
         throw new InvalidContextException(ERROR_MESSAGE).setCode(PbErrorCode.CODE_10001);
     }
+
+    @Override
+    public <T> Optional<T> bindRequest(Class<T> dto) {
+        throw new InvalidContextException(ERROR_MESSAGE).setCode(PbErrorCode.CODE_10001);
+    }
+
 
 }

@@ -1,12 +1,19 @@
 package com.picobase.spring;
 
 import com.picobase.PbManager;
+import com.picobase.PbUtil;
 import com.picobase.config.PbConfig;
 import com.picobase.context.PbContext;
+import com.picobase.event.PbEventBus;
+import com.picobase.event.PbEventRegisterProcessor;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.listener.PbEventCenter;
 import com.picobase.listener.PbListener;
 import com.picobase.log.PbLog;
+import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.persistence.dbx.PbDbxBuilder;
+import com.picobase.persistence.mapper.PbMapperManager;
+import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.spring.pathmatch.PbPathMatcherHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,7 +71,7 @@ public class PbBeanInject {
      * @param pbContext PbContext
      */
     @Autowired(required = false)
-    public void setSaTokenContext(PbContext pbContext) {
+    public void setPbContext(PbContext pbContext) {
         PbManager.setPbContext(pbContext);
     }
 
@@ -78,4 +85,54 @@ public class PbBeanInject {
     public void setPathMatcher(PathMatcher pathMatcher) {
         PbPathMatcherHolder.setPathMatcher(pathMatcher);
     }
+
+
+    /**
+     * 注入 eventbus
+     *
+     * @param eventBus
+     */
+    @Autowired(required = false)
+    public void setEventBus(PbEventBus eventBus) {
+        PbManager.setPbEventBus(eventBus);
+    }
+
+    @Autowired(required = false)
+    public void setPbEventRegisterProcessor(PbEventRegisterProcessor pbEventRegisterProcessor) {
+        PbManager.setPbEventRegisterProcessor(pbEventRegisterProcessor);
+    }
+
+    /**
+     * 注入自定义的 PbAuthZLogic
+     * @param logic /
+     */
+    @Autowired(required = false)
+    public void setPbAuthZLogic(PbAuthZLogic logic) {
+        PbUtil.setPbAuthZLogic(logic);
+    }
+
+
+    /**
+     * 注入PbDatabaseOperate
+     * @param pbDatabaseOperate /
+     */
+    @Autowired(required = false)
+    public void setPbDatabaseOperate(PbDatabaseOperate pbDatabaseOperate){
+        PbManager.setPbDataBaseOperate(pbDatabaseOperate);
+    }
+
+    /**
+     * 注入 PbMapperManager
+     * @param pbMapperManager
+     */
+    @Autowired(required = false)
+    public void setPbMapperManager(PbMapperManager pbMapperManager){
+        PbManager.setPbMapperManager(pbMapperManager);
+    }
+
+    @Autowired(required = false)
+    public void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder){
+        PbManager.setPbDbxBuilder(pbDbxBuilder);
+    }
+
 }

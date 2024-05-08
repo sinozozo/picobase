@@ -1,8 +1,8 @@
 package com.picobase.listener;
 
 import com.picobase.config.PbConfig;
-import com.picobase.logic.PbLogic;
-import com.picobase.logic.PbLoginModel;
+import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.logic.authz.PbLoginModel;
 
 /**
  * 用户可以通过实现此接口在配置注入等关键性操作时进行一些AOP切面操作
@@ -117,13 +117,6 @@ public interface PbListener {
     default void doRegisterComponent(String compName, Object compObj) {
     }
 
-    /**
-     * StpLogic 对象替换
-     *
-     * @param stpLogic /
-     */
-    default void doSetStpLogic(PbLogic stpLogic) {
-    }
 
     /**
      * 载入全局配置
@@ -132,5 +125,11 @@ public interface PbListener {
      */
     default void doSetConfig(PbConfig config) {
     }
+
+    /**
+     * StpLogic 对象替换
+     * @param logic /
+     */
+    default void doSetPbAuthZLogic(PbAuthZLogic logic) {}
 
 }

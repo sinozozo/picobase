@@ -3,7 +3,7 @@ package com.picobase.validator;
 import java.util.Date;
 import java.util.Map;
 
-import static com.picobase.validator.Error.newError;
+import static com.picobase.validator.Err.newError;
 
 /**
  * ThresholdRule is a validation rule that checks if a value satisfies the specified threshold requirement.
@@ -12,30 +12,30 @@ public class ThresholdRule implements Rule {
     /**
      * ErrMinGreaterEqualThanRequired is the error that returns when a value is less than a specified threshold.
      */
-    private static final Error ErrMinGreaterEqualThanRequired = newError("validation_min_greater_equal_than_required", "must be no less than {{threshold}}");
+    private static final Err ErrMinGreaterEqualThanRequired = newError("validation_min_greater_equal_than_required", "must be no less than {{threshold}}");
     /**
      * ErrMaxLessEqualThanRequired is the error that returns when a value is greater than a specified threshold.
      */
-    private static final Error ErrMaxLessEqualThanRequired = newError("validation_max_less_equal_than_required", "must be no greater than {{threshold}}");
+    private static final Err ErrMaxLessEqualThanRequired = newError("validation_max_less_equal_than_required", "must be no greater than {{threshold}}");
     /**
      * ErrMinGreaterThanRequired is the error that returns when a value is less than or equal to a specified threshold.
      */
-    private static final Error ErrMinGreaterThanRequired = newError("validation_min_greater_than_required", "must be greater than {{threshold}}");
+    private static final Err ErrMinGreaterThanRequired = newError("validation_min_greater_than_required", "must be greater than {{threshold}}");
     /**
      * ErrMaxLessThanRequired is the error that returns when a value is greater than or equal to a specified threshold.
      */
-    private static final Error ErrMaxLessThanRequired = newError("validation_max_less_than_required", "must be less than {{threshold}}");
+    private static final Err ErrMaxLessThanRequired = newError("validation_max_less_than_required", "must be less than {{threshold}}");
 
     private Object threshold;
     private int operator;
-    private Error err;
+    private Err err;
 
     public static final int greaterThan = 0;
     public static final int greaterEqualThan = 1;
     public static final int lessThan = 2;
     public static final int lessEqualThan = 3;
 
-    public ThresholdRule(Object threshold, int operator, Error err) {
+    public ThresholdRule(Object threshold, int operator, Err err) {
         this.threshold = threshold;
         this.operator = operator;
         this.err = err;
@@ -62,7 +62,7 @@ public class ThresholdRule implements Rule {
 
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         Object checkedValue = Util.indirect(value);
         if (null == checkedValue || Util.isEmpty(checkedValue)) {
             return null;
@@ -107,7 +107,7 @@ public class ThresholdRule implements Rule {
         return this;
     }
 
-    public ThresholdRule errorObject(Error err) {
+    public ThresholdRule errorObject(Err err) {
         this.err = err;
         return this;
     }

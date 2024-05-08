@@ -8,7 +8,7 @@ class InlineRule implements Rule {
     }
 
     @Override
-    public Error validate(Object value) {
+    public Err validate(Object value) {
         return this.ruleFunc.apply(value);
     }
 }

@@ -1,6 +1,6 @@
 package com.picobase.validator;
 
-import com.picobase.util.PbInnerUtil;
+import com.picobase.util.CommonHelper;
 
 import java.net.URI;
 import java.net.URL;
@@ -29,11 +29,11 @@ public final class Is {
     static final String URL_REP = "^" + URLSchema + "?" + URLUsername + "?" + "(((" + URLIP + "|(\\[" + IP + "\\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\\.]?[a-zA-Z0-9]+)*)|(" + URLSubdomain + ")?))?(([a-zA-Z\\x{00a1}-\\x{ffff}0-9]+-?-?)*[a-zA-Z\\x{00a1}-\\x{ffff}0-9]+)(?:\\.([a-zA-Z\\x{00a1}-\\x{ffff}]{1,}))?))\\.?" + URLPort + "?" + URLPath + "?$";
     public final static Pattern rxURL = Pattern.compile(URL_REP, Pattern.CASE_INSENSITIVE);
 
-    private static final Error ErrEmail = Error.newError("validation_is_email", "must be a valid email address");
+    private static final Err ErrEmail = Err.newError("validation_is_email", "must be a valid email address");
     // ErrURL is the error that returns in case of an invalid URL.
-    private static final Error ErrURL = Error.newError("validation_is_url", "must be a valid URL");
+    private static final Err ErrURL = Err.newError("validation_is_url", "must be a valid URL");
     // ErrDomain is the error that returns in case of an invalid domain.
-    private static final Error ErrDomain = Error.newError("validation_is_domain", "must be a valid domain");
+    private static final Err ErrDomain = Err.newError("validation_is_domain", "must be a valid domain");
 
 
     public static final StringRule EmailFormat = newStringRuleWithError(Is::isEmail, ErrEmail);
@@ -79,7 +79,7 @@ public final class Is {
             return false;
         }
 
-        if (u.getHost().isEmpty() && (PbInnerUtil.isNotEmpty(u.getPath()) && !u.getPath().contains("."))) {
+        if (u.getHost().isEmpty() && (CommonHelper.isNotEmpty(u.getPath()) && !u.getPath().contains("."))) {
             return false;
         }
         return Pattern.matches(rxURL.pattern(), str);

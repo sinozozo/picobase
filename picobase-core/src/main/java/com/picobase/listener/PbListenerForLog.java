@@ -1,9 +1,9 @@
 package com.picobase.listener;
 
 import com.picobase.config.PbConfig;
-import com.picobase.logic.PbLogic;
-import com.picobase.logic.PbLoginModel;
-import com.picobase.util.PbInnerUtil;
+import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.logic.authz.PbLoginModel;
+import com.picobase.util.CommonHelper;
 
 import static com.picobase.PbManager.log;
 
@@ -50,7 +50,7 @@ public class PbListenerForLog implements PbListener {
      */
     @Override
     public void doDisable(String loginType, Object loginId, String service, int level, long disableTime) {
-        log.info("账号 {} [{}服务] 被封禁 (loginType={}), 封禁等级={}, 解封时间为 {}", loginId, loginType, service, level, PbInnerUtil.formatAfterDate(disableTime * 1000));
+        log.info("账号 {} [{}服务] 被封禁 (loginType={}), 封禁等级={}, 解封时间为 {}", loginId, loginType, service, level, CommonHelper.formatAfterDate(disableTime * 1000));
     }
 
     /**
@@ -120,7 +120,7 @@ public class PbListenerForLog implements PbListener {
      * @param stpLogic /
      */
     @Override
-    public void doSetStpLogic(PbLogic stpLogic) {
+    public void doSetPbAuthZLogic(PbAuthZLogic stpLogic) {
         if (stpLogic != null) {
             log.info("会话组件 StpLogic(type={}) 重置成功: {}", stpLogic.getLoginType(), stpLogic.getClass());
         }
