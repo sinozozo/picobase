@@ -12,6 +12,7 @@ import com.picobase.console.interceptor.Interceptors;
 import com.picobase.console.mapper.AdminMapper;
 import com.picobase.console.model.dto.AdminLogin;
 import com.picobase.console.model.dto.AdminLoginResult;
+import com.picobase.console.model.dto.AdminUpsert;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.AdminModel;
 import com.picobase.persistence.dbx.SelectQuery;
@@ -23,7 +24,10 @@ import com.picobase.search.PbProvider;
 import com.picobase.secure.BCrypt;
 import com.picobase.util.CommonHelper;
 import com.picobase.validator.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admins")
@@ -102,7 +106,6 @@ public class AdminController {
 
         } else {
             // 2.2 配置文件中没有配置 账号密码 从数据库中读取
-
 
 
             MapperContext context = new MapperContext();
@@ -185,6 +188,98 @@ public class AdminController {
 
         event.timePosition = TimePosition.AFTER;
         PbUtil.post(event);
+
+    }
+
+    @PostMapping
+    public AdminModel create() {
+        Optional<AdminUpsert> adminUpsertOptional = PbUtil.bindRequest(AdminUpsert.class);
+        if (adminUpsertOptional.isEmpty()) {
+            throw new BadRequestException("Failed to load the submitted data due to invalid formatting.");
+        }
+
+        InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
+            AdminCreateEvent event = new AdminCreateEvent();
+            //前置拦截
+            event.admin = adminModel;
+            event.timePosition = TimePosition.BEFORE;
+            PbUtil.post(event);
+
+            AdminModel model = next.run(adminModel);
+
+            //后置拦截
+            event.admin = model; //更换为数据库save后的 model
+            event.timePosition = TimePosition.AFTER;
+            PbUtil.post(event);
+            return model;
+        };
+
+        AdminUpsert form = adminUpsertOptional.get();
+        Errors errors = form.validate(null);
+        if(errors!=null){
+            throw new BadRequestException(errors);
+        }
+
+        AdminModel admin = new AdminModel();
+        admin.setEmail(form.getEmail());
+        admin.setAvatar(form.getAvatar());
+        admin.setPasswordHash(BCrypt.hashpw(form.getPassword()));
+        admin.refreshId();
+        admin.refreshCreated();
+        admin.refreshUpdated();
+
+
+        return Interceptors.run(admin, (adminModel) -> {
+            mapper.saveAdmin(adminModel).execute();
+            return adminModel;
+        }, interceptorFunc1);
+    }
+
+
+    @PatchMapping("/{id}")
+    public AdminModel update(@PathVariable String id) {
+        AdminModel originalAdmin = mapper.findAdminById(new MapperContext().putWhereParameter("id", id)).build().one(AdminModel.class);
+        if (originalAdmin == null) {
+            throw new NotFoundException();
+        }
+
+        Optional<AdminUpsert> adminUpsertOptional = PbUtil.bindRequest(AdminUpsert.class);
+        if (adminUpsertOptional.isEmpty()) {
+            throw new BadRequestException("Failed to load the submitted data due to invalid formatting.");
+        }
+
+        InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
+            AdminUpdateEvent event = new AdminUpdateEvent();
+            //前置拦截
+            event.admin = adminModel;
+            event.timePosition = TimePosition.BEFORE;
+            PbUtil.post(event);
+
+            AdminModel model = next.run(adminModel);
+
+            //后置拦截
+            event.admin = model; //更换为数据库 update 后的 model
+            event.timePosition = TimePosition.AFTER;
+            PbUtil.post(event);
+            return model;
+        };
+
+        AdminUpsert form = adminUpsertOptional.get();
+        Errors errors = form.validate(originalAdmin);
+        if(errors!=null){
+            throw new BadRequestException(errors);
+        }
+
+        originalAdmin.setId(form.getId());
+        originalAdmin.setEmail(form.getEmail());
+        originalAdmin.setAvatar(form.getAvatar());
+        originalAdmin.setPasswordHash(BCrypt.hashpw(form.getPassword()));
+        originalAdmin.refreshUpdated();
+
+        return Interceptors.run(originalAdmin, (adminModel) -> {
+            mapper.updateAdmin(adminModel).execute();
+            return adminModel;
+        }, interceptorFunc1);
 
     }
 

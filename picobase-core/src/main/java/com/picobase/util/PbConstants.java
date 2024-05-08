@@ -13,6 +13,10 @@ public final class PbConstants {
      */
     public static final int DEFAULT_ID_LENGTH = 15;
 
+    public static final String ID_REGEX = "^[^\\@\\#\\$\\&\\|\\.\\,\\'\\\"\\\\\\/\\s]+$";
+
+    public static final Pattern ID_REGEX_Pattern = Pattern.compile(ID_REGEX);
+
     /**
      * 切面、拦截器、过滤器等各种组件的注册优先级顺序
      */

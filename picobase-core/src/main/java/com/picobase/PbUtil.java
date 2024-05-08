@@ -7,6 +7,7 @@ import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbTokenInfo;
+import com.picobase.model.AdminModel;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;
@@ -157,4 +158,14 @@ public final class PbUtil {
         return PbManager.getPbDbxBuilder();
     }
 
+    /**
+     * 获取 mapper
+     * @param clazz mapper 对应的 model class
+     * @return mapper
+     * @param <R> Mapper
+     * @param <T> Model
+     */
+    public static <R,T> R findMapper(Class<T> clazz) {
+        return PbManager.getPbMapperManager().findMapper(clazz);
+    }
 }
