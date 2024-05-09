@@ -1,5 +1,6 @@
 package com.picobase.validator;
 
+import cn.hutool.core.util.StrUtil;
 import com.picobase.util.StrFormatter;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class ErrObject implements Err {
         if (params == null || params.isEmpty()) {
             return message;
         }
-        return StrFormatter.format(this.message, this.params);
+        return StrUtil.format(this.message, this.params);
     }
 
     @Override

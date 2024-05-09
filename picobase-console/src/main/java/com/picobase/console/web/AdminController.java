@@ -265,12 +265,13 @@ public class AdminController {
         };
 
         AdminUpsert form = adminUpsertOptional.get();
+
         Errors errors = form.validate(originalAdmin);
         if(errors!=null){
             throw new BadRequestException(errors);
         }
 
-        originalAdmin.setId(form.getId());
+
         originalAdmin.setEmail(form.getEmail());
         originalAdmin.setAvatar(form.getAvatar());
         originalAdmin.setPasswordHash(BCrypt.hashpw(form.getPassword()));

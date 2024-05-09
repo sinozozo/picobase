@@ -94,7 +94,7 @@ public class PbMapperManager {
         PbMapper mapper = tableMapper.get(clazz);
         if (Objects.isNull(mapper)) {
             throw new PbException(CODE_13000,
-                    "[PbMapperManager] Failed to find the table ,ModelClass:" + clazz);
+                    "[PbMapperManager] Failed to find the PbMapper ,ModelClass:" + clazz);
         }
 
         return (R) mapper;

@@ -57,10 +57,14 @@ public class AdminMapper extends AbstractBeanPropertyRowMapper<AdminModel> {
         Set<String> uniqueIds = Arrays.stream(excludeIds)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+
         SelectQuery sq = modelQuery().select("count(*)").where(newExpr("email=:email",
                 Map.of("email", email))).limit(1);
 
-        sq.andWhere(Expression.notIn("id",uniqueIds));
+        if(uniqueIds.size() > 0){
+            sq.andWhere(Expression.notIn("id",uniqueIds));
+        }
+
         return sq;
     }
 

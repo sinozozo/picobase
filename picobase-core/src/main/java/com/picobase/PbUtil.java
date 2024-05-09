@@ -8,6 +8,7 @@ import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.AdminModel;
+import com.picobase.model.Model;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;

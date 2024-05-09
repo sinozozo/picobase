@@ -78,18 +78,19 @@ public class AdminUpsert {
         if (originalAdmin == null) {
             originalAdmin = new AdminModel();
         }
+        boolean isCreate = StrUtil.isEmpty(originalAdmin.getId());
         return PbUtil.validate(this,
                 field("id", this.id,
-                        when(StrUtil.isNotEmpty(this.id),
+                        when(isCreate,
                                 length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH),
                                 match(ID_REGEX_Pattern),
                                 by(uniqueId(TableName.ADMIN))
-                        ).else_(in(originalAdmin.getId()))
+                        )
                 ),
                 field("avatar", this.avatar, min(0), max(9)),
-                field("email", this.email, required, length(1, 255), Is.EmailFormat, by(isAdminEmailUnique())),
+                field("email", this.email, required, length(1, 255), Is.EmailFormat, by(isAdminEmailUnique(originalAdmin.getId()))),
                 field("password", this.password,
-                        when(StrUtil.isNotEmpty(this.id), required, length(10, 72))),
+                        when(isCreate, required, length(10, 72))),
                 field("passwordConfirm", this.passwordConfirm,
                         when(StrUtil.isNotEmpty(this.password), required),
                                 by(passwordMatch()))
@@ -113,10 +114,10 @@ public class AdminUpsert {
      *  邮箱唯一性校验
      * @return 校验函数
      */
-    private RuleFunc isAdminEmailUnique() {
+    private RuleFunc isAdminEmailUnique(String originalId) {
         AdminMapper mapper = PbUtil.findMapper(AdminModel.class);
         return value -> {
-            SelectQuery sq = mapper.isAdminEmailUnique((String) value, this.id);
+            SelectQuery sq = mapper.isAdminEmailUnique((String) value, originalId);
             Integer i = sq.build().one(Integer.class);
             return i != null && i > 0 ? newError("validation_invalid_email", "The email is invalid or already exists.") : null;
         };

@@ -17,6 +17,9 @@ public class Validators {
      */
     public static RuleFunc uniqueId(String tableName) {
         return (value) -> {
+            if (value == null) {
+                return null;
+            }
             Map<String, Object> row = PbUtil.getPbDbxBuilder().select("id").from(tableName).where(Expression.newHashExpr(Map.of("id", value))).limit(1).row();
             if (row != null && !row.isEmpty()) {
                 return newError("validation_invalid_id", "The model id is invalid or already exists.");
