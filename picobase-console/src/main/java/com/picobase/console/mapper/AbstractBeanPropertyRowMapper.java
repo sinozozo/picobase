@@ -7,9 +7,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 public abstract class AbstractBeanPropertyRowMapper<T> extends AbstractMapper<T> {
 
-
-
-
     public PbRowMapper<T> getPbRowMapper(){
         return (rs,rowNum)->{
             BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(getModelClass());

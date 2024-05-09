@@ -33,10 +33,7 @@ public class AdminMapper extends AbstractBeanPropertyRowMapper<AdminModel> {
     }
 
 
-    public SelectQuery modelQuery() {
-        var tableName = getTableName();
-        return PbUtil.getPbDbxBuilder().select(tableName + ".*").from(tableName);
-    }
+
 
     public SelectQuery findAdminByEmail(MapperContext context) {
         return modelQuery()

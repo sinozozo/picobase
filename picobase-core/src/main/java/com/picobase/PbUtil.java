@@ -3,17 +3,22 @@ package com.picobase;
 import com.picobase.context.PbHolder;
 import com.picobase.event.IEventReceiver;
 import com.picobase.event.PbEvent;
+import com.picobase.exception.PbException;
 import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbTokenInfo;
-import com.picobase.model.AdminModel;
-import com.picobase.model.Model;
 import com.picobase.persistence.dbx.PbDbxBuilder;
+import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.mapper.PbMapper;
+import com.picobase.persistence.repository.Page;
+import com.picobase.persistence.resolver.FieldResolver;
+import com.picobase.search.PbProvider;
 import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;
 import com.picobase.validator.Validation;
 
+import javax.management.Query;
 import java.util.Optional;
 
 /**
@@ -107,12 +112,17 @@ public final class PbUtil {
      *  @see com.picobase.context.model.PbRequest#getCachedContent
      *  @param dto 待进行数据绑定的对象
      */
-    public static <T> Optional<T> bindRequest(Class<T> dto){
-        Optional<T> result = PbManager.getPbContext().bindRequest(dto);
+    public static <T> Optional<T> createObjFromRequest(Class<T> dto){
+        Optional<T> result = PbManager.getPbContext().createObjFromRequest(dto);
         if(result.isPresent()) {
             log.debug("bindRequest: {}", result.get());
         }
         return  result;
+    }
+
+
+    public static void bindRequestTo(Object obj){
+        PbManager.getPbContext().bindRequestTo(obj);
     }
 
     /**
@@ -168,5 +178,31 @@ public final class PbUtil {
      */
     public static <R,T> R findMapper(Class<T> clazz) {
         return PbManager.getPbMapperManager().findMapper(clazz);
+    }
+
+    public static <T> Page<T> query(FieldResolver resolver, SelectQuery query, Class<T> model){
+        return new PbProvider(resolver).query(query).parseAndExec(model);
+    }
+
+    public static <T> Page<T> query( SelectQuery query, Class<T> model){
+        return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
+    }
+
+    public static <T> Page<T> query(Class<T> model){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
+        SelectQuery query = mapper.modelQuery();
+        if (query == null) {
+            throw new PbException("{} 未实现modelQuery方法",model.getSimpleName());
+        }
+        return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
+    }
+
+    public static <T> Page<T> query(FieldResolver resolver,Class<T> model){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
+        SelectQuery query = mapper.modelQuery();
+        if (query == null) {
+            throw new PbException("{} 未实现modelQuery方法",model.getSimpleName());
+        }
+        return query(resolver, query, model);
     }
 }

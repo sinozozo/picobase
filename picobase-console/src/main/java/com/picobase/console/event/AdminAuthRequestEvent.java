@@ -9,4 +9,9 @@ import com.picobase.model.AdminModel;
 public class AdminAuthRequestEvent implements PbEvent {
     public String token;
     public AdminModel admin;
+
+    public AdminAuthRequestEvent(String token, AdminModel admin) {
+        this.token = token;
+        this.admin = admin;
+    }
 }

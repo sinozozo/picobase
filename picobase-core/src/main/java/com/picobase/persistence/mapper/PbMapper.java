@@ -1,5 +1,6 @@
 package com.picobase.persistence.mapper;
 
+import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.repository.PbRowMapper;
 
 import java.util.List;
@@ -76,4 +77,6 @@ public interface PbMapper {
 
 
     <T> Class<T> getModelClass();
+
+    SelectQuery modelQuery();
 }

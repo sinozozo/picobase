@@ -68,7 +68,8 @@ public interface PbContext {
      *  将 request 数据(path params, query params and the request body)绑定到对象上 （支持提交的数据格式为 form 或 json）
      *  @param dto 待进行数据绑定的对象
      */
-    <T> Optional<T> bindRequest(Class<T> dto);
+    <T> Optional<T> createObjFromRequest(Class<T> dto);
 
 
+    void bindRequestTo(Object obj);
 }

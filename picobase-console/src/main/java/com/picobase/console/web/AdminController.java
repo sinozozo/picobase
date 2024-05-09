@@ -24,7 +24,6 @@ import com.picobase.search.PbProvider;
 import com.picobase.secure.BCrypt;
 import com.picobase.util.CommonHelper;
 import com.picobase.validator.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -44,33 +43,24 @@ public class AdminController {
     @PostMapping(value = "/auth-with-password")
     public AdminLoginResult authWithPassword() {
         //从 request 中获取登录凭证
-        AdminLogin form = PbUtil.bindRequest(AdminLogin.class).get();
+        AdminLogin form = PbUtil.createObjFromRequest(AdminLogin.class).get();
 
-        AdminAuthWithPasswordEvent event1 = new AdminAuthWithPasswordEvent();
-        AdminAuthRequestEvent event2 = new AdminAuthRequestEvent();
-        event1.identity = form.getIdentity();
-        event1.password = form.getPassword();
+
 
         /**
          *  定义  admin 登录拦截器
          */
         InterceptorFunc<AdminModel, AdminLoginResult> interceptorFunc1 = next -> adminModel -> {
-            // 发送 TimePosition.BEFORE 的 AdminAuthWithPasswordEvent 事件
-            event1.adminModel = adminModel;
-            event1.timePosition = TimePosition.BEFORE;
-            PbUtil.post(event1);
+            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(),adminModel,TimePosition.BEFORE));
 
             //执行登录
             var r = next.run(adminModel);
 
             // 发送 TimePosition.AFTER 的 AdminAuthWithPasswordEvent 事件
-            event1.timePosition = TimePosition.AFTER;
-            PbUtil.post(event1);
+            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(),adminModel,TimePosition.AFTER));
 
             // 发送 AdminAuthRequestEvent 事件
-            event2.admin = adminModel;
-            event2.token = r.getToken();
-            PbUtil.post(event2);
+            PbUtil.post(new AdminAuthRequestEvent(r.getToken(),adminModel));
             return r;
         };
 
@@ -150,11 +140,9 @@ public class AdminController {
         var fieldResolver = FieldResolver.newSimpleFieldResolver(
                 "id", "created", "updated", "name", "email"
         );
-        Page<AdminModel> admins = new PbProvider(fieldResolver).query(mapper.modelQuery()).parseAndExec(AdminModel.class);
+        Page<AdminModel> admins = PbUtil.query(fieldResolver, AdminModel.class);
 
-        AdminsListEvent event = new AdminsListEvent();
-        event.page = admins;
-        PbUtil.post(event);
+        PbUtil.post(new AdminsListEvent(admins));
 
         return admins;
     }
@@ -166,9 +154,7 @@ public class AdminController {
         if (one == null) {
             throw new NotFoundException();
         }
-        AdminViewEvent event = new AdminViewEvent();
-        event.admin = one;
-        PbUtil.post(event);
+        PbUtil.post(new AdminViewEvent(one));
         return one;
     }
 
@@ -179,38 +165,30 @@ public class AdminController {
             throw new NotFoundException();
         }
 
-        AdminDeleteEvent event = new AdminDeleteEvent();
-        event.admin = admin;
-        event.timePosition = TimePosition.BEFORE;
-        PbUtil.post(event);
+        PbUtil.post(new AdminDeleteEvent(admin,TimePosition.BEFORE));
 
         mapper.deleteAdmin(new MapperContext().putWhereParameter("id", admin.getId())).execute();
 
-        event.timePosition = TimePosition.AFTER;
-        PbUtil.post(event);
+        PbUtil.post(new AdminDeleteEvent(admin,TimePosition.AFTER));
 
     }
 
     @PostMapping
     public AdminModel create() {
-        Optional<AdminUpsert> adminUpsertOptional = PbUtil.bindRequest(AdminUpsert.class);
+        Optional<AdminUpsert> adminUpsertOptional = PbUtil.createObjFromRequest(AdminUpsert.class);
         if (adminUpsertOptional.isEmpty()) {
             throw new BadRequestException("Failed to load the submitted data due to invalid formatting.");
         }
 
         InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
-            AdminCreateEvent event = new AdminCreateEvent();
-            //前置拦截
-            event.admin = adminModel;
-            event.timePosition = TimePosition.BEFORE;
-            PbUtil.post(event);
+
+            PbUtil.post(new AdminCreateEvent(adminModel,TimePosition.BEFORE));
 
             AdminModel model = next.run(adminModel);
 
             //后置拦截
-            event.admin = model; //更换为数据库save后的 model
-            event.timePosition = TimePosition.AFTER;
-            PbUtil.post(event);
+            //更换为数据库save后的 model
+            PbUtil.post(new AdminCreateEvent(model,TimePosition.AFTER));
             return model;
         };
 
@@ -243,24 +221,20 @@ public class AdminController {
             throw new NotFoundException();
         }
 
-        Optional<AdminUpsert> adminUpsertOptional = PbUtil.bindRequest(AdminUpsert.class);
+        Optional<AdminUpsert> adminUpsertOptional = PbUtil.createObjFromRequest(AdminUpsert.class);
         if (adminUpsertOptional.isEmpty()) {
             throw new BadRequestException("Failed to load the submitted data due to invalid formatting.");
         }
 
         InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
-            AdminUpdateEvent event = new AdminUpdateEvent();
             //前置拦截
-            event.admin = adminModel;
-            event.timePosition = TimePosition.BEFORE;
-            PbUtil.post(event);
+            PbUtil.post(new AdminUpdateEvent(adminModel,TimePosition.BEFORE));
 
             AdminModel model = next.run(adminModel);
 
             //后置拦截
-            event.admin = model; //更换为数据库 update 后的 model
-            event.timePosition = TimePosition.AFTER;
-            PbUtil.post(event);
+            //更换为数据库 update 后的 model
+            PbUtil.post(new AdminUpdateEvent(model,TimePosition.AFTER));
             return model;
         };
 

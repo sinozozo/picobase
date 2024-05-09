@@ -50,7 +50,12 @@ public class PbContextDefaultImpl implements PbContext {
     }
 
     @Override
-    public <T> Optional<T> bindRequest(Class<T> dto) {
+    public <T> Optional<T> createObjFromRequest(Class<T> dto) {
+        throw new InvalidContextException(ERROR_MESSAGE).setCode(PbErrorCode.CODE_10001);
+    }
+
+    @Override
+    public void bindRequestTo(Object obj) {
         throw new InvalidContextException(ERROR_MESSAGE).setCode(PbErrorCode.CODE_10001);
     }
 

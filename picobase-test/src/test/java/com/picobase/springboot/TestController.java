@@ -4,10 +4,7 @@ import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.log.PbLog;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 public class TestController {
@@ -16,7 +13,7 @@ public class TestController {
     @RequestMapping("/testRequestBind")
     public BindRequestDto testContextBind() {
         log.info("测试 PbContext.bind");
-        BindRequestDto bind = PbUtil.bindRequest(BindRequestDto.class).get();
+        BindRequestDto bind = PbUtil.createObjFromRequest(BindRequestDto.class).get();
         System.out.println(bind);
         return bind;
     }

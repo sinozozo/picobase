@@ -1,5 +1,6 @@
 package com.picobase.console.model.dto;
 
+import com.picobase.model.CollectionModel;
 import com.picobase.model.schema.Schema;
 
 import java.util.*;
@@ -19,6 +20,21 @@ public class CollectionUpsert {
     private String updateRule;
     private String deleteRule;
     private Map<String, Object> options;
+
+    public CollectionUpsert(CollectionModel collection) {
+        this.id = collection.getId();
+        this.name = collection.getName();
+        this.type = collection.getType();
+        this.system = collection.isSystem();
+        this.schema = collection.getSchema();
+        this.indexes = collection.getIndexes();
+        this.listRule = collection.getListRule();
+        this.viewRule = collection.getViewRule();
+        this.createRule = collection.getCreateRule();
+        this.updateRule = collection.getUpdateRule();
+        this.deleteRule = collection.getDeleteRule();
+        this.options = collection.getOptions();
+    }
 
     public String getId() {
         return id;

@@ -2,6 +2,8 @@
 package com.picobase.persistence.mapper;
 
 import cn.hutool.core.collection.CollUtil;
+import com.picobase.PbUtil;
+import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.repository.PbRowMapper;
 
 import java.lang.reflect.ParameterizedType;
@@ -153,6 +155,11 @@ public abstract class AbstractMapper<T> implements PbMapper {
                 sql.append(" AND ");
             }
         }
+    }
+
+    public SelectQuery modelQuery() {
+        var tableName = getTableName();
+        return PbUtil.getPbDbxBuilder().select(tableName + ".*").from(tableName);
     }
 
 

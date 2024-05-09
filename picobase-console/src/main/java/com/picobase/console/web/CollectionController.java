@@ -4,6 +4,7 @@ package com.picobase.console.web;
 import com.picobase.PbUtil;
 import com.picobase.console.event.CollectionsListEvent;
 import com.picobase.console.mapper.CollectionMapper;
+import com.picobase.console.model.dto.CollectionUpsert;
 import com.picobase.model.CollectionModel;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
@@ -29,10 +30,9 @@ public class CollectionController {
                 "id", "created", "updated", "name", "system", "type"
         );
 
-        Page<CollectionModel> result = new PbProvider(fieldResolver).query(mapper.modelQuery()).parseAndExec(CollectionModel.class);
-        CollectionsListEvent event = new CollectionsListEvent();
-        event.collections = result.getItems();
-        event.result = result;
+        Page<CollectionModel> result = PbUtil.query(fieldResolver, CollectionModel.class);
+
+        CollectionsListEvent event = new CollectionsListEvent(result.getItems(),result);
         PbUtil.post(event);
 
         return result;
@@ -40,6 +40,14 @@ public class CollectionController {
 
     @PostMapping
     public CollectionModel create(){
+        CollectionModel collection = new CollectionModel();
+        CollectionUpsert form = new CollectionUpsert(collection);
+
+        PbUtil.bindRequestTo(form);
+
+
+
+        // load request
 
         return null;
     }

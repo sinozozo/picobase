@@ -25,4 +25,11 @@ public class AdminAuthWithPasswordEvent implements PbEvent {
      */
     public TimePosition timePosition;
 
+    public AdminAuthWithPasswordEvent(String identity, String password, AdminModel adminModel, TimePosition timePosition) {
+        this.identity = identity;
+        this.password = password;
+        this.adminModel = adminModel;
+        this.timePosition = timePosition;
+    }
+
 }
