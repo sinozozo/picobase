@@ -282,4 +282,5 @@ public final class PbConstants {
     public static final int DEFAULT_PER_PAGE = 30;
 
     public static final int MAX_PER_PAGE = 500;
+
 }

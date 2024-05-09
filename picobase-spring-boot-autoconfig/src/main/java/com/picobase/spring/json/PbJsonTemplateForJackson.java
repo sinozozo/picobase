@@ -13,10 +13,7 @@ import java.util.Map;
  */
 public class PbJsonTemplateForJackson implements PbJsonTemplate {
 
-    /**
-     * 底层 PbMapper 对象
-     */
-    public ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 将任意对象转换为 json 字符串
@@ -61,4 +58,7 @@ public class PbJsonTemplateForJackson implements PbJsonTemplate {
         }
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
 }

@@ -33,6 +33,9 @@ public class SchemaField {
     private Object options;
 
 
+    public SchemaField() {
+
+    }
     public SchemaField(String name, String type) {
         this.name = name;
         this.type = type;

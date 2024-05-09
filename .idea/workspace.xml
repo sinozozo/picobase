@@ -4,18 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="727c332a-5334-4b9c-b0e7-9aa5d41e5c02" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminCreateEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/AdminUpdateEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/AdminUpsert.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/validators/Validators.java" afterDir="false" />
+    <list default="true" id="727c332a-5334-4b9c-b0e7-9aa5d41e5c02" name="Changes" comment="admin create update">
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/event/CollectionsListEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/LocalDateTimeDeserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/LocalDateTimeSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/SchemaDeserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/mixin/SchemaMixIn.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/mixin/Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/CollectionMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/model/dto/CollectionUpsert.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/CollectionController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0/storage_v2/_src_/schema/isme.QngxAA.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0/storage_v2/_src_/schema/isme.QngxAA.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0/storage_v2/_src_/schema/pb_console.CoiaZw.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/dd5e0379-f6d7-4454-b879-e0059dbeb1c0/storage_v2/_src_/schema/pb_console.CoiaZw.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/AdminMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/mapper/AdminMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/PbUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleInject.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleInject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/PbConsoleRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/WebMvcConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/web/mixin/AdminModelMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/java/com/picobase/console/json/mixin/AdminModelMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-console/src/main/resources/META-INF/services/com.picobase.persistence.mapper.PbMapper" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-console/src/main/resources/META-INF/services/com.picobase.persistence.mapper.PbMapper" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/CollectionModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/CollectionModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/Schema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/SchemaField.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/SchemaField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/PbMapperManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/mapper/PbMapperManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/SimpleFieldResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/persistence/resolver/SimpleFieldResolver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/PbConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/util/PbConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picobase-test/.flattened-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-test/.flattened-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJackson.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJackson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJacksonTurbo.java" beforeDir="false" afterPath="$PROJECT_DIR$/picobase-spring-boot-autoconfig/src/main/java/com/picobase/spring/json/PbJsonTemplateForJacksonTurbo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,10 +62,15 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
+    "import_schema_mapping": "<schema-mapping>\n  <databases>\n    <list>\n      <schema-mapping-item>\n        <source-data-source-id>dd5e0379-f6d7-4454-b879-e0059dbeb1c0</source-data-source-id>\n        <source-path>schema/&quot;isme&quot;</source-path>\n        <target-data-source-id>dd5e0379-f6d7-4454-b879-e0059dbeb1c0</target-data-source-id>\n        <target-path>schema/&quot;pb_console&quot;</target-path>\n      </schema-mapping-item>\n    </list>\n  </databases>\n</schema-mapping>",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -58,11 +79,50 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.picobase.console.json" />
       <recent name="com.picobase.console.event" />
+      <recent name="com.picobase.console.mapper" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.picobase.console.json.mixin" />
+      <recent name="com.picobase.model" />
+      <recent name="com.picobase.console.model.dto" />
       <recent name="com.picobase.console.model.dto.validators" />
     </key>
+  </component>
+  <component name="RunManager" selected="Application.Test">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.picobase.console.json.mixin.Test" />
+      <module name="picobase-console" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.console.json.mixin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StartUpApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="picobase-test" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.picobase.StartUpApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.picobase.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.StartUpApplication" />
+        <item itemvalue="Application.Test" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -72,11 +132,67 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1715134594511</updated>
-      <workItem from="1715134597357" duration="9047000" />
+      <workItem from="1715134597357" duration="34693000" />
     </task>
+    <task id="LOCAL-00001" summary="admin create update">
+      <option name="closed" value="true" />
+      <created>1715148832216</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1715148832216</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="admin create update" />
+    <option name="LAST_COMMIT_MESSAGE" value="admin create update" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/SchemaField.java</url>
+          <line>147</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/picobase-core/src/main/java/com/picobase/model/schema/SchemaField.java</url>
+          <line>142</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.fasterxml.jackson.databind.introspect.SimpleMixInResolver" memberName="_localMixIns" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

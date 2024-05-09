@@ -16,9 +16,9 @@ import static com.picobase.error.PbErrorCode.CODE_13000;
 
 /**
  * DataSource Plugin PbMapper Management.
+ * ModelClass -> ModelMapper
  *
  **/
-
 public class PbMapperManager {
 
     private static final PbLog LOGGER = PbManager.getLog();

@@ -17,17 +17,16 @@ import java.util.Map;
  */
 public class PbJsonTemplateForJacksonTurbo implements PbJsonTemplate {
 
-    /**
-     * 底层 PbMapper 对象
-     */
-    public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    static {
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    public PbJsonTemplateForJacksonTurbo() {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         objectMapper.registerModule(new AfterburnerModule());
     }
+
 
     /**
      * 将任意对象转换为 json 字符串
@@ -72,4 +71,7 @@ public class PbJsonTemplateForJacksonTurbo implements PbJsonTemplate {
         }
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
 }

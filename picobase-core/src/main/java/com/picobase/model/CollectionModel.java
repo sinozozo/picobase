@@ -23,8 +23,7 @@ public class CollectionModel extends BaseModel implements Model {
     private String type;
     private boolean system;
 
-
-    private Schema schema = Schema.newSchema();
+    private Schema schema = new Schema();
 
     private List<String> indexes;
 
@@ -38,7 +37,7 @@ public class CollectionModel extends BaseModel implements Model {
 
     @Override
     public String tableName() {
-        return "col_collection";
+        return PbConstants.TableName.COLLECTION;
     }
 
     public String baseFilesPath() {

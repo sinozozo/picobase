@@ -14,25 +14,12 @@ import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_SUBTRACT;
 
 
 public class Schema {
-    //@JsonValue
     private List<SchemaField> fields = new ArrayList<>();
 
 
-    private Schema() {
+    public Schema() {
     }
 
-    public static Schema newSchema() {
-        return new Schema();
-    }
-
-    //@JsonCreator
-    public static Schema newSchema(List<SchemaField> fields) {
-        var schema = new Schema();
-        for (SchemaField f : fields) {
-            schema.addField(f);
-        }
-        return schema;
-    }
 
     public void addField(SchemaField newField) {
         if (StrUtil.isEmpty(newField.getId())) {

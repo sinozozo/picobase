@@ -41,17 +41,8 @@ public record SimpleFieldResolver(List<String> allowedFields) implements FieldRe
                 String.format(
                         "JSON_EXTRACT(`%s`, '%s')", //TODO 修改为反引号
                         columnify(parts.get(0)),
-                        jsonPath.toString())
+                        jsonPath)
         ).build();
     }
 
-    public static void main(String[] args) {
-        Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5);
-
-// 跳过前两个元素
-        Stream<Integer> skippedStream = stream.skip(2);
-
-// 打印剩余元素
-        skippedStream.forEach(System.out::println);
-    }
 }
