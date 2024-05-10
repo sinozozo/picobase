@@ -1,5 +1,7 @@
 package com.picobase.persistence.mapper;
 
+import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.repository.PbRowMapper;
 
@@ -21,6 +23,7 @@ public interface PbMapper {
      * @param where The where params
      * @return The sql of select
      */
+    @Deprecated
     String select(List<String> columns, List<String> where);
     
     /**
@@ -28,6 +31,7 @@ public interface PbMapper {
      * @param columns The columns
      * @return The sql of insert
      */
+    @Deprecated
     String insert(List<String> columns);
     
     /**
@@ -36,6 +40,7 @@ public interface PbMapper {
      * @param where The where params
      * @return The sql of update
      */
+    @Deprecated
     String update(List<String> columns, List<String> where);
     
     /**
@@ -43,6 +48,7 @@ public interface PbMapper {
      * @param params The params
      * @return The sql of delete
      */
+    @Deprecated
     String delete(List<String> params);
     
     /**
@@ -51,6 +57,7 @@ public interface PbMapper {
      * @param where The where params
      * @return The sql of count
      */
+    @Deprecated
     String count(List<String> where);
     
     /**
@@ -79,4 +86,12 @@ public interface PbMapper {
     <T> Class<T> getModelClass();
 
     SelectQuery modelQuery();
+
+    SelectQuery findBy(Expression expression);
+
+    Query insert(Object data);
+
+    Query delete(Expression where);
+
+    Query update(Object data,Expression where);
 }

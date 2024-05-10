@@ -34,21 +34,6 @@ public class AdminMapper extends AbstractBeanPropertyRowMapper<AdminModel> {
 
 
 
-
-    public SelectQuery findAdminByEmail(MapperContext context) {
-        return modelQuery()
-                .where(newExpr("email=:email",
-                        context.getWhereParameters()));
-    }
-
-    public SelectQuery findAdminById(MapperContext context) {
-        return modelQuery().where(newExpr("id=:id", context.getWhereParameters()));
-    }
-
-    public Query deleteAdmin(MapperContext context){
-        return PbUtil.getPbDbxBuilder().delete(getTableName(),Expression.newHashExpr(context.getWhereParameters()));
-    }
-
     public SelectQuery isAdminEmailUnique(String email ,String ... excludeIds) {
         // 过滤掉null值并转换为Set确保唯一性
         Set<String> uniqueIds = Arrays.stream(excludeIds)
@@ -66,13 +51,5 @@ public class AdminMapper extends AbstractBeanPropertyRowMapper<AdminModel> {
     }
 
 
-    public Query saveAdmin(AdminModel admin) {
-        Map<String, Object> adminMap = BeanUtil.beanToMap(admin);
-        return PbUtil.getPbDbxBuilder().insert(getTableName(),adminMap);
-    }
 
-    public Query updateAdmin(AdminModel admin) {
-        Map<String, Object> adminMap = BeanUtil.beanToMap(admin);
-        return PbUtil.getPbDbxBuilder().update(getTableName(),adminMap,newExpr("id=:id", Map.of("id", admin.getId())));
-    }
 }

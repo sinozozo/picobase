@@ -15,6 +15,7 @@ import com.picobase.console.model.dto.AdminLoginResult;
 import com.picobase.console.model.dto.AdminUpsert;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.AdminModel;
+import com.picobase.persistence.dbx.Expression;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.model.MapperContext;
@@ -26,26 +27,19 @@ import com.picobase.util.CommonHelper;
 import com.picobase.validator.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
+
+import static com.picobase.persistence.dbx.Expression.newExpr;
 
 @RestController
 @RequestMapping("/api/admins")
 public class AdminController {
 
-    private AdminMapper mapper;
-
-
-    public AdminController(PbMapperManager mapperManager) {
-        this.mapper = mapperManager.findMapper(AdminModel.class);
-    }
-
-
     @PostMapping(value = "/auth-with-password")
     public AdminLoginResult authWithPassword() {
-        //从 request 中获取登录凭证
+
         AdminLogin form = PbUtil.createObjFromRequest(AdminLogin.class).get();
-
-
 
         /**
          *  定义  admin 登录拦截器
@@ -96,13 +90,7 @@ public class AdminController {
 
         } else {
             // 2.2 配置文件中没有配置 账号密码 从数据库中读取
-
-
-            MapperContext context = new MapperContext();
-            context.putWhereParameter("email", form.getIdentity());
-            SelectQuery query = mapper.findAdminByEmail(context);
-
-            adminModel = query.build().one(AdminModel.class);
+            adminModel = PbUtil.findOne(AdminModel.class, newExpr("email=:email", Map.of("email", form.getIdentity())));
 
         }
 
@@ -149,8 +137,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public AdminModel view(@PathVariable String id) {
-        SelectQuery sq = mapper.findAdminById(new MapperContext().putWhereParameter("id", id));
-        AdminModel one = sq.build().one(AdminModel.class);
+        AdminModel one = PbUtil.findById(AdminModel.class, id);
         if (one == null) {
             throw new NotFoundException();
         }
@@ -160,14 +147,14 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
-        AdminModel admin = mapper.findAdminById(new MapperContext().putWhereParameter("id", id)).build().one(AdminModel.class);
+        AdminModel admin = PbUtil.findById(AdminModel.class, id);
         if (admin == null) {
             throw new NotFoundException();
         }
 
         PbUtil.post(new AdminDeleteEvent(admin,TimePosition.BEFORE));
 
-        mapper.deleteAdmin(new MapperContext().putWhereParameter("id", admin.getId())).execute();
+        PbUtil.deleteById(id, AdminModel.class);
 
         PbUtil.post(new AdminDeleteEvent(admin,TimePosition.AFTER));
 
@@ -208,7 +195,7 @@ public class AdminController {
 
 
         return Interceptors.run(admin, (adminModel) -> {
-            mapper.saveAdmin(adminModel).execute();
+            PbUtil.insert(adminModel);
             return adminModel;
         }, interceptorFunc1);
     }
@@ -216,7 +203,7 @@ public class AdminController {
 
     @PatchMapping("/{id}")
     public AdminModel update(@PathVariable String id) {
-        AdminModel originalAdmin = mapper.findAdminById(new MapperContext().putWhereParameter("id", id)).build().one(AdminModel.class);
+        AdminModel originalAdmin = PbUtil.findById(AdminModel.class, id);
         if (originalAdmin == null) {
             throw new NotFoundException();
         }
@@ -252,7 +239,7 @@ public class AdminController {
         originalAdmin.refreshUpdated();
 
         return Interceptors.run(originalAdmin, (adminModel) -> {
-            mapper.updateAdmin(adminModel).execute();
+            PbUtil.updateById(adminModel.getId(),adminModel);
             return adminModel;
         }, interceptorFunc1);
 

@@ -1,8 +1,11 @@
 
 package com.picobase.persistence.mapper;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.picobase.PbUtil;
+import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.repository.PbRowMapper;
 
@@ -10,6 +13,7 @@ import java.lang.reflect.ParameterizedType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The abstract mapper contains CRUD methods.
@@ -162,5 +166,25 @@ public abstract class AbstractMapper<T> implements PbMapper {
         return PbUtil.getPbDbxBuilder().select(tableName + ".*").from(tableName);
     }
 
+    @Override
+    public SelectQuery findBy(Expression expression) {
+        return modelQuery().where(expression);
+    }
 
+
+
+    @Override
+    public Query insert(Object data) {
+        return PbUtil.getPbDbxBuilder().insert(getTableName(), BeanUtil.beanToMap(data));
+    }
+
+    @Override
+    public Query delete(Expression where) {
+        return PbUtil.getPbDbxBuilder().delete(getTableName(), where);
+    }
+
+    @Override
+    public Query update(Object data, Expression where) {
+        return PbUtil.getPbDbxBuilder().update(getTableName(), BeanUtil.beanToMap(data), where);
+    }
 }

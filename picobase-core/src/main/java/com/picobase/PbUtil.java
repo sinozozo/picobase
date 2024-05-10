@@ -8,9 +8,11 @@ import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbTokenInfo;
+import com.picobase.persistence.dbx.Expression;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.mapper.PbMapper;
+import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.search.PbProvider;
@@ -19,6 +21,7 @@ import com.picobase.validator.FieldRules;
 import com.picobase.validator.Validation;
 
 import javax.management.Query;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -205,4 +208,39 @@ public final class PbUtil {
         }
         return query(resolver, query, model);
     }
+
+    public static int update(Object data, Expression where){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
+        return mapper.update(data, where).execute();
+    }
+
+
+
+    public static int updateById(Object id,Object data){
+        return update(data,Expression.newExpr("id=:id", Map.of("id", id)));
+    }
+
+    public static int delete(Class c,Expression where){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        return mapper.delete(where).execute();
+    }
+
+    public static int deleteById(Object id ,Class model){
+        return delete(model,Expression.newExpr("id=:id", Map.of("id", id)));
+    }
+
+    public static int insert(Object data){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
+        return mapper.insert(data).execute();
+    }
+
+    public static <T> T findOne(Class<T> c,Expression where){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        return mapper.findBy(where).one(c);
+    }
+    public static <T> T findById(Class<T> c,Object id ){
+        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        return mapper.findBy(Expression.newExpr("id=:id", Map.of("id", id))).one(c);
+    }
+
 }
