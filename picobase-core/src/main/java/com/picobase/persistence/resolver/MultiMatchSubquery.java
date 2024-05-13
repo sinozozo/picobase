@@ -1,7 +1,7 @@
 package com.picobase.persistence.resolver;
 
 import com.picobase.persistence.dbx.DbxUtil;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 
 import java.util.ArrayList;
 import java.util.HashMap;

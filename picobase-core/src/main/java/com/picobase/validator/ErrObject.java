@@ -1,7 +1,6 @@
 package com.picobase.validator;
 
 import cn.hutool.core.util.StrUtil;
-import com.picobase.util.StrFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +14,9 @@ public class ErrObject implements Err {
     private String message;
     private Map<String, Object> params;
 
+    public ErrObject() {
+
+    }
 
     public ErrObject(String code, String message) {
         this.code = code;
@@ -60,4 +62,18 @@ public class ErrObject implements Err {
         return this;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public ErrObject setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    
 }

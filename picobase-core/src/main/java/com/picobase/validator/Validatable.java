@@ -8,5 +8,5 @@ public interface Validatable {
     /**
      * Validate validates the data and returns an error if validation fails.
      */
-    Errors validate();
+    Err validate();
 }

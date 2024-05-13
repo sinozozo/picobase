@@ -1,5 +1,6 @@
 package com.picobase.persistence.dbx;
 
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.repository.PbDatabaseOperate;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public abstract class BaseBuilder {
             }
         });
 
-        String sql = String.format("UPDATE %s SET %s", quoteTableName(table), String.join(", ",lines));
+        String sql = String.format("UPDATE %s SET %s", quoteTableName(table), String.join(", ", lines));
         if (where != null) {
             String w = where.build(params);
             if (w != null) {

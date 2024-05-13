@@ -1,10 +1,8 @@
-package com.picobase.pocket.model;
+package com.picobase.console.model;
 
-import com.picobase.pocket.exception.ExceptionUtil;
-import com.picobase.pocket.util.Tokenizer;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.picobase.console.error.BadRequestException;
+import com.picobase.persistence.resolver.ResultCouple;
+import com.picobase.util.Tokenizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,13 +10,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Identifier {
     private String original;
     private String alias;
 
+    public Identifier(String original, String alias) {
+        this.original = original;
+        this.alias = alias;
+    }
+
+    public Identifier() {
+    }
 
     public final static Pattern joinReplaceRegex = Pattern.compile("(?im)\\s+(inner join|outer join|left join|right join|join)\\s+?");
     public final static Pattern discardReplaceRegex = Pattern.compile("(?im)\\s+(where|group by|having|order|limit|with)\\s+?");
@@ -48,7 +50,7 @@ public class Identifier {
             ResultCouple<String> token = tk.scan();
             if (null != token.getError()) {
                 if (!Objects.equals(token.getError().getMessage(), "EOF")) {
-                    throw ExceptionUtil.badRequestException("");
+                    throw new BadRequestException("");
                 }
                 break;
             }
@@ -169,5 +171,22 @@ public class Identifier {
         return String.join(".", parts);
     }
 
+    public String getOriginal() {
+        return original;
+    }
+
+    public Identifier setOriginal(String original) {
+        this.original = original;
+        return this;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public Identifier setAlias(String alias) {
+        this.alias = alias;
+        return this;
+    }
 }
 

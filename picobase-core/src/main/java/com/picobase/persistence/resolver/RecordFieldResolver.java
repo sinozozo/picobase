@@ -6,7 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.picobase.fun.PbCollFetchFun;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RequestInfo;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.util.PbConstants;
 

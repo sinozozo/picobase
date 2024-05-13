@@ -1,5 +1,7 @@
 package com.picobase.persistence.dbx;
 
+import com.picobase.persistence.dbx.expression.Expression;
+
 import java.util.List;
 import java.util.Map;
 

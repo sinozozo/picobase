@@ -11,7 +11,7 @@ import static com.picobase.validator.Validation.*;
 public class SelectOptions implements FieldOptions, MultiValuer {
     private int maxSelect;
     private List<String> values;
-
+    
 
     //@JsonIgnore
     @Override

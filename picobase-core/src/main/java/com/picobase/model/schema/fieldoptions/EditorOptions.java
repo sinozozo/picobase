@@ -16,4 +16,13 @@ public class EditorOptions implements FieldOptions {
     public Errors validate() {
         return null;
     }
+
+    public boolean isConvertUrls() {
+        return convertUrls;
+    }
+
+    public EditorOptions setConvertUrls(boolean convertUrls) {
+        this.convertUrls = convertUrls;
+        return this;
+    }
 }

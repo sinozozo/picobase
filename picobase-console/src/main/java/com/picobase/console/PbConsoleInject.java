@@ -1,6 +1,9 @@
 package com.picobase.console;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
@@ -93,6 +96,12 @@ public class PbConsoleInject {
         objectMapper.addMixIn(AdminModel.class, AdminModelMixIn.class);
         objectMapper.addMixIn(Schema.class, SchemaMixIn.class);
 
+        //反序列化时 遇到未知字段不报错
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //忽略 Java 对象中的空值字段
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        //在遇到空对象时不抛出异常，而是简单地忽略这些空对象
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(Schema.class, new SchemaDeserializer());

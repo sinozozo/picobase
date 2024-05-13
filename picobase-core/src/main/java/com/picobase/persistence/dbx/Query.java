@@ -36,36 +36,38 @@ public class Query {
 
     /**
      * 返回一行数据 ， Map结构
+     *
      * @return
      */
     public Map<String, Object> row() {
-        return this.dbOperate.queryOne(this.sql,this.params,Map.class);
+        return this.dbOperate.queryOne(this.sql, this.params, Map.class);
     }
 
     /**
      * 返回所有数据
+     *
      * @param clz List中包含的数据类型
-     * @return 所有数据
      * @param <T> List中包含的数据类型
+     * @return 所有数据
      */
     public <T> List<T> all(Class<T> clz) {
         return this.dbOperate.queryMany(this.sql, this.params, clz);
     }
 
     public <T> List<T> column(Class<T> clz) {
-        return this.dbOperate.queryMany(this.sql,this.params,clz);
+        return this.dbOperate.queryMany(this.sql, this.params, clz);
     }
 
     public Long count() {
-        return this.dbOperate.queryOne(this.sql,this.params,Long.class);
+        return this.dbOperate.queryOne(this.sql, this.params, Long.class);
     }
 
     public <T> T one(Class<T> clz) {
-        return this.dbOperate.queryOne(this.sql,this.params,clz);
+        return this.dbOperate.queryOne(this.sql, this.params, clz);
     }
 
     public <T> T one(PbRowMapper<T> rm) {
-        return  this.dbOperate.queryOne(this.sql,this.params,rm);
+        return this.dbOperate.queryOne(this.sql, this.params, rm);
     }
 
     public String sql() {
@@ -78,19 +80,19 @@ public class Query {
         mr.setSql(this.sql);
         mr.setNamedArgs(this.params);
         mr.setRollBackOnUpdateFail(true);
-        AtomicReference<Integer> i  = new AtomicReference<>(0);
-        this.dbOperate.update(List.of(mr),(row,e)->{
-            if(e!=null){
+        AtomicReference<Integer> i = new AtomicReference<>(0);
+        this.dbOperate.update(List.of(mr), (rowNum, e) -> {
+            if (e != null) {
                 throw new PbException(e);
             }
-            i.set(row);
+            i.set(rowNum);
 
         });
         return i.get();
     }
 
     public <T> List<T> all(PbRowMapper<T> rm) {
-        return this.dbOperate.queryMany(this.sql,this.params,rm);
+        return this.dbOperate.queryMany(this.sql, this.params, rm);
     }
 
     public Map<String, Object> getParams() {

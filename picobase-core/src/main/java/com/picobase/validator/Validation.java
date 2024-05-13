@@ -86,6 +86,16 @@ public class Validation {
         return new NotInRule(values);
     }
 
+    /**
+     * // Validate validates the given value and returns the validation error, if any.
+     * //
+     * // Validate performs validation using the following steps:
+     * // 1. For each rule, call its `Validate()` to validate the value. Return if any error is found.
+     * // 2. If the value being validated implements `Validatable`, call the value's `Validate()`.
+     * //    Return with the validation result.
+     * // TODO  3. If the value being validated is a map/slice/array, and the element type implements `Validatable`,
+     * //    for each element call the element value's `Validate()`. Return with the validation result.
+     */
     public static Err validate(Object value, Rule... rules) {
         for (Rule rule : rules) {
             if (rule instanceof SkipRule skipRule) {
@@ -101,6 +111,10 @@ public class Validation {
             if (err instanceof Errors errors && errors.size() > 0) {
                 return errors.filter();
             }
+        }
+
+        if (value instanceof Validatable v) {
+            return v.validate();
         }
         return null;
     }

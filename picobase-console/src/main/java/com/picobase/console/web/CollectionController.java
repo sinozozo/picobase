@@ -1,55 +1,179 @@
 package com.picobase.console.web;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.picobase.PbUtil;
-import com.picobase.console.event.CollectionsListEvent;
+import com.picobase.console.error.BadRequestException;
+import com.picobase.console.event.*;
+import com.picobase.console.interceptor.InterceptorFunc;
+import com.picobase.console.interceptor.InterceptorNextFunc;
+import com.picobase.console.interceptor.Interceptors;
 import com.picobase.console.mapper.CollectionMapper;
 import com.picobase.console.model.dto.CollectionUpsert;
 import com.picobase.model.CollectionModel;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
-import com.picobase.search.PbProvider;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.picobase.validator.Errors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+
+import static com.picobase.util.PbConstants.CollectionType.View;
 
 @RestController
 @RequestMapping("/api/collections")
 public class CollectionController {
 
+
+    private static final Logger log = LoggerFactory.getLogger(CollectionController.class);
     private CollectionMapper mapper;
 
     public CollectionController(PbMapperManager mapperManager) {
         this.mapper = mapperManager.findMapper(CollectionModel.class);
     }
+
     @GetMapping
-    public Page<CollectionModel> list(){
+    public Page<CollectionModel> list() {
         var fieldResolver = FieldResolver.newSimpleFieldResolver(
                 "id", "created", "updated", "name", "system", "type"
         );
 
         Page<CollectionModel> result = PbUtil.query(fieldResolver, CollectionModel.class);
 
-        CollectionsListEvent event = new CollectionsListEvent(result.getItems(),result);
+        CollectionsListEvent event = new CollectionsListEvent(result.getItems(), result);
         PbUtil.post(event);
 
         return result;
     }
 
     @PostMapping
-    public CollectionModel create(){
+    public CollectionModel create() {
+
+        //待保存
         CollectionModel collection = new CollectionModel();
+
         CollectionUpsert form = new CollectionUpsert(collection);
 
+        // load request
         PbUtil.bindRequestTo(form);
 
+        InterceptorFunc<CollectionModel, CollectionModel> postEventFunc = next -> collectionModel -> {
+            PbUtil.post(new CollectionCreateEvent(collectionModel, TimePosition.BEFORE));
+            CollectionModel cm = next.run(collectionModel);
+            PbUtil.post(new CollectionCreateEvent(cm, TimePosition.AFTER));
+            return cm;
+        };
+
+        return submit(form, true, postEventFunc);
+    }
+
+    @PatchMapping("{collectionIdOrName}")
+    public CollectionModel update(@PathVariable String collectionIdOrName) {
+        //待保存
+        CollectionModel collection = mapper.findCollectionByNameOrId(collectionIdOrName);
+
+        CollectionUpsert form = new CollectionUpsert(collection);
 
 
         // load request
+        PbUtil.bindRequestTo(form);
 
-        return null;
+        InterceptorFunc<CollectionModel, CollectionModel> postEventFunc = next -> collectionModel -> {
+            PbUtil.post(new CollectionUpdateEvent(collectionModel, TimePosition.BEFORE));
+            CollectionModel cm = next.run(collectionModel);
+            PbUtil.post(new CollectionUpdateEvent(cm, TimePosition.AFTER));
+            return cm;
+        };
+
+        return submit(form, false, postEventFunc);
+    }
+
+    @GetMapping(value = "{collectionIdOrName}")
+    public CollectionModel view(@PathVariable String collectionIdOrName) {
+        CollectionModel collection = mapper.findCollectionByNameOrId(collectionIdOrName);
+        PbUtil.post(new CollectionViewEvent(collection));
+        return collection;
+    }
+
+
+    private CollectionModel submit(CollectionUpsert form, boolean isCreate, InterceptorFunc<CollectionModel, CollectionModel> postEventFunc) {
+        CollectionModel collection = form.getCollection();
+        Errors errors = form.validate(isCreate);
+        if (errors != null) {
+            throw new BadRequestException(errors);
+        }
+
+        if (isCreate) {
+            //type can be set only on create
+            collection.setType(form.getType());
+            // system flag can be set only on create
+            collection.setSystem(form.isSystem());
+
+            // id can be set only on create
+            if (StrUtil.isNotEmpty(form.getId())) {
+                collection.setId(form.getId());
+            } else {
+                collection.refreshId();
+            }
+
+            collection.refreshCreated();
+            collection.refreshUpdated();
+        } else {
+            collection.refreshUpdated();
+        }
+
+
+        // system collections cannot be renamed
+        if (isCreate || !collection.isSystem()) {
+            collection.setName(form.getName());
+        }
+
+        // view schema is autogenerated on save and cannot have indexes
+        if (!collection.isView()) {
+            collection.setSchema(form.getSchema());
+
+            // normalize indexes format
+            collection.setIndexes(form.getIndexes());
+        }
+
+        collection.setCreateRule(form.getCreateRule());
+        collection.setDeleteRule(form.getDeleteRule());
+        collection.setUpdateRule(form.getUpdateRule());
+        collection.setListRule(form.getListRule());
+        collection.setViewRule(form.getViewRule());
+        collection.setOptions(form.getOptions());
+
+
+        return Interceptors.run(form.getCollection(), saveCollectionNextFunc(), postEventFunc);
+    }
+
+    private InterceptorNextFunc<CollectionModel, CollectionModel> saveCollectionNextFunc() {
+        return (col) -> {
+            switch (col.getType()) {
+                case View -> mapper.saveViewCollection(col, null);
+                default -> {
+                    mapper.syncRecordTableSchema(col, null);
+                    PbUtil.save(col);
+                }
+            }
+            return col;
+        };
+    }
+
+
+    @DeleteMapping(value = "{collectionIdOrName}")
+    public void delete(@PathVariable String collectionIdOrName) {
+        CollectionModel collection = mapper.findCollectionByNameOrId(collectionIdOrName);
+        if (collection == null) {
+            throw new BadRequestException("the requested resource wasn't found.");
+        }
+        PbUtil.post(new CollectionDeleteEvent(collection, TimePosition.BEFORE));
+
+
+        mapper.deleteCollection(collection);
+        PbUtil.post(new CollectionDeleteEvent(collection, TimePosition.AFTER));
+
     }
 
 

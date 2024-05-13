@@ -1,7 +1,5 @@
-
 package com.picobase.spring.repository;
 
-import cn.hutool.core.util.ClassUtil;
 import com.picobase.PbManager;
 import com.picobase.log.PbLog;
 import com.picobase.persistence.repository.ModifyRequest;
@@ -26,12 +24,11 @@ import java.util.function.BiConsumer;
 
 /**
  * The Mysql database basic operation.
- *
  */
 public interface BaseDatabaseOperate extends PbDatabaseOperate {
 
     PbLog LOGGER = PbManager.getLog();
-    
+
     /**
      * query one result by sql then convert result to target type.
      *
@@ -68,7 +65,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * query one result by sql and args then convert result to target type.
      *
@@ -109,7 +106,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * query one result by sql and args then convert result to target type through {@link RowMapper}.
      *
@@ -135,7 +132,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
         }
     }
 
-    default <R> R queryOne(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String,Object> args, PbRowMapper<R> mapper) {
+    default <R> R queryOne(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String, Object> args, PbRowMapper<R> mapper) {
         try {
             return jdbcTemplate.queryForObject(sql, args, (rs, rowNum) -> (R) mapper.mapRow(rs, rowNum));
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -149,7 +146,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * query many result by sql and args then convert result to target type through {@link RowMapper}.
      *
@@ -173,7 +170,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
         }
     }
 
-    default <R> List<R> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String,Object> args, PbRowMapper<R> mapper) {
+    default <R> List<R> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String, Object> args, PbRowMapper<R> mapper) {
         try {
             return jdbcTemplate.query(sql, args, (rs, rowNum) -> (R) mapper.mapRow(rs, rowNum));
         } catch (CannotGetJdbcConnectionException e) {
@@ -185,7 +182,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * query many result by sql and args then convert result to target type.
      *
@@ -211,7 +208,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
         }
     }
 
-    default <R> List<R> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String,Object> args, Class<R> rClass) {
+    default <R> List<R> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String, Object> args, Class<R> rClass) {
         try {
             return jdbcTemplate.queryForList(sql, args, rClass);
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -225,7 +222,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * query many result by sql and args then convert result to List&lt;Map&lt;String, Object&gt;&gt;.
      *
@@ -247,7 +244,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
         }
     }
 
-    default List<Map<String, Object>> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String,Object> args) {
+    default List<Map<String, Object>> queryMany(NamedParameterJdbcTemplate jdbcTemplate, String sql, Map<String, Object> args) {
         try {
             return jdbcTemplate.queryForList(sql, args);
         } catch (CannotGetJdbcConnectionException e) {
@@ -259,7 +256,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
             throw e;
         }
     }
-    
+
     /**
      * execute update operation.
      *
@@ -268,11 +265,11 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
      * @param contexts            {@link List} ModifyRequest list
      * @return {@link Boolean}
      */
-    default Boolean update(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate,NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-            List<ModifyRequest> contexts) {
-        return update(transactionTemplate, jdbcTemplate, namedParameterJdbcTemplate,contexts, null);
+    default Boolean update(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                           List<ModifyRequest> contexts) {
+        return update(transactionTemplate, jdbcTemplate, namedParameterJdbcTemplate, contexts, null);
     }
-    
+
     /**
      * execute update operation, to fix #3617.
      *
@@ -282,12 +279,13 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
      * @return {@link Boolean}
      */
     default Boolean update(TransactionTemplate transactionTemplate, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-            List<ModifyRequest> contexts, BiConsumer<Integer, Throwable> consumer) {
+                           List<ModifyRequest> contexts, BiConsumer<Integer, Throwable> consumer) {
         boolean updateResult = Boolean.FALSE;
         try {
             updateResult = transactionTemplate.execute(status -> {
-                String[] errSql = new String[] {null};
-                Object[][] args = new Object[][] {null};
+
+                String[] errSql = new String[]{null};
+                Object[][] args = new Object[][]{null};
                 try {
                     // 影响的行数
                     AtomicInteger row = new AtomicInteger();
@@ -299,9 +297,9 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
                         LOGGER.debug("current sql : {}", errSql[0]);
                         LOGGER.debug("current args : {}", args[0]);
 
-                        if(pair.getNamedArgs() != null){
+                        if (pair.getNamedArgs() != null) {
                             row.addAndGet(namedParameterJdbcTemplate.update(pair.getSql(), pair.getNamedArgs()));
-                        }else{
+                        } else {
                             row.addAndGet(jdbcTemplate.update(pair.getSql(), pair.getArgs()));
                         }
                         LOGGER.debug("SQL update affected {} rows ", row);
@@ -335,6 +333,8 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
                 consumer.accept(null, e);
             }
         }
+
+
         return updateResult;
     }
 

@@ -1,9 +1,33 @@
 package com.picobase.console.model.dto;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.picobase.PbManager;
+import com.picobase.PbUtil;
+import com.picobase.console.mapper.CollectionMapper;
+import com.picobase.json.PbJsonTemplate;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.schema.Schema;
+import com.picobase.model.schema.SchemaField;
+import com.picobase.model.schema.fieldoptions.CollectionAuthOptions;
+import com.picobase.model.schema.fieldoptions.CollectionViewOptions;
+import com.picobase.model.schema.fieldoptions.RelationOptions;
+import com.picobase.persistence.model.Index;
+import com.picobase.persistence.resolver.RecordFieldResolver;
+import com.picobase.search.SearchFilter;
+import com.picobase.validator.Err;
+import com.picobase.validator.Errors;
+import com.picobase.validator.RequiredRule;
+import com.picobase.validator.RuleFunc;
 
 import java.util.*;
+
+import static com.picobase.console.model.dto.validators.Validators.uniqueId;
+import static com.picobase.util.PbConstants.*;
+import static com.picobase.util.PbConstants.CollectionType.*;
+import static com.picobase.util.PbConstants.FieldType.Relation;
+import static com.picobase.validator.Err.newError;
+import static com.picobase.validator.Validation.*;
 
 
 public class CollectionUpsert {
@@ -21,7 +45,17 @@ public class CollectionUpsert {
     private String deleteRule;
     private Map<String, Object> options;
 
+    private CollectionModel collection;
+
+    private CollectionMapper mapper;
+    private PbJsonTemplate jsonTemplate;
+
+    public CollectionUpsert() {
+
+    }
+
     public CollectionUpsert(CollectionModel collection) {
+        this.collection = collection;
         this.id = collection.getId();
         this.name = collection.getName();
         this.type = collection.getType();
@@ -34,6 +68,8 @@ public class CollectionUpsert {
         this.updateRule = collection.getUpdateRule();
         this.deleteRule = collection.getDeleteRule();
         this.options = collection.getOptions();
+        this.mapper = PbManager.getPbMapperManager().findMapper(CollectionModel.class);
+        this.jsonTemplate = PbManager.getPbJsonTemplate();
     }
 
     public String getId() {
@@ -143,4 +179,337 @@ public class CollectionUpsert {
         this.options = options;
         return this;
     }
+
+    public CollectionModel getCollection() {
+        return collection;
+    }
+
+    public CollectionUpsert setCollection(CollectionModel collection) {
+        this.collection = collection;
+        return this;
+    }
+
+    /**
+     * 校验当前 Collection 信息
+     *
+     * @param isCreat 区分是否是创建或是更新
+     * @return
+     */
+    public Errors validate(boolean isCreat) {
+        boolean isAuth = Objects.equals(this.type, Auth);
+        boolean isView = Objects.equals(this.type, View);
+        boolean isNew = isCreat;
+
+        return PbUtil.validate(this,
+                field(CollectionUpsert::getId, when(isNew, length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH), match(ID_REGEX_P), by(uniqueId(this.collection.tableName())))
+                        .else_(in(this.collection.getId()))),
+                field(CollectionUpsert::isSystem, by(ensureNoSystemFlagChange(isNew))),
+                field(CollectionUpsert::getType, required, in(Base, Auth, View), by(ensureNoTypeChange(isNew))),
+                field(CollectionUpsert::getName, required, length(1, 255), match(COLLECTION_NAME_P), by(ensureNoSystemNameChange(isNew)), by(checkUniqueName()), by(checkForVia())),
+                field(CollectionUpsert::getSchema, by(checkMinSchemaFields()), by(ensureNoSystemFieldsChange()), by(ensureNoFieldsTypeChange()), by(checkRelationFields()), when(isAuth, by(ensureNoAuthFieldName()))),
+                field(CollectionUpsert::getListRule, by(checkRule())),
+                field(CollectionUpsert::getViewRule, by(checkRule())),
+                field(CollectionUpsert::getCreateRule, when(isView, Nil), by(checkRule())),
+                field(CollectionUpsert::getUpdateRule, when(isView, Nil), by(checkRule())),
+                field(CollectionUpsert::getDeleteRule, when(isView, Nil), by(checkRule())),
+                field(CollectionUpsert::getIndexes, by(checkIndexes())),
+                field(CollectionUpsert::getOptions, by(checkOptions()))
+        );
+    }
+
+
+    private RuleFunc checkUniqueName() {
+        return value -> {
+            // ensure unique collection name
+            if (!mapper.isCollectionNameUnique(this.name, this.collection.getId())) {
+                return newError("validation_collection_name_exists", "Collection name must be unique (case insensitive).");
+            }
+            // ensure that the collection name doesn't collide with the id of any collection
+            if (PbUtil.findById(CollectionModel.class, this.name) != null) {
+                return newError("validation_collection_name_id_duplicate", "The name must not match an existing collection id.");
+            }
+            return null;
+        };
+    }
+
+    public RuleFunc checkRelationFields() {
+        return value -> {
+            var errors = new Errors();
+            Schema v = (Schema) value;
+            for (int i = 0; i < v.getFields().size(); i++) {
+                SchemaField field = v.getFields().get(i);
+
+                if (!Objects.equals(field.getType(), Relation)) {
+                    continue;
+                }
+
+                field.initOptions();
+                RelationOptions options = (RelationOptions) field.getOptions();
+                if (options == null) {
+                    errors.put(String.valueOf(i),
+                            new Errors().put("options",
+                                    newError(
+                                            "validation_schema_invalid_relation_field_options",
+                                            "The relation field has invalid field options."
+                                    )));
+                    return errors;
+                }
+
+                SchemaField oldField = this.getSchema().getFieldById(field.getId());
+                if (oldField != null) {
+                    RelationOptions oldOptions = (RelationOptions) oldField.getOptions();
+                    if (oldOptions != null && !oldOptions.getCollectionId().equals(options.getCollectionId())) {
+                        errors.put(String.valueOf(i),
+                                new Errors().put("options",
+                                        new Errors().put("collectionId",
+                                                newError(
+                                                        "validation_field_relation_change",
+                                                        "The relation collection cannot be changed."
+                                                )
+                                        )
+                                ));
+                        return errors;
+                    }
+                }
+
+                CollectionModel relCollection = mapper.findCollectionByNameOrId(options.getCollectionId());
+                if (relCollection == null || !relCollection.getId().equals(options.getCollectionId())) {
+                    errors.put(String.valueOf(i),
+                            new Errors().put("options",
+                                    new Errors().put("collectionId",
+                                            newError(
+                                                    "validation_field_invalid_relation",
+                                                    "The relation collection doesn't exist."
+                                            )
+                                    )
+                            ));
+                    return errors;
+                }
+
+                if (!this.type.equals(View) && relCollection.isView()) {
+                    errors.put(String.valueOf(i),
+                            new Errors().put("options",
+                                    new Errors().put("collectionId",
+                                            newError(
+                                                    "validation_field_non_view_base_relation_collection",
+                                                    "Non view collections are not allowed to have a view relation."
+                                            )
+                                    )
+                            ));
+                    return errors;
+                }
+            }
+
+            return null;
+        };
+    }
+
+    private RuleFunc ensureNoAuthFieldName() {
+        return value -> {
+            var errors = new Errors();
+            Schema v = (Schema) value;
+            if (!Objects.equals(this.type, Auth)) {
+                return null;  // not an auth collection
+            }
+
+            List<String> authFieldNameList = new ArrayList<>(Arrays.asList(authFieldNames));
+            // exclude the meta RecordUpsert form fields
+            authFieldNameList.add("password");
+            authFieldNameList.add("passwordConfirm");
+            authFieldNameList.add("oldPassword");
+
+            List<SchemaField> fields = v.getFields();
+            for (int i = 0; i < fields.size(); i++) {
+                if (CollUtil.contains(authFieldNameList, fields.get(i).getName())) {
+                    errors.put(String.valueOf(i), newError("validation_reserved_auth_field_name", "The field name is reserved and cannot be used."));
+                }
+            }
+            return errors;
+        };
+    }
+
+
+    private RuleFunc ensureNoSystemFlagChange(boolean isNew) {
+        return value -> {
+            if (!isNew && (Boolean) value != this.getCollection().isSystem()) {
+                return newError("validation_collection_system_flag_change", "System collection state cannot be changed.");
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc ensureNoTypeChange(boolean isNew) {
+        return value -> {
+            if (!isNew && !Objects.equals(value, this.collection.getType())) {
+                return newError("validation_collection_type_change", "Collection type cannot be changed.");
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc ensureNoSystemNameChange(boolean isNew) {
+        return value -> {
+            if (!isNew && this.collection.isSystem() && Objects.equals(value, this.collection.getName())) {
+                return newError("validation_collection_system_name_change", "System collections cannot be renamed.");
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc checkMinSchemaFields() {
+        return value -> {
+            switch (this.type) {
+                case Auth:
+                case View:
+                    return null;
+                default:
+                    if (this.getSchema().getFields().size() == 0) {
+                        return RequiredRule.ErrRequired;
+                    }
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc checkForVia() {
+        return value -> {
+            if (Objects.equals("", this.name)) {
+                return null;
+            }
+            if (StrUtil.contains(((String) value).toLowerCase(), "_via_")) {
+                return newError("validation_invalid_name", "The name of the collection cannot contain '_via_'.");
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc ensureNoSystemFieldsChange() {
+        return value -> {
+            for (SchemaField oldField : this.collection.getSchema().getFields()) {
+                if (!oldField.isSystem()) {
+                    continue;
+                }
+
+                SchemaField newField = ((Schema) value).getFieldById(oldField.getId());
+                if (null == newField || !Objects.equals(oldField, newField)) {
+                    return newError("validation_system_field_change", "System fields cannot be deleted or changed.");
+                }
+            }
+            return null;
+        };
+    }
+
+    private RuleFunc ensureNoFieldsTypeChange() {
+        return value -> {
+            var errors = new Errors();
+            List<SchemaField> fields = ((Schema) value).getFields();
+            for (int i = 0; i < fields.size(); i++) {
+                SchemaField oldField = this.collection.getSchema().getFieldById(fields.get(i).getId());
+                if (null != oldField && !Objects.equals(oldField.getType(), fields.get(i).getType())) {
+                    errors.put(String.valueOf(i), newError("validation_field_type_change", "Field type cannot be changed."));
+                }
+            }
+
+            return errors;
+        };
+    }
+
+    private RuleFunc checkIndexes() {
+        return value -> {
+            List<String> indexs = (List<String>) value;
+            if (Objects.equals(this.type, View) && indexs.size() > 0) {
+                return newError("validation_indexes_not_supported",
+                        "The collection doesn't support indexes.");
+            }
+
+            var errors = new Errors();
+            for (int i = 0; i < indexs.size(); i++) {
+                Index parsed = Index.parseIndex(indexs.get(i));
+                if (!parsed.isValid()) {
+                    errors.put(String.valueOf(i), newError("validation_invalid_index_expression",
+                            "Invalid CREATE INDEX expression."));
+                }
+                return errors;
+            }
+            return null;
+        };
+    }
+
+
+    private RuleFunc checkOptions() {
+        return value -> {
+
+            switch (this.type) {
+                case Auth -> {
+                    String raw = jsonTemplate.toJsonString(this.options);
+
+                    // decode into the provided result
+                    CollectionAuthOptions authOptions = jsonTemplate.parseJsonToObject(raw, CollectionAuthOptions.class);
+
+                    // check the generic validations
+                    Errors err = authOptions.validate();
+                    if (null != err) {
+                        return err;
+                    }
+
+                    // additional form specific validations
+                    Err error = this.checkRule().apply(authOptions.getManageRule());
+                    if (null != error) {
+                        return error;
+                    }
+                }
+                case View -> {
+                    String raw = jsonTemplate.toJsonString(this.options);
+                    CollectionViewOptions viewOptions = jsonTemplate.parseJsonToObject(raw, CollectionViewOptions.class);
+
+                    // check the generic validations
+                    Errors err = viewOptions.validate();
+                    if (null != err) {
+                        return err;
+                    }
+
+                    // check the query option
+                    try {
+                        mapper.createViewSchema(viewOptions.getQuery());
+                    } catch (Exception e) {
+                        return newError("validation_invalid_view_query", String.format("Invalid query - %s", e.getMessage()));
+                    }
+                }
+            }
+
+            return null;
+        };
+    }
+
+    private RuleFunc checkRule() {
+        return value -> {
+            if (StrUtil.isEmpty((CharSequence) value)) {
+                return null; // nothing to check
+            }
+
+            /**
+             * dummy := *form.collection 这行代码将form结构体中的collection字段的值复制给dummy变量。由于form.collection是一个指针，因此*form.collection表示对collection字段指针的解引用，即获取指针指向的实际值。
+             * 	dummy.Type = form.Type
+             * 	dummy.Schema = form.Schema
+             * 	dummy.System = form.System
+             * 	dummy.Options = form.Options
+             *
+             */
+            CollectionModel dummy = new CollectionModel();
+            dummy.setName(this.collection.getName()); //复制
+
+            dummy.setType(this.type);
+            dummy.setSchema(this.schema);
+            dummy.setSystem(this.system);
+            dummy.setOptions(this.options);
+            try {
+                RecordFieldResolver resolver = new RecordFieldResolver(idOrName -> Optional.of(mapper.findCollectionByNameOrId(idOrName)), dummy, null, true);
+                new SearchFilter((String) value).buildExpr(resolver);
+            } catch (Exception e) {
+                return newError("validation_invalid_rule", "Invalid filter rule. Raw error: " + e.getMessage());
+            }
+            return null;
+        };
+    }
+
 }

@@ -23,7 +23,7 @@ public class CollectionModel extends BaseModel implements Model {
     private String type;
     private boolean system;
 
-    private Schema schema = new Schema();
+    private Schema schema = Schema.newSchema();
 
     private List<String> indexes;
 
@@ -78,7 +78,7 @@ public class CollectionModel extends BaseModel implements Model {
 
         PbJsonTemplate pbJsonTemplate = PbManager.getPbJsonTemplate();
 
-        String raw =  pbJsonTemplate.toJsonString(options);
+        String raw = pbJsonTemplate.toJsonString(options);
 
         return pbJsonTemplate.parseJsonToObject(raw, clazz);
 

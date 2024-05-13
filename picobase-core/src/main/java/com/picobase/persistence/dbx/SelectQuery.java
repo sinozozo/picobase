@@ -1,14 +1,18 @@
 package com.picobase.persistence.dbx;
 
 import cn.hutool.core.util.StrUtil;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.repository.PbRowMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.picobase.persistence.dbx.Expression.and;
-import static com.picobase.persistence.dbx.Expression.or;
+import static com.picobase.persistence.dbx.expression.Expression.and;
+import static com.picobase.persistence.dbx.expression.Expression.or;
 
 
 public class SelectQuery implements Cloneable {
@@ -200,6 +204,7 @@ public class SelectQuery implements Cloneable {
         return this.build().row();
     }
 
+    @Deprecated
     public <T> List<T> all(Class<T> clazz) {
         if (this.from.size() == 0) {
             //TODO 这里通过反射获取表名

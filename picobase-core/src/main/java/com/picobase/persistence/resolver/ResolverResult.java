@@ -1,7 +1,7 @@
 package com.picobase.persistence.resolver;
 
 
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class ResolverResult {
         return afterBuild;
     }
 
-    public static ResolverResultBuilder builder(){
+    public static ResolverResultBuilder builder() {
         return new ResolverResultBuilder();
     }
 
@@ -91,7 +91,7 @@ public class ResolverResult {
             return this;
         }
 
-        public ResolverResult build(){
+        public ResolverResult build() {
             return new ResolverResult(identifier, noCoalesce, params, multiMatchSubQuery, afterBuild);
         }
     }

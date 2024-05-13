@@ -16,7 +16,7 @@ public abstract class SchemaMixIn {
      * 这里mixin到Schema中，让schema的json中直接输出fields数组内容，而不是直接输出fields对象
      */
 
-    @JsonValue
+    @JsonValue // 直接作为 Schema 对象的 json 值输出
     public abstract List<SchemaField> getFields();
 
 }

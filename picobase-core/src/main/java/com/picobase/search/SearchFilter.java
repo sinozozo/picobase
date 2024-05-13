@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.picobase.PbManager;
 import com.picobase.model.Store;
 import com.picobase.persistence.dbx.ConcatExpr;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.fexpr.*;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.persistence.resolver.ResolverResult;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.picobase.persistence.dbx.Expression.and;
+import static com.picobase.persistence.dbx.expression.Expression.and;
 import static com.picobase.persistence.fexpr.SignOp.SignEq;
 
 public class SearchFilter {
@@ -65,9 +65,9 @@ public class SearchFilter {
                     }
 
                 } else { // 处理 list map 类型
-                        //replacement = objectMapper.writeValueAsString(entry.getValue());
-                        replacement = StringEscapeUtils.escapeJson(PbManager.getPbJsonTemplate().toJsonString(entry.getValue()));
-                        replacement = "'" + replacement + "'";
+                    //replacement = objectMapper.writeValueAsString(entry.getValue());
+                    replacement = StringEscapeUtils.escapeJson(PbManager.getPbJsonTemplate().toJsonString(entry.getValue()));
+                    replacement = "'" + replacement + "'";
                 }
 
                 // 使用正则表达式匹配整个键名

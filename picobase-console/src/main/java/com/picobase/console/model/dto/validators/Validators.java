@@ -2,7 +2,7 @@ package com.picobase.console.model.dto.validators;
 
 
 import com.picobase.PbUtil;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.validator.RuleFunc;
 
 import java.util.Map;

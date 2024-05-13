@@ -9,19 +9,13 @@ import com.picobase.console.error.NotFoundException;
 import com.picobase.console.event.*;
 import com.picobase.console.interceptor.InterceptorFunc;
 import com.picobase.console.interceptor.Interceptors;
-import com.picobase.console.mapper.AdminMapper;
 import com.picobase.console.model.dto.AdminLogin;
 import com.picobase.console.model.dto.AdminLoginResult;
 import com.picobase.console.model.dto.AdminUpsert;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.AdminModel;
-import com.picobase.persistence.dbx.Expression;
-import com.picobase.persistence.dbx.SelectQuery;
-import com.picobase.persistence.mapper.PbMapperManager;
-import com.picobase.persistence.model.MapperContext;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
-import com.picobase.search.PbProvider;
 import com.picobase.secure.BCrypt;
 import com.picobase.util.CommonHelper;
 import com.picobase.validator.Errors;
@@ -30,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.picobase.persistence.dbx.Expression.newExpr;
+import static com.picobase.persistence.dbx.expression.Expression.newExpr;
 
 @RestController
 @RequestMapping("/api/admins")
@@ -45,16 +39,16 @@ public class AdminController {
          *  定义  admin 登录拦截器
          */
         InterceptorFunc<AdminModel, AdminLoginResult> interceptorFunc1 = next -> adminModel -> {
-            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(),adminModel,TimePosition.BEFORE));
+            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(), adminModel, TimePosition.BEFORE));
 
             //执行登录
             var r = next.run(adminModel);
 
             // 发送 TimePosition.AFTER 的 AdminAuthWithPasswordEvent 事件
-            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(),adminModel,TimePosition.AFTER));
+            PbUtil.post(new AdminAuthWithPasswordEvent(form.getIdentity(), form.getPassword(), adminModel, TimePosition.AFTER));
 
             // 发送 AdminAuthRequestEvent 事件
-            PbUtil.post(new AdminAuthRequestEvent(r.getToken(),adminModel));
+            PbUtil.post(new AdminAuthRequestEvent(r.getToken(), adminModel));
             return r;
         };
 
@@ -152,11 +146,11 @@ public class AdminController {
             throw new NotFoundException();
         }
 
-        PbUtil.post(new AdminDeleteEvent(admin,TimePosition.BEFORE));
+        PbUtil.post(new AdminDeleteEvent(admin, TimePosition.BEFORE));
 
         PbUtil.deleteById(id, AdminModel.class);
 
-        PbUtil.post(new AdminDeleteEvent(admin,TimePosition.AFTER));
+        PbUtil.post(new AdminDeleteEvent(admin, TimePosition.AFTER));
 
     }
 
@@ -169,19 +163,19 @@ public class AdminController {
 
         InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
 
-            PbUtil.post(new AdminCreateEvent(adminModel,TimePosition.BEFORE));
+            PbUtil.post(new AdminCreateEvent(adminModel, TimePosition.BEFORE));
 
             AdminModel model = next.run(adminModel);
 
             //后置拦截
             //更换为数据库save后的 model
-            PbUtil.post(new AdminCreateEvent(model,TimePosition.AFTER));
+            PbUtil.post(new AdminCreateEvent(model, TimePosition.AFTER));
             return model;
         };
 
         AdminUpsert form = adminUpsertOptional.get();
         Errors errors = form.validate(null);
-        if(errors!=null){
+        if (errors != null) {
             throw new BadRequestException(errors);
         }
 
@@ -195,7 +189,7 @@ public class AdminController {
 
 
         return Interceptors.run(admin, (adminModel) -> {
-            PbUtil.insert(adminModel);
+            PbUtil.save(adminModel);
             return adminModel;
         }, interceptorFunc1);
     }
@@ -215,20 +209,20 @@ public class AdminController {
 
         InterceptorFunc<AdminModel, AdminModel> interceptorFunc1 = next -> adminModel -> {
             //前置拦截
-            PbUtil.post(new AdminUpdateEvent(adminModel,TimePosition.BEFORE));
+            PbUtil.post(new AdminUpdateEvent(adminModel, TimePosition.BEFORE));
 
             AdminModel model = next.run(adminModel);
 
             //后置拦截
             //更换为数据库 update 后的 model
-            PbUtil.post(new AdminUpdateEvent(model,TimePosition.AFTER));
+            PbUtil.post(new AdminUpdateEvent(model, TimePosition.AFTER));
             return model;
         };
 
         AdminUpsert form = adminUpsertOptional.get();
 
         Errors errors = form.validate(originalAdmin);
-        if(errors!=null){
+        if (errors != null) {
             throw new BadRequestException(errors);
         }
 
@@ -239,7 +233,7 @@ public class AdminController {
         originalAdmin.refreshUpdated();
 
         return Interceptors.run(originalAdmin, (adminModel) -> {
-            PbUtil.updateById(adminModel.getId(),adminModel);
+            PbUtil.updateById(adminModel.getId(), adminModel);
             return adminModel;
         }, interceptorFunc1);
 

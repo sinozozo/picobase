@@ -1,10 +1,7 @@
 package com.picobase.spring.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import com.picobase.error.PbSpringBootErrorCode;
 import com.picobase.exception.PbJsonConvertException;
@@ -21,9 +18,6 @@ public class PbJsonTemplateForJacksonTurbo implements PbJsonTemplate {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public PbJsonTemplateForJacksonTurbo() {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         objectMapper.registerModule(new AfterburnerModule());
     }
 

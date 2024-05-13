@@ -1,6 +1,8 @@
 package com.picobase.persistence.dbx;
 
 
+import com.picobase.persistence.dbx.expression.Expression;
+
 public class JoinInfo {
     private final String join;
     private final String table;

@@ -8,7 +8,7 @@ import com.picobase.model.CollectionModel;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.util.PbConstants;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import static com.picobase.persistence.dbx.DbxUtil.columnify;
 import static com.picobase.persistence.dbx.DbxUtil.splitModifier;
-import static com.picobase.persistence.dbx.Expression.newExpr;
+import static com.picobase.persistence.dbx.expression.Expression.newExpr;
 import static com.picobase.persistence.resolver.DbUtil.hasSingleColumnUniqueIndex;
 import static com.picobase.persistence.resolver.ListUtil.existInArray;
 import static com.picobase.persistence.resolver.ListUtil.existInListWithRegex;

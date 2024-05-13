@@ -1,7 +1,7 @@
 package com.picobase.persistence.resolver;
 
 
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 
 public class Join {
     private final String tableName;

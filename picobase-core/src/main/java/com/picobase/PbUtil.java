@@ -8,11 +8,10 @@ import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbTokenInfo;
-import com.picobase.persistence.dbx.Expression;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.mapper.PbMapper;
-import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.search.PbProvider;
@@ -20,7 +19,6 @@ import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;
 import com.picobase.validator.Validation;
 
-import javax.management.Query;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,6 +27,7 @@ import java.util.Optional;
  */
 public final class PbUtil {
     private static final PbLog log = PbManager.getLog();
+
     private PbUtil() {
     }
 
@@ -107,32 +106,33 @@ public final class PbUtil {
     }
 
     /**
-     *  将 request 数据(path params, query params and the request body)绑定到对象上 （支持提交的数据格式为 form 或 json）
-     *  注意: 因为底层引用均为原始 HttpServletRequest， 针对请求体 Body 的绑定只支持一次绑定， 不支持多次绑定，
-     *    如需多次读取Body体， 需自行持有PbRequest 对象,并调用 getCachedContent 方法
+     * 将 request 数据(path params, query params and the request body)绑定到对象上 （支持提交的数据格式为 form 或 json）
+     * 注意: 因为底层引用均为原始 HttpServletRequest， 针对请求体 Body 的绑定只支持一次绑定， 不支持多次绑定，
+     * 如需多次读取Body体， 需自行持有PbRequest 对象,并调用 getCachedContent 方法
      *
+     * @param dto 待进行数据绑定的对象
      * @see PbHolder#getRequest()
-     *  @see com.picobase.context.model.PbRequest#getCachedContent
-     *  @param dto 待进行数据绑定的对象
+     * @see com.picobase.context.model.PbRequest#getCachedContent
      */
-    public static <T> Optional<T> createObjFromRequest(Class<T> dto){
+    public static <T> Optional<T> createObjFromRequest(Class<T> dto) {
         Optional<T> result = PbManager.getPbContext().createObjFromRequest(dto);
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             log.debug("bindRequest: {}", result.get());
         }
-        return  result;
+        return result;
     }
 
 
-    public static void bindRequestTo(Object obj){
+    public static void bindRequestTo(Object obj) {
         PbManager.getPbContext().bindRequestTo(obj);
     }
 
     /**
      * post 事件
+     *
      * @param event
      */
-    public static void post(PbEvent event){
+    public static void post(PbEvent event) {
         PbManager.getPbEventBus().post(event);
     }
 
@@ -142,103 +142,106 @@ public final class PbUtil {
      * @param eventType 事件class
      * @param receiver  事件接收器
      */
-    public static void registerEventReceiver(Class<? extends PbEvent> eventType, IEventReceiver receiver){
-        PbManager.getPbEventBus().registerEventReceiver(eventType,receiver);
+    public static void registerEventReceiver(Class<? extends PbEvent> eventType, IEventReceiver receiver) {
+        PbManager.getPbEventBus().registerEventReceiver(eventType, receiver);
     }
 
     /**
      * Pb线程池异步执行任务
+     *
      * @param runnable
      */
-    public static void asyncExecute(Runnable runnable){
+    public static void asyncExecute(Runnable runnable) {
         PbManager.getPbEventBus().asyncExecute(runnable);
     }
 
     /**
      * Pb线程池异步执行任务
-     * @param executorHash 指定特定线程执行
-     * @param runnable 任务
      *
+     * @param executorHash 指定特定线程执行
+     * @param runnable     任务
      */
-    public static void asyncExecute(int executorHash, Runnable runnable){
+    public static void asyncExecute(int executorHash, Runnable runnable) {
         PbManager.getPbEventBus().asyncExecute(executorHash, runnable);
     }
 
     /**
      * 提供 sql 构建和执行的能力
+     *
      * @return PbDbxBuilder
      */
-    public static PbDbxBuilder getPbDbxBuilder(){
+    public static PbDbxBuilder getPbDbxBuilder() {
         return PbManager.getPbDbxBuilder();
     }
 
     /**
      * 获取 mapper
+     *
      * @param clazz mapper 对应的 model class
+     * @param <R>   Mapper
+     * @param <T>   Model
      * @return mapper
-     * @param <R> Mapper
-     * @param <T> Model
      */
-    public static <R,T> R findMapper(Class<T> clazz) {
+    public static <R, T> R findMapper(Class<T> clazz) {
         return PbManager.getPbMapperManager().findMapper(clazz);
     }
 
-    public static <T> Page<T> query(FieldResolver resolver, SelectQuery query, Class<T> model){
+    public static <T> Page<T> query(FieldResolver resolver, SelectQuery query, Class<T> model) {
         return new PbProvider(resolver).query(query).parseAndExec(model);
     }
 
-    public static <T> Page<T> query( SelectQuery query, Class<T> model){
+    public static <T> Page<T> query(SelectQuery query, Class<T> model) {
         return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
     }
 
-    public static <T> Page<T> query(Class<T> model){
+    public static <T> Page<T> query(Class<T> model) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
-            throw new PbException("{} 未实现modelQuery方法",model.getSimpleName());
+            throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
         }
         return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
     }
 
-    public static <T> Page<T> query(FieldResolver resolver,Class<T> model){
+    public static <T> Page<T> query(FieldResolver resolver, Class<T> model) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
-            throw new PbException("{} 未实现modelQuery方法",model.getSimpleName());
+            throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
         }
         return query(resolver, query, model);
     }
 
-    public static int update(Object data, Expression where){
+    public static int update(Object data, Expression where) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
         return mapper.update(data, where).execute();
     }
 
 
-
-    public static int updateById(Object id,Object data){
-        return update(data,Expression.newExpr("id=:id", Map.of("id", id)));
+    public static int updateById(Object id, Object data) {
+        return update(data, Expression.newExpr("id=:id", Map.of("id", id)));
     }
 
-    public static int delete(Class c,Expression where){
+    public static int delete(Class c, Expression where) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
         return mapper.delete(where).execute();
     }
 
-    public static int deleteById(Object id ,Class model){
-        return delete(model,Expression.newExpr("id=:id", Map.of("id", id)));
+    public static int deleteById(Object id, Class model) {
+        return delete(model, Expression.newExpr("id=:id", Map.of("id", id)));
     }
 
-    public static int insert(Object data){
+    public static int save(Object data) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
         return mapper.insert(data).execute();
     }
 
-    public static <T> T findOne(Class<T> c,Expression where){
+    public static <T> T findOne(Class<T> c, Expression where) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
         return mapper.findBy(where).one(c);
     }
-    public static <T> T findById(Class<T> c,Object id ){
+
+    public static <T> T findById(Class<T> c, Object id) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
         return mapper.findBy(Expression.newExpr("id=:id", Map.of("id", id))).one(c);
     }

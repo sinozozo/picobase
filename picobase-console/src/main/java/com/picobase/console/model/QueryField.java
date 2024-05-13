@@ -1,13 +1,9 @@
-package com.picobase.pocket.model;
+package com.picobase.console.model;
 
-import com.picobase.pocket.model.schema.SchemaField;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+import com.picobase.model.CollectionModel;
+import com.picobase.model.schema.SchemaField;
+
 public class QueryField {
 
     // field is the final resolved field.
@@ -21,4 +17,30 @@ public class QueryField {
     // It could be nil if the found query field is not from a collection schema.
     private SchemaField original;
 
+    public SchemaField getField() {
+        return field;
+    }
+
+    public QueryField setField(SchemaField field) {
+        this.field = field;
+        return this;
+    }
+
+    public CollectionModel getCollection() {
+        return collection;
+    }
+
+    public QueryField setCollection(CollectionModel collection) {
+        this.collection = collection;
+        return this;
+    }
+
+    public SchemaField getOriginal() {
+        return original;
+    }
+
+    public QueryField setOriginal(SchemaField original) {
+        this.original = original;
+        return this;
+    }
 }

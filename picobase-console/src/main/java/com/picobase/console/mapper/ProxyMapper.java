@@ -2,9 +2,7 @@ package com.picobase.console.mapper;
 
 import com.picobase.PbManager;
 import com.picobase.log.PbLog;
-import com.picobase.model.AdminModel;
 import com.picobase.persistence.dbx.SelectQuery;
-import com.picobase.persistence.mapper.MapperProxy;
 import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.model.MapperResult;
 import org.springframework.cglib.proxy.Enhancer;
@@ -12,9 +10,6 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,19 +35,21 @@ public class ProxyMapper implements MethodInterceptor {
 
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-        Object invoke = methodProxy.invokeSuper(o,objects);
+        Object invoke = methodProxy.invokeSuper(o, objects);
 
         String className = o.getClass().getSimpleName();
         String methodName = method.getName();
         String sql;
         if (invoke instanceof MapperResult mr) {
             sql = mr.getSql();
+            LOGGER.debug("[{}] METHOD : {}, SQL : {}, ARGS : {}", className, methodName, sql, PbManager.getPbJsonTemplate().toJsonString(objects));
         } else if (invoke instanceof SelectQuery sq) {
             sql = sq.build().getSql();
+            LOGGER.debug("[{}] METHOD : {}, SQL : {}, ARGS : {}", className, methodName, sql, PbManager.getPbJsonTemplate().toJsonString(objects));
         } else {
-            sql = invoke.toString();
+            String result = String.valueOf(invoke);
+            LOGGER.debug("[{}] METHOD : {}, return : {}, ARGS : {}", className, methodName, result, PbManager.getPbJsonTemplate().toJsonString(objects));
         }
-        LOGGER.info("[{}] METHOD : {}, SQL : {}, ARGS : {}", className, methodName, sql, PbManager.getPbJsonTemplate().toJsonString(objects));
         return invoke;
     }
 }

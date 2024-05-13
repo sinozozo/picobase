@@ -1,6 +1,7 @@
 package com.picobase.persistence.dbx;
 
 import cn.hutool.core.util.StrUtil;
+import com.picobase.persistence.dbx.expression.Expression;
 
 import java.util.ArrayList;
 import java.util.List;

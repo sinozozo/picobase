@@ -1,9 +1,11 @@
 package com.picobase.console.web;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import com.picobase.PbManager;
 import com.picobase.console.error.BadRequestException;
 import com.picobase.console.model.dto.FailureResult;
 import com.picobase.exception.PbException;
-import com.picobase.validator.ErrObject;
+import com.picobase.validator.Err;
 import com.picobase.validator.Errors;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -54,7 +56,9 @@ public class PbConsoleExceptionHandler {
     }
 
 
-    *//**
+    */
+
+    /**
      * 处 理 单 个 参 数 校 验 失 败 抛 出 的 异 常
      *//*
     @ExceptionHandler(ConstraintViolationException.class)
@@ -63,33 +67,37 @@ public class PbConsoleExceptionHandler {
         List<String> collect = constraintViolations.stream().map(o -> o.getMessage()).collect(Collectors.toList());
         return new FailureResult(400, "Bad Request", collect);
     }*/
-
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity badRequestException(BadRequestException e) {
-        Map<String, Map<String, Object>> errors = new HashMap<>();
+        Map<String, Object> errors = null;
         if (null != e.getErrors()) {
-            e.getErrors().forEach((fieldName, errorObject) -> {
-                Map<String, Object> error = new HashMap<>();
-                if (errorObject instanceof Errors errs) {
-                    errs.forEach((k, v) -> {
-                        ErrObject err = (ErrObject) v;
-                        error.put(k, Map.of("code", err.code(), "message", err.error()));
-                    });
-                }
-
-                if (errorObject instanceof ErrObject err) {
-                    error.put("code", err.code());
-                    error.put("message", err.error());
-                }
-                errors.put(fieldName, error);
-            });
+            errors = buildResponseStruct(e.getErrors());
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new FailureResult().setCode(HttpStatus.BAD_REQUEST.value()).setMessage(e.getMessage()).setData(errors));
     }
 
+
+    private static Map<String, Object> buildResponseStruct(Errors errors) {
+        Map<String, Object> result = new HashMap<>();
+
+        Map<String, Err> errorMap = errors.getErrorMap();
+
+        errorMap.forEach((fieldName, value) -> {
+            if (value instanceof Errors v) {
+                result.put(fieldName, buildResponseStruct(v));
+            } else {
+                // ErrorObject
+                result.put(fieldName, value);
+            }
+        });
+        return result;
+    }
+
     @ExceptionHandler(PbException.class)
     public ResponseEntity pbException(PbException e) {
+        PbManager.getLog().error("PbException: {}", ExceptionUtil.getRootCause(e));
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new FailureResult().setCode(HttpStatus.BAD_REQUEST.value()).setMessage(e.getMessage()).setData(""));
     }
 /*

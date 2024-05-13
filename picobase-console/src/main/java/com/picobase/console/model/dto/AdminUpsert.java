@@ -1,7 +1,6 @@
 package com.picobase.console.model.dto;
 
 import cn.hutool.core.util.StrUtil;
-import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.console.mapper.AdminMapper;
 import com.picobase.model.AdminModel;
@@ -83,7 +82,7 @@ public class AdminUpsert {
                 field("id", this.id,
                         when(isCreate,
                                 length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH),
-                                match(ID_REGEX_Pattern),
+                                match(ID_REGEX_P),
                                 by(uniqueId(TableName.ADMIN))
                         )
                 ),
@@ -93,17 +92,17 @@ public class AdminUpsert {
                         when(isCreate, required, length(10, 72))),
                 field("passwordConfirm", this.passwordConfirm,
                         when(StrUtil.isNotEmpty(this.password), required),
-                                by(passwordMatch()))
+                        by(passwordMatch()))
 
-                );
+        );
     }
 
     /**
      * 密码校验
      */
     private RuleFunc passwordMatch() {
-        return passwordConfirm->{
-            if(StrUtil.isEmpty(this.password)){
+        return passwordConfirm -> {
+            if (StrUtil.isEmpty(this.password)) {
                 return null;
             }
             return this.password.equals(passwordConfirm) ? null : newError("validation_values_mismatch", "Values don't match.");
@@ -111,7 +110,8 @@ public class AdminUpsert {
     }
 
     /**
-     *  邮箱唯一性校验
+     * 邮箱唯一性校验
+     *
      * @return 校验函数
      */
     private RuleFunc isAdminEmailUnique(String originalId) {

@@ -1,6 +1,7 @@
 package com.picobase.persistence.dbx;
 
 
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.repository.PbDatabaseOperate;
 
 import java.util.Map;
@@ -26,10 +27,10 @@ public interface PbDbxBuilder {
     Query insert(String table, Map<String, Object> dataMap);
 
     /**
-     *  Update creates a Query that represents an UPDATE SQL statement.
-     * 	The keys of cols are the column names, while the values of cols are the corresponding new column
-     * 	values. If the "where" expression is nil, the UPDATE SQL statement will have no WHERE clause
-     * 	(be careful in this case as the SQL statement will update ALL rows in the table).
+     * Update creates a Query that represents an UPDATE SQL statement.
+     * The keys of cols are the column names, while the values of cols are the corresponding new column
+     * values. If the "where" expression is nil, the UPDATE SQL statement will have no WHERE clause
+     * (be careful in this case as the SQL statement will update ALL rows in the table).
      */
     Query update(String table, Map<String, Object> dataMap, Expression where);
 

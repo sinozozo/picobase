@@ -1,2 +1,12 @@
-package com.picobase.console.event;public class CollectionViewEvent {
+package com.picobase.console.event;
+
+import com.picobase.event.PbEvent;
+import com.picobase.model.CollectionModel;
+
+public class CollectionViewEvent implements PbEvent {
+    public CollectionModel collection;
+
+    public CollectionViewEvent(CollectionModel collection) {
+        this.collection = collection;
+    }
 }

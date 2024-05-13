@@ -7,7 +7,6 @@ import static com.picobase.util.PbConstants.FieldName.*;
 public final class PbConstants {
 
 
-
     /**
      * 数据库中 id 的默认长度
      */
@@ -15,7 +14,8 @@ public final class PbConstants {
 
     public static final String ID_REGEX = "^[^\\@\\#\\$\\&\\|\\.\\,\\'\\\"\\\\\\/\\s]+$";
 
-    public static final Pattern ID_REGEX_Pattern = Pattern.compile(ID_REGEX);
+    public static final Pattern ID_REGEX_P = Pattern.compile(ID_REGEX);
+    public static final Pattern COLLECTION_NAME_P = Pattern.compile("^[a-zA-Z0-9][a-zA-Z0-9_]*$");
 
     /**
      * 切面、拦截器、过滤器等各种组件的注册优先级顺序
@@ -181,11 +181,12 @@ public final class PbConstants {
     public static final Pattern ThumbSizeRegex = Pattern.compile("^(\\d+)x(\\d+)(t|b|f)?$");
 
 
-    public static class TableName{
+    public static class TableName {
         public static final String ADMIN = "pb_admin";
         public static final String COLLECTION = "pb_collection";
 
     }
+
     public static final String FIELD_VALUE_MODIFIER_ADD = "+";
     public static final String FIELD_VALUE_MODIFIER_SUBTRACT = "-";
 
@@ -195,12 +196,13 @@ public final class PbConstants {
 
     public static final String DefaultDateLayout = "yyyy-MM-dd HH:mm:ss";
 
-    public static class CollectionType{
+    public static class CollectionType {
         public static final String Base = "base";
         public static final String Auth = "auth";
         public static final String View = "view";
     }
-    public static class FieldType{
+
+    public static class FieldType {
         // All valid field types;
         public static final String Text = "text";
         public static final String Number = "number";
@@ -215,8 +217,8 @@ public final class PbConstants {
         public static final String Relation = "relation";
     }
 
-    
-    public static class FieldName{
+
+    public static class FieldName {
         // commonly used field names
         public static final String Id = "id";
         public static final String Created = "created";

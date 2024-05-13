@@ -9,6 +9,12 @@ public class JsonOptions implements FieldOptions {
 
     private int maxSize;
 
+    public JsonOptions(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public JsonOptions() {
+    }
 
     @Override
     public Errors validate() {

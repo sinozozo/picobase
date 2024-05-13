@@ -1,6 +1,7 @@
 package com.picobase.spring;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.convert.Convert;
 import com.picobase.PbManager;
 import com.picobase.context.PbContext;
@@ -22,8 +23,6 @@ import static org.springframework.http.MediaType.*;
  * 上下文处理器 [ SpringMVC版本实现 ]。在 SpringMVC、SpringBoot 中使用 Picobase 时，必须注入此实现类，否则会出现上下文无效异常
  */
 public class PbContextForSpring implements PbContext {
-
-
 
 
     /**
@@ -88,12 +87,12 @@ public class PbContextForSpring implements PbContext {
         }
 
         //从 http body 中处理请求数据 进行绑定。
-        if(shouldBindRequestBody(request)) {
-            if(isJsonContentType(request)) {
+        if (shouldBindRequestBody(request)) {
+            if (isJsonContentType(request)) {
                 //json data
                 String json = new String(request.getCachedContent());
                 return Optional.of(PbManager.getPbJsonTemplate().parseJsonToObject(json, dto));
-            }else{
+            } else {
                 // form data
                 if (dto == Map.class) {
                     Map map = new HashMap();
@@ -117,17 +116,17 @@ public class PbContextForSpring implements PbContext {
             if (obj instanceof Map map) {
                 map.putAll(request.getParamMap());
             }
-             requestToObject(request, obj);
+            requestToObject(request, obj);
         }
 
         //从 http body 中处理请求数据 进行绑定。
-        if(shouldBindRequestBody(request)) {
-            if(isJsonContentType(request)) {
+        if (shouldBindRequestBody(request)) {
+            if (isJsonContentType(request)) {
                 //json data
                 String json = new String(request.getCachedContent());
                 Object source = PbManager.getPbJsonTemplate().parseJsonToObject(json, obj.getClass());
-                BeanUtil.copyProperties(source,obj);
-            }else{
+                BeanUtil.copyProperties(source, obj, CopyOptions.create().setIgnoreNullValue(true));
+            } else {
                 // form data
                 if (obj instanceof Map map) {
                     map.putAll(request.getParamMap());
@@ -159,7 +158,7 @@ public class PbContextForSpring implements PbContext {
      * @param <T>
      * @return
      */
-    private  <T> Optional<T> requestToObject(PbRequest request, Class<T> clazz) {
+    private <T> Optional<T> requestToObject(PbRequest request, Class<T> clazz) {
         if (clazz == null) {
             return Optional.empty();
         }
@@ -177,7 +176,7 @@ public class PbContextForSpring implements PbContext {
         }
     }
 
-    private  <T> void bindFieldValue(Map<String, String[]> map, T instance, Field[] fields) throws IllegalAccessException {
+    private <T> void bindFieldValue(Map<String, String[]> map, T instance, Field[] fields) throws IllegalAccessException {
         for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers())) {
                 continue;
@@ -207,7 +206,7 @@ public class PbContextForSpring implements PbContext {
         }
     }
 
-    private  void requestToObject(PbRequest request, Object target) {
+    private void requestToObject(PbRequest request, Object target) {
         try {
             Map<String, String[]> map = request.getParamMap();
 
@@ -228,13 +227,13 @@ public class PbContextForSpring implements PbContext {
      * @param actualGenericType 实际的泛型信息 ， 不包含泛型信息则直接转换
      * @return
      */
-    private  Object convertToType(String[] values, Class<?> type, Type actualGenericType) {
+    private Object convertToType(String[] values, Class<?> type, Type actualGenericType) {
 
         if (!type.isArray() && !Collection.class.isAssignableFrom(type)) {
             //基本类型
-            return Convert.convert(type,values[0]);
+            return Convert.convert(type, values[0]);
 
-        }else if (type == List.class) {
+        } else if (type == List.class) {
             List<Object> list = new ArrayList<>();
             if (actualGenericType != null) {
                 for (String value : values) {
@@ -261,8 +260,8 @@ public class PbContextForSpring implements PbContext {
                 Object intValue = convertToType(new String[]{values[i]}, componentType, null);
                 // 安全地将Integer[]数组的值复制到int[]数组中
                 if (componentType.isPrimitive()) {
-                    Array.set(array, i, intValue==null?0:intValue);
-                }else{
+                    Array.set(array, i, intValue == null ? 0 : intValue);
+                } else {
                     Array.set(array, i, intValue);
                 }
             }
@@ -274,4 +273,8 @@ public class PbContextForSpring implements PbContext {
     }
 
 
+    public static void main(String[] args) {
+
+
+    }
 }

@@ -12,10 +12,10 @@ import java.util.List;
 
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_ADD;
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_SUBTRACT;
+import static com.picobase.util.PbConstants.FieldType.Number;
 import static com.picobase.util.PbConstants.FieldType.*;
 
 
-//@JsonIgnoreProperties("unique") // 这个字段后期会被废弃，数据库反序列化时暂且忽略否则报错
 public class SchemaField {
 
     private boolean system;
@@ -36,6 +36,7 @@ public class SchemaField {
     public SchemaField() {
 
     }
+
     public SchemaField(String name, String type) {
         this.name = name;
         this.type = type;
@@ -83,7 +84,7 @@ public class SchemaField {
                     ) {
                         val = str;
                     } else {
-                       // throw new RuntimeException("not implemented"); // TODO  需要验证
+                        // throw new RuntimeException("not implemented"); // TODO  需要验证
                         val = StringEscapeUtils.escapeJson(str);
                     }
                 }
@@ -137,13 +138,12 @@ public class SchemaField {
 
     /**
      * initializes the current field options based on its type
-     *  TODO 该方法需要修正 ，考虑 数据库查询时一次性确定 options 类型
      */
     public Error initOptions() {
         if (options instanceof FieldOptions) {
             return null; //已经初始化
         }
-        Class optionsClass = switch (this.type) {
+        Class<? extends FieldOptions> optionsClass = switch (this.type) {
             case Text -> TextOptions.class;
             case Number -> NumberOptions.class;
             case Bool -> BoolOptions.class;
@@ -164,7 +164,6 @@ public class SchemaField {
             try {
                 this.options = optionsClass.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
-                //throw new RuntimeException(e);
                 return new Error(e.getMessage());
             }
         } else {
