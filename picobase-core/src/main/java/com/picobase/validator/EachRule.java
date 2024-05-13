@@ -3,6 +3,8 @@ package com.picobase.validator;
 import java.util.List;
 import java.util.Map;
 
+import static com.picobase.validator.Err.newErrors;
+
 /**
  * Each returns a validation rule that loops through an iterable (map, slice or array)
  * and validates each value inside with the provided rules.
@@ -19,7 +21,7 @@ public class EachRule implements Rule {
 
     @Override
     public Err validate(Object value) {
-        Errors errors = new Errors();
+        Errors errors = newErrors();
 
         if (value instanceof Map<?, ?> map) {
             int index = 0;

@@ -5,7 +5,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.validator.Err;
-import com.picobase.validator.Errors;
 import com.picobase.validator.Validatable;
 import com.picobase.validator.Validation;
 
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_ADD;
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_SUBTRACT;
 import static com.picobase.validator.Err.newError;
+import static com.picobase.validator.Err.newErrors;
 import static com.picobase.validator.Validation.by;
 
 
@@ -123,14 +123,14 @@ public class Schema implements Validatable {
                 SchemaField field = fields.get(i);
 
                 if (CollUtil.contains(ids, field.getId())) {
-                    return new Errors().put(Integer.toString(i), new Errors().put("id", newError("validation_duplicated_field_id", "Duplicated or invalid schema field id")));
+                    return newErrors().put(Integer.toString(i), newErrors().put("id", newError("validation_duplicated_field_id", "Duplicated or invalid schema field id")));
                 }
 
                 // field names are used as db columns and should be case insensitive
                 String nameLower = field.getName().toLowerCase();
 
                 if (CollUtil.contains(names, nameLower)) {
-                    return new Errors().put(Integer.toString(i), new Errors().put("name", newError("validation_duplicated_field_name", "Duplicated or invalid schema field name")));
+                    return newErrors().put(Integer.toString(i), newErrors().put("name", newError("validation_duplicated_field_name", "Duplicated or invalid schema field name")));
                 }
 
                 ids.add(field.getId());
@@ -141,5 +141,5 @@ public class Schema implements Validatable {
         }));
     }
 
-    
+
 }

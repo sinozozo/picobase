@@ -24,4 +24,8 @@ public interface Err {
     static Err newError(String code, String message) {
         return new ErrObject(code, message);
     }
+
+    static Errors newErrors() {
+        return newErrors();
+    }
 }

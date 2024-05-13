@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import static com.picobase.validator.Err.newErrors;
+
 public class Validation {
 
     /**
@@ -147,7 +149,7 @@ public class Validation {
             return null;
         }
 
-        var errors = new Errors();
+        var errors = newErrors();
         List<FieldRules> rules = Arrays.stream(fieldRules).filter(Objects::nonNull).toList();
         for (int i = 0; i < rules.size(); i++) {
             FieldRules fr = rules.get(i);

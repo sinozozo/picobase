@@ -27,6 +27,7 @@ import static com.picobase.util.PbConstants.*;
 import static com.picobase.util.PbConstants.CollectionType.*;
 import static com.picobase.util.PbConstants.FieldType.Relation;
 import static com.picobase.validator.Err.newError;
+import static com.picobase.validator.Err.newErrors;
 import static com.picobase.validator.Validation.*;
 
 
@@ -234,7 +235,7 @@ public class CollectionUpsert {
 
     public RuleFunc checkRelationFields() {
         return value -> {
-            var errors = new Errors();
+            var errors = newErrors();
             Schema v = (Schema) value;
             for (int i = 0; i < v.getFields().size(); i++) {
                 SchemaField field = v.getFields().get(i);
@@ -247,7 +248,7 @@ public class CollectionUpsert {
                 RelationOptions options = (RelationOptions) field.getOptions();
                 if (options == null) {
                     errors.put(String.valueOf(i),
-                            new Errors().put("options",
+                            newErrors().put("options",
                                     newError(
                                             "validation_schema_invalid_relation_field_options",
                                             "The relation field has invalid field options."
@@ -260,8 +261,8 @@ public class CollectionUpsert {
                     RelationOptions oldOptions = (RelationOptions) oldField.getOptions();
                     if (oldOptions != null && !oldOptions.getCollectionId().equals(options.getCollectionId())) {
                         errors.put(String.valueOf(i),
-                                new Errors().put("options",
-                                        new Errors().put("collectionId",
+                                newErrors().put("options",
+                                        newErrors().put("collectionId",
                                                 newError(
                                                         "validation_field_relation_change",
                                                         "The relation collection cannot be changed."
@@ -275,8 +276,8 @@ public class CollectionUpsert {
                 CollectionModel relCollection = mapper.findCollectionByNameOrId(options.getCollectionId());
                 if (relCollection == null || !relCollection.getId().equals(options.getCollectionId())) {
                     errors.put(String.valueOf(i),
-                            new Errors().put("options",
-                                    new Errors().put("collectionId",
+                            newErrors().put("options",
+                                    newErrors().put("collectionId",
                                             newError(
                                                     "validation_field_invalid_relation",
                                                     "The relation collection doesn't exist."
@@ -288,8 +289,8 @@ public class CollectionUpsert {
 
                 if (!this.type.equals(View) && relCollection.isView()) {
                     errors.put(String.valueOf(i),
-                            new Errors().put("options",
-                                    new Errors().put("collectionId",
+                            newErrors().put("options",
+                                    newErrors().put("collectionId",
                                             newError(
                                                     "validation_field_non_view_base_relation_collection",
                                                     "Non view collections are not allowed to have a view relation."
@@ -306,7 +307,7 @@ public class CollectionUpsert {
 
     private RuleFunc ensureNoAuthFieldName() {
         return value -> {
-            var errors = new Errors();
+            var errors = newErrors();
             Schema v = (Schema) value;
             if (!Objects.equals(this.type, Auth)) {
                 return null;  // not an auth collection
@@ -321,7 +322,8 @@ public class CollectionUpsert {
             List<SchemaField> fields = v.getFields();
             for (int i = 0; i < fields.size(); i++) {
                 if (CollUtil.contains(authFieldNameList, fields.get(i).getName())) {
-                    errors.put(String.valueOf(i), newError("validation_reserved_auth_field_name", "The field name is reserved and cannot be used."));
+                    errors.put(String.valueOf(i),
+                            newErrors().put("name", newError("validation_reserved_auth_field_name", "The field name is reserved and cannot be used.")));
                 }
             }
             return errors;
@@ -401,7 +403,7 @@ public class CollectionUpsert {
 
     private RuleFunc ensureNoFieldsTypeChange() {
         return value -> {
-            var errors = new Errors();
+            var errors = newErrors();
             List<SchemaField> fields = ((Schema) value).getFields();
             for (int i = 0; i < fields.size(); i++) {
                 SchemaField oldField = this.collection.getSchema().getFieldById(fields.get(i).getId());
@@ -422,7 +424,7 @@ public class CollectionUpsert {
                         "The collection doesn't support indexes.");
             }
 
-            var errors = new Errors();
+            var errors = newErrors();
             for (int i = 0; i < indexs.size(); i++) {
                 Index parsed = Index.parseIndex(indexs.get(i));
                 if (!parsed.isValid()) {
