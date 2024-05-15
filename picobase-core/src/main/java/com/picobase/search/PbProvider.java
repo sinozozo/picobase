@@ -74,7 +74,7 @@ public class PbProvider {
      * 搜索 普通 Model（静态）
      */
     public <T> Page<T> parseAndExec(Class<T> clz) {
-        String urlQuery = PbHolder.getRequest().getUrlQuery();
+        String urlQuery = PbHolder.getRequest().getQueryString();
         if (urlQuery == null) {
             urlQuery = "";
         }
@@ -85,9 +85,9 @@ public class PbProvider {
     /**
      * 搜索recorder （动态）
      */
-    public <T> Page<T> parseAndExec(String urlQuery, CollectionModel collection) {
+    public <T> Page<T> parseAndExec(CollectionModel collection) {
         this.collection = collection;
-        return (Page<T>) parseAndExec(urlQuery, RecordModel.class);
+        return (Page<T>) parseAndExec(RecordModel.class);
     }
 
     public PbProvider countCol(String countCol) {
@@ -165,7 +165,7 @@ public class PbProvider {
                 modelsQuery.limit(this.perPage);
                 modelsQuery.offset((long) (this.page - 1) * this.perPage);
                 if (clz == RecordModel.class) {
-                    return (List<T>) modelsQuery.all(new RecordMapper(this.collection));
+                    return (List<T>) modelsQuery.all(new RecordRowMapper(this.collection));
                 }
                 return modelsQuery.all(clz);
             };
@@ -265,5 +265,6 @@ public class PbProvider {
             this.addFilter(new SearchFilter(filterQueryParam.toString()));
         }
     }
+
 
 }

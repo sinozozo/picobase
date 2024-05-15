@@ -1,6 +1,5 @@
 package com.picobase.console.web;
 
-import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.console.PbAdminUtil;
 import com.picobase.console.PbConsoleManager;
@@ -24,11 +23,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.picobase.console.PbConsoleConstants.InnerAdminId;
 import static com.picobase.persistence.dbx.expression.Expression.newExpr;
 
 @RestController
 @RequestMapping("/api/admins")
 public class AdminController {
+
 
     @PostMapping(value = "/auth-with-password")
     public AdminLoginResult authWithPassword() {
@@ -58,8 +59,10 @@ public class AdminController {
 
             return Interceptors.run(new AdminModel(), (admin) -> {
                 // 执行登录
-                PbManager.getPbAuthZLogic("pbAdmin").login("pbAdmin");
-                PbTokenInfo tokenInfo = PbManager.getPbAuthZLogic("pbAdmin").getTokenInfo();
+                PbAdminUtil.login(InnerAdminId);
+
+
+                PbTokenInfo tokenInfo = PbAdminUtil.getTokenInfo();
 
                 return new AdminLoginResult().setToken(tokenInfo.getTokenValue()).setAdmin(admin);
             }, interceptorFunc1);
@@ -79,7 +82,7 @@ public class AdminController {
         if (CommonHelper.isNotEmpty(PbConsoleManager.getConfig().getIdentity())) {
             // 2.1 配置文件中配置了 账号密码
             adminModel = new AdminModel().setEmail(PbConsoleManager.getConfig().getIdentity()).setPasswordHash(PbConsoleManager.getConfig().getPassword());
-            adminModel.setId("PbAdminFromConfig");
+            adminModel.setId(InnerAdminId);
 
 
         } else {
@@ -95,8 +98,11 @@ public class AdminController {
                 //配置文件校验
                 if (admin.getEmail().equals(form.getIdentity()) && admin.getPasswordHash().equals(form.getPassword())) {
                     // 执行登录
-                    PbAdminUtil.login("pbAdmin");
+                    PbAdminUtil.login(InnerAdminId);
+
+
                     PbTokenInfo tokenInfo = PbAdminUtil.getTokenInfo();
+
                     return new AdminLoginResult().setToken(tokenInfo.getTokenValue()).setAdmin(admin);
                 }
             } else {
@@ -104,7 +110,10 @@ public class AdminController {
                 if (admin != null && BCrypt.checkpw(form.getPassword(), admin.getPasswordHash())) {
                     // 执行登录
                     PbAdminUtil.login(admin.getId());
+
+
                     PbTokenInfo tokenInfo = PbAdminUtil.getTokenInfo();
+
                     return new AdminLoginResult().setToken(tokenInfo.getTokenValue()).setAdmin(admin);
                 }
             }

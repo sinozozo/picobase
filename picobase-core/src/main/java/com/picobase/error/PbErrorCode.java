@@ -4,7 +4,6 @@ package com.picobase.error;
 public interface PbErrorCode {
 
 
-
     /**
      * 代表这个异常在抛出时未指定异常细分状态码
      */
@@ -166,6 +165,15 @@ public interface PbErrorCode {
      */
     int CODE_11071 = 11071;
 
+    /**
+     * 获取 SaSession 时提供的 SessionId 为空
+     */
+    int CODE_11072 = 11072;
+
+    /**
+     * 获取 Token-Session 时提供的 token 为空
+     */
+    int CODE_11073 = 11073;
 
     // ------------
 
@@ -279,13 +287,13 @@ public interface PbErrorCode {
     int CODE_12203 = 12203;
 
     /**
-     *  数据源错误
+     * 数据源错误
      */
     int CODE_13000 = 13000;
 
 
     /**
-     *  Not an auth collection record
+     * Not an auth collection record
      */
     int CODE_14000 = 14000;
     /**
@@ -307,7 +315,6 @@ public interface PbErrorCode {
      * the auth record ID must be unique across all auth collections
      */
     int CODE_14004 = 14004;
-
 
 
 }

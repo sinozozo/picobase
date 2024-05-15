@@ -1,26 +1,32 @@
 package com.picobase;
 
 import com.picobase.context.PbHolder;
+import com.picobase.context.model.PbStorage;
 import com.picobase.event.IEventReceiver;
 import com.picobase.event.PbEvent;
 import com.picobase.exception.PbException;
 import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
+import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
-import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.model.CollectionModel;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.search.PbProvider;
+import com.picobase.session.PbSession;
 import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;
 import com.picobase.validator.Validation;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static com.picobase.util.PbConstants.STORAGE_KEY_COLLECTION;
 
 /**
  * PB 工具类 （面相使用者的门面类）
@@ -83,6 +89,107 @@ public final class PbUtil {
         return pbAzLogic.isLogin(loginId);
     }
 
+    // ------------------- 登录相关操作 -------------------
+
+    // --- 登录
+
+    /**
+     * 会话登录
+     *
+     * @param id 账号id，建议的类型：（long | int | String）
+     */
+    public static void login(Object id) {
+        pbAzLogic.login(id);
+    }
+
+    /**
+     * 会话登录，并指定登录设备类型
+     *
+     * @param id     账号id，建议的类型：（long | int | String）
+     * @param device 设备类型
+     */
+    public static void login(Object id, String device) {
+        pbAzLogic.login(id, device);
+    }
+
+    /**
+     * 会话登录，并指定是否 [记住我]
+     *
+     * @param id              账号id，建议的类型：（long | int | String）
+     * @param isLastingCookie 是否为持久Cookie，值为 true 时记住我，值为 false 时关闭浏览器需要重新登录
+     */
+    public static void login(Object id, boolean isLastingCookie) {
+        pbAzLogic.login(id, isLastingCookie);
+    }
+
+    /**
+     * 会话登录，并指定此次登录 token 的有效期, 单位:秒
+     *
+     * @param id      账号id，建议的类型：（long | int | String）
+     * @param timeout 此次登录 token 的有效期, 单位:秒
+     */
+    public static void login(Object id, long timeout) {
+        pbAzLogic.login(id, timeout);
+    }
+
+    /**
+     * 会话登录，并指定所有登录参数 Model
+     *
+     * @param id         账号id，建议的类型：（long | int | String）
+     * @param loginModel 此次登录的参数Model
+     */
+    public static void login(Object id, PbLoginModel loginModel) {
+        pbAzLogic.login(id, loginModel);
+    }
+
+    /**
+     * 创建指定账号 id 的登录会话数据
+     *
+     * @param id 账号id，建议的类型：（long | int | String）
+     * @return 返回会话令牌
+     */
+    public static String createLoginSession(Object id) {
+        return pbAzLogic.createLoginSession(id);
+    }
+
+    /**
+     * 创建指定账号 id 的登录会话数据
+     *
+     * @param id         账号id，建议的类型：（long | int | String）
+     * @param loginModel 此次登录的参数Model
+     * @return 返回会话令牌
+     */
+    public static String createLoginSession(Object id, PbLoginModel loginModel) {
+        return pbAzLogic.createLoginSession(id, loginModel);
+    }
+
+    // --- 注销
+
+    /**
+     * 在当前客户端会话注销
+     */
+    public static void logout() {
+        pbAzLogic.logout();
+    }
+
+    /**
+     * 会话注销，根据账号id
+     *
+     * @param loginId 账号id
+     */
+    public static void logout(Object loginId) {
+        pbAzLogic.logout(loginId);
+    }
+
+    /**
+     * 会话注销，根据账号id 和 设备类型
+     *
+     * @param loginId 账号id
+     * @param device  设备类型 (填 null 代表注销该账号的所有设备类型)
+     */
+    public static void logout(Object loginId, String device) {
+        pbAzLogic.logout(loginId, device);
+    }
 
     /**
      * 获取当前会话的 token 参数信息
@@ -91,6 +198,94 @@ public final class PbUtil {
      */
     public static PbTokenInfo getTokenInfo() {
         return pbAzLogic.getTokenInfo();
+    }
+
+
+    /**
+     * 获取当前会话账号id，如果未登录，则抛出异常
+     *
+     * @return 账号id
+     */
+    public static Object getLoginId() {
+        return pbAzLogic.getLoginId();
+    }
+
+    /**
+     * 获取当前会话账号id, 如果未登录，则返回默认值
+     *
+     * @param <T>          返回类型
+     * @param defaultValue 默认值
+     * @return 登录id
+     */
+    public static <T> T getLoginId(T defaultValue) {
+        return pbAzLogic.getLoginId(defaultValue);
+    }
+
+    /**
+     * 获取当前会话账号id, 如果未登录，则返回null
+     *
+     * @return 账号id
+     */
+    public static Object getLoginIdDefaultNull() {
+        return pbAzLogic.getLoginIdDefaultNull();
+    }
+
+    /**
+     * 获取当前会话账号id, 并转换为 String 类型
+     *
+     * @return 账号id
+     */
+    public static String getLoginIdAsString() {
+        return pbAzLogic.getLoginIdAsString();
+    }
+
+    /**
+     * 获取当前会话账号id, 并转换为 int 类型
+     *
+     * @return 账号id
+     */
+    public static int getLoginIdAsInt() {
+        return pbAzLogic.getLoginIdAsInt();
+    }
+
+    /**
+     * 获取当前会话账号id, 并转换为 long 类型
+     *
+     * @return 账号id
+     */
+    public static long getLoginIdAsLong() {
+        return pbAzLogic.getLoginIdAsLong();
+    }
+
+    /**
+     * 获取指定 token 对应的账号id，如果未登录，则返回 null
+     *
+     * @param tokenValue token
+     * @return 账号id
+     */
+    public static Object getLoginIdByToken(String tokenValue) {
+        return pbAzLogic.getLoginIdByToken(tokenValue);
+    }
+
+    /**
+     * 获取当前 Token 的扩展信息（此函数只在jwt模式下生效）
+     *
+     * @param key 键值
+     * @return 对应的扩展数据
+     */
+    public static Object getExtra(String key) {
+        return pbAzLogic.getExtra(key);
+    }
+
+    /**
+     * 获取指定 Token 的扩展信息（此函数只在jwt模式下生效）
+     *
+     * @param tokenValue 指定的 Token 值
+     * @param key        键值
+     * @return 对应的扩展数据
+     */
+    public static Object getExtra(String tokenValue, String key) {
+        return pbAzLogic.getExtra(tokenValue, key);
     }
 
 
@@ -117,7 +312,7 @@ public final class PbUtil {
     public static <T> Optional<T> createObjFromRequest(Class<T> dto) {
         Optional<T> result = PbManager.getPbContext().createObjFromRequest(dto);
         if (result.isPresent()) {
-            log.debug("bindRequest: {}", result.get());
+            log.debug("createObjFromRequest: {}", result.get());
         }
         return result;
     }
@@ -245,5 +440,30 @@ public final class PbUtil {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
         return mapper.findBy(Expression.newExpr("id=:id", Map.of("id", id))).one(c);
     }
+
+    public static void setCollectionToStorage(CollectionModel collection) {
+        // 1、获取当前请求的 Storage 存储器
+        PbStorage storage = PbHolder.getStorage();
+        storage.set(STORAGE_KEY_COLLECTION, collection);
+    }
+
+    /**
+     * 获取当前请求线程下的 Collection
+     *
+     * @return CollectionModel
+     */
+    public static CollectionModel getCurrentCollection() {
+        return (CollectionModel) PbHolder.getStorage().get(STORAGE_KEY_COLLECTION);
+    }
+
+    /**
+     * 获取当前已登录账号的 Account-Session，如果该 PbSession 尚未创建，则新建并返回
+     *
+     * @return Session对象
+     */
+    public static PbSession getSession() {
+        return pbAzLogic.getSession();
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.picobase.search;
 
+import com.picobase.exception.PbException;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.schema.SchemaField;
@@ -13,10 +14,10 @@ import java.util.Map;
 import static com.picobase.util.PbConstants.authFieldNames;
 import static com.picobase.util.PbConstants.baseModelFieldNames;
 
-public class RecordMapper implements PbRowMapper<RecordModel> {
+public class RecordRowMapper implements PbRowMapper<RecordModel> {
     private final CollectionModel collection;
 
-    public RecordMapper(CollectionModel collection) {
+    public RecordRowMapper(CollectionModel collection) {
         this.collection = collection;
     }
 
@@ -44,7 +45,7 @@ public class RecordMapper implements PbRowMapper<RecordModel> {
             } catch (SQLException e) {
                 //ignore exception
                 //resultMap.put(field.getName(), null);
-                throw new RuntimeException(e);
+                throw new PbException(e);
             }
         }
         // load base model fields

@@ -8,7 +8,7 @@ import com.picobase.context.model.PbResponse;
 import com.picobase.context.model.PbStorage;
 
 /**
- * 上下文持有类，你可以通过此类快速获取当前环境下的 SaRequest、SaResponse、SaStorage、SaApplication 对象。
+ * 上下文持有类，你可以通过此类快速获取当前环境下的 PbRequest、PbResponse、PbStorage、PbApplication 对象。
  */
 public class PbHolder {
 

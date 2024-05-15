@@ -3,6 +3,7 @@ package com.picobase.console.web;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.picobase.PbManager;
 import com.picobase.console.error.BadRequestException;
+import com.picobase.console.error.ForbiddenException;
 import com.picobase.console.model.dto.FailureResult;
 import com.picobase.exception.PbException;
 import com.picobase.validator.Err;
@@ -99,6 +100,11 @@ public class PbConsoleExceptionHandler {
         PbManager.getLog().error("PbException: {}", ExceptionUtil.getRootCause(e));
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new FailureResult().setCode(HttpStatus.BAD_REQUEST.value()).setMessage(e.getMessage()).setData(""));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity forbiddenException(ForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new FailureResult().setCode(HttpStatus.FORBIDDEN.value()).setMessage(e.getMessage()).setData(""));
     }
 /*
 

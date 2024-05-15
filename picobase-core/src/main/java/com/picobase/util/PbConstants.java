@@ -8,6 +8,10 @@ public final class PbConstants {
 
 
     /**
+     * 存储在Storage中的 Collection key 名称
+     */
+    public static final String STORAGE_KEY_COLLECTION = "STORAGE_KEY_COLLECTION";
+    /**
      * 数据库中 id 的默认长度
      */
     public static final int DEFAULT_ID_LENGTH = 15;

@@ -1,8 +1,8 @@
 package com.picobase.persistence.mapper;
 
-import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.repository.PbRowMapper;
 
 import java.util.List;

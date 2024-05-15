@@ -15,6 +15,7 @@ import com.picobase.console.model.IdentifiersParser;
 import com.picobase.console.model.QueryField;
 import com.picobase.console.model.TableInfoRow;
 import com.picobase.exception.PbException;
+import com.picobase.fun.PbCollFetchFun;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.Schema;
@@ -45,6 +46,9 @@ import static com.picobase.util.PbConstants.baseModelFieldNames;
 
 
 public class CollectionMapper extends AbstractBeanPropertyRowMapper<CollectionModel> {
+
+    public PbCollFetchFun collFetchFun = idOrName -> Optional.of(this.findCollectionByNameOrId(idOrName));
+
     @Override
     public String getTableName() {
         return PbConstants.TableName.COLLECTION;

@@ -1,5 +1,6 @@
 package com.picobase.logic.authz;
 
+import cn.hutool.core.util.ClassUtil;
 import com.picobase.PbManager;
 import com.picobase.annotation.*;
 import com.picobase.cache.PbCache;
@@ -17,8 +18,8 @@ import com.picobase.listener.PbEventCenter;
 import com.picobase.session.PbSession;
 import com.picobase.session.TokenSign;
 import com.picobase.strategy.PbStrategy;
-import com.picobase.util.PbConstants;
 import com.picobase.util.CommonHelper;
+import com.picobase.util.PbConstants;
 import com.picobase.util.SaValue2Box;
 
 import java.util.Collections;
@@ -313,15 +314,15 @@ public class PbAuthZLogic {
             tokenValue = String.valueOf(storage.get(splicingKeyJustCreatedSave()));
         }
         // 2. 再尝试从 请求体 里面读取
-        if (tokenValue == null && config.getIsReadBody()) {
+        if (CommonHelper.isEmpty(tokenValue) && config.getIsReadBody()) {
             tokenValue = request.getParam(keyTokenName);
         }
         // 3. 再尝试从 header 头里读取
-        if (tokenValue == null && config.getIsReadHeader()) {
+        if (CommonHelper.isEmpty(tokenValue) && config.getIsReadHeader()) {
             tokenValue = request.getHeader(keyTokenName);
         }
         // 4. 最后尝试从 cookie 里读取
-        if (tokenValue == null && config.getIsReadCookie()) {
+        if (CommonHelper.isEmpty(tokenValue) && config.getIsReadCookie()) {
             tokenValue = request.getCookieValue(keyTokenName);
         }
 
@@ -450,7 +451,7 @@ public class PbAuthZLogic {
         String tokenValue = distUsableToken(id, loginModel);
 
         // 4、获取此账号的 Account-Session , 续期
-        PbSession session = getSessionByLoginId(id, true);
+        PbSession session = getSessionByLoginId(id, true, loginModel.getTimeoutOrGlobalConfig());
         session.updateMinTimeout(loginModel.getTimeout());
 
         // 5、在 Account-Session 上记录本次登录的 token 签名
@@ -549,7 +550,7 @@ public class PbAuthZLogic {
         }
 
         // 3、账号 id 不能是复杂类型
-        if (!CommonHelper.isBasicType(id.getClass())) {
+        if (!ClassUtil.isBasicType(id.getClass())) {
             PbManager.log.warn("loginId 应该为简单类型，例如：String | int | long，不推荐使用复杂类型：" + id.getClass());
         }
 
@@ -974,7 +975,7 @@ public class PbAuthZLogic {
         }
         // 3、loginId 不为 null，则开始尝试类型转换
         if (defaultValue == null) {
-            return null;
+            return (T) loginId;
         }
         return (T) CommonHelper.getValueByType(loginId, defaultValue.getClass());
     }
@@ -1125,7 +1126,7 @@ public class PbAuthZLogic {
      */
     public void updateTokenToIdMapping(String tokenValue, Object loginId) {
         // 先判断一下，是否传入了空值
-        PbException.throwBy(CommonHelper.isEmpty(loginId), "loginId 不能为空", PbErrorCode.CODE_11003);
+        PbException.notTrue(CommonHelper.isEmpty(loginId), "loginId 不能为空", PbErrorCode.CODE_11003);
 
         // 更新缓存中的 token 指向
         getPbCache().update(splicingKeyTokenValue(tokenValue), loginId.toString());
@@ -1148,14 +1149,15 @@ public class PbAuthZLogic {
      *
      * @param sessionId       SessionId
      * @param isCreate        是否新建
-     * @param appendOperation 如果这个 PbSession 是新建的，则要追加执行的动作
+     * @param timeout         如果这个 PbSession 是新建的，则使用此值作为过期值（单位：秒），可填 null，代表使用全局 timeout 值
+     * @param appendOperation 如果这个 PbSession 是新建的，则要追加执行的动作，可填 null，代表无追加动作
      * @return Session对象
      */
-    public PbSession getSessionBySessionId(String sessionId, boolean isCreate, Consumer<PbSession> appendOperation) {
+    public PbSession getSessionBySessionId(String sessionId, boolean isCreate, Long timeout, Consumer<PbSession> appendOperation) {
 
         // 如果提供的 sessionId 为 null，则直接返回 null
         if (CommonHelper.isEmpty(sessionId)) {
-            return null;
+            throw new PbException("SessionId 不能为空").setCode(PbErrorCode.CODE_11072);
         }
 
         // 先检查这个 PbSession 是否已经存在，如果不存在且 isCreate=true，则新建并返回
@@ -1170,8 +1172,22 @@ public class PbAuthZLogic {
                 appendOperation.accept(session);
             }
 
+            // 如果未提供 timeout，则根据相应规则设定默认的 timeout
+            if (timeout == null) {
+                // 如果是 Token-Session，则使用对用 token 的有效期，使 token 和 token-session 保持相同ttl，同步失效
+                if (PbConstants.SESSION_TYPE__TOKEN.equals(session.getType())) {
+                    timeout = getTokenTimeout(session.getToken());
+                    if (timeout == PbCache.NOT_VALUE_EXPIRE) {
+                        timeout = getConfigOrGlobal().getTimeout();
+                    }
+                } else {
+                    // 否则使用全局配置的 timeout
+                    timeout = getConfigOrGlobal().getTimeout();
+                }
+            }
+
             // 将这个 PbSession 入库
-            getPbCache().setSession(session, getConfigOrGlobal().getTimeout());
+            getPbCache().setSession(session, timeout);
         }
         return session;
     }
@@ -1183,7 +1199,28 @@ public class PbAuthZLogic {
      * @return Session对象
      */
     public PbSession getSessionBySessionId(String sessionId) {
-        return getSessionBySessionId(sessionId, false, null);
+        return getSessionBySessionId(sessionId, false, null, null);
+    }
+
+    /**
+     * 获取指定账号 id 的 Account-Session, 如果该 PbSession 尚未创建，isCreate=是否新建并返回
+     *
+     * @param loginId  账号id
+     * @param isCreate 是否新建
+     * @param timeout  如果这个 PbSession 是新建的，则使用此值作为过期值（单位：秒），可填 null，代表使用全局 timeout 值
+     * @return PbSession 对象
+     */
+    public PbSession getSessionByLoginId(Object loginId, boolean isCreate, Long timeout) {
+        if (CommonHelper.isEmpty(loginId)) {
+            throw new PbException("Account-Session 获取失败：loginId 不能为空");
+        }
+        return getSessionBySessionId(splicingKeySession(loginId), isCreate, timeout, session -> {
+            // 这里是该 Account-Session 首次创建时才会被执行的方法：
+            // 		设定这个 PbSession 的各种基础信息：类型、账号体系、账号id
+            session.setType(PbConstants.SESSION_TYPE__ACCOUNT);
+            session.setLoginType(getLoginType());
+            session.setLoginId(loginId);
+        });
     }
 
     /**
@@ -1194,16 +1231,7 @@ public class PbAuthZLogic {
      * @return PbSession 对象
      */
     public PbSession getSessionByLoginId(Object loginId, boolean isCreate) {
-        if (CommonHelper.isEmpty(loginId)) {
-            throw new PbException("Account-Session 获取失败：loginId 不能为空");
-        }
-        return getSessionBySessionId(splicingKeySession(loginId), isCreate, session -> {
-            // 这里是该 Account-Session 首次创建时才会被执行的方法：
-            // 		设定这个 PbSession 的各种基础信息：类型、账号体系、账号id
-            session.setType(PbConstants.SESSION_TYPE__ACCOUNT);
-            session.setLoginType(getLoginType());
-            session.setLoginId(loginId);
-        });
+        return getSessionByLoginId(loginId, isCreate, null);
     }
 
     /**
@@ -1213,7 +1241,7 @@ public class PbAuthZLogic {
      * @return PbSession 对象
      */
     public PbSession getSessionByLoginId(Object loginId) {
-        return getSessionByLoginId(loginId, true);
+        return getSessionByLoginId(loginId, true, null);
     }
 
     /**
@@ -1247,9 +1275,9 @@ public class PbAuthZLogic {
      */
     public PbSession getTokenSessionByToken(String tokenValue, boolean isCreate) {
         if (CommonHelper.isEmpty(tokenValue)) {
-            throw new PbException("Token-Session 获取失败：token 不能为空");
+            throw new PbException("Token-Session 获取失败：token 为空").setCode(PbErrorCode.CODE_11073);
         }
-        return getSessionBySessionId(splicingKeyTokenSession(tokenValue), isCreate, session -> {
+        return getSessionBySessionId(splicingKeyTokenSession(tokenValue), isCreate, null, session -> {
             // 这里是该 Token-Session 首次创建时才会被执行的方法：
             // 		设定这个 PbSession 的各种基础信息：类型、账号体系、Token 值
             session.setType(PbConstants.SESSION_TYPE__TOKEN);
@@ -1284,7 +1312,7 @@ public class PbAuthZLogic {
         // 2、如果前端根本没有提供 Token ，则直接返回 null
         String tokenValue = getTokenValue();
         if (CommonHelper.isEmpty(tokenValue)) {
-            return null;
+            throw new PbException("Token-Session 获取失败：token 为空").setCode(PbErrorCode.CODE_11073);
         }
 
         // 3、代码至此：tokenSessionCheckLogin 校验通过、且 Token 有值
@@ -1361,7 +1389,14 @@ public class PbAuthZLogic {
             setTokenValue(tokenValue);
 
             // 返回其 Token-Session 对象
-            return getTokenSessionByToken(tokenValue, isCreate);
+            final String finalTokenValue = tokenValue;
+            return getSessionBySessionId(splicingKeyTokenSession(tokenValue), isCreate, getConfigOrGlobal().getTimeout(), session -> {
+                // 这里是该 Anon-Token-Session 首次创建时才会被执行的方法：
+                // 		设定这个 PbSession 的各种基础信息：类型、账号体系、Token 值
+                session.setType(PbConstants.SESSION_TYPE__TOKEN);
+                session.setLoginType(getLoginType());
+                session.setToken(finalTokenValue);
+            });
         } else {
             return null;
         }
@@ -1515,6 +1550,40 @@ public class PbAuthZLogic {
         return activeTimeout;
     }
 
+    /**
+     * 获取指定 token 的最后活跃时间（13位时间戳），如果不存在则返回 -2
+     *
+     * @param tokenValue 指定token
+     * @return /
+     */
+    public long getTokenLastActiveTime(String tokenValue) {
+        // 1、如果提供的 token 为 null，则返回 -2
+        if (CommonHelper.isEmpty(tokenValue)) {
+            return PbCache.NOT_VALUE_EXPIRE;
+        }
+
+        // 2、获取这个 token 的最后活跃时间，13位时间戳
+        String key = splicingKeyLastActiveTime(tokenValue);
+        String lastActiveTimeString = getPbCache().get(key);
+
+        // 3、查不到，返回-2
+        if (lastActiveTimeString == null) {
+            return PbCache.NOT_VALUE_EXPIRE;
+        }
+
+        // 4、根据逗号切割字符串
+        return new SaValue2Box(lastActiveTimeString).getValue1AsLong();
+    }
+
+    /**
+     * 获取当前 token 的最后活跃时间（13位时间戳），如果不存在则返回 -2
+     *
+     * @return /
+     */
+    public long getTokenLastActiveTime() {
+        return getTokenLastActiveTime(getTokenValue());
+    }
+
 
     // ------------------- 过期时间相关 -------------------
 
@@ -1607,26 +1676,14 @@ public class PbAuthZLogic {
             return PbCache.NEVER_EXPIRE;
         }
 
-        // 如果提供的 token 为 null，则返回 -2
-        if (CommonHelper.isEmpty(tokenValue)) {
-            return PbCache.NOT_VALUE_EXPIRE;
-        }
-
         // ------ 开始查询
 
-        // 1、先获取这个 token 的最后活跃时间，13位时间戳
-        String key = splicingKeyLastActiveTime(tokenValue);
-        String lastActiveTimeString = getPbCache().get(key);
-
-        // 2、如果查不到，返回-2
-        if (lastActiveTimeString == null) {
+        // 先获取这个 token 的最后活跃时间，13位时间戳
+        long lastActiveTime = getTokenLastActiveTime(tokenValue);
+        if (lastActiveTime == PbCache.NOT_VALUE_EXPIRE) {
             return PbCache.NOT_VALUE_EXPIRE;
         }
 
-        // 3、计算最后活跃时间 距离 此时此刻 的时间差
-        //    计算公式为: (当前时间 - 最后活跃时间) / 1000
-        SaValue2Box box = new SaValue2Box(lastActiveTimeString);
-        long lastActiveTime = box.getValue1AsLong();
         // 实际时间差
         long timeDiff = (System.currentTimeMillis() - lastActiveTime) / 1000;
         // 该 token 允许的时间差
@@ -1636,7 +1693,7 @@ public class PbAuthZLogic {
             return PbCache.NEVER_EXPIRE;
         }
 
-        // 4、校验这个时间差是否超过了允许的值
+        // 校验这个时间差是否超过了允许的值
         //    计算公式为: 允许的最大时间差 - 实际时间差，判断是否 < 0， 如果是则代表已经被冻结 ，返回-2
         long activeTimeout = allowTimeDiff - timeDiff;
         if (activeTimeout < 0) {
@@ -2065,19 +2122,32 @@ public class PbAuthZLogic {
      * @return 当前令牌的登录设备类型
      */
     public String getLoginDevice() {
-        // 1、如果前端没有提交 token，直接返回 null
-        String tokenValue = getTokenValue();
-        if (tokenValue == null) {
+        return getLoginDeviceByToken(getTokenValue());
+    }
+
+    /**
+     * 返回指定 token 会话的登录设备类型
+     *
+     * @param tokenValue 指定token
+     * @return 当前令牌的登录设备类型
+     */
+    public String getLoginDeviceByToken(String tokenValue) {
+        // 1、如果 token 为 null，直接提前返回
+        if (CommonHelper.isEmpty(tokenValue)) {
             return null;
         }
 
-        // 2、如果当前会话还未登录，直接返回 null
-        if (!isLogin()) {
+        // 2、获取此 token 对应的 loginId，如果为null，或者此token已被冻结，直接返回null
+        Object loginId = getLoginIdNotHandle(tokenValue);
+        if (!isValidLoginId(loginId)) {
+            return null;
+        }
+        if (getTokenActiveTimeoutByToken(tokenValue) == PbCache.NOT_VALUE_EXPIRE) {
             return null;
         }
 
-        // 3、获取当前账号的 Account-Session
-        PbSession session = getSessionByLoginId(getLoginIdDefaultNull(), false);
+        // 3、获取这个账号的 Account-Session
+        PbSession session = getSessionByLoginId(loginId, false);
 
         // 4、为 null 说明尚未登录，当然也就不存在什么设备类型，直接返回 null
         if (session == null) {
@@ -2151,7 +2221,7 @@ public class PbAuthZLogic {
     }
 
     /**
-     * 根据注解 ( @PbCheckRole ) 鉴权
+     * 根据注解 ( @SaCheckRole ) 鉴权
      *
      * @param at 注解对象
      */
@@ -2165,7 +2235,7 @@ public class PbAuthZLogic {
     }
 
     /**
-     * 根据注解 ( @PbCheckPermission ) 鉴权
+     * 根据注解 ( @SaCheckPermission ) 鉴权
      *
      * @param at 注解对象
      */
@@ -2191,7 +2261,7 @@ public class PbAuthZLogic {
     }
 
     /**
-     * 根据注解 ( @PbCheckSafe ) 鉴权
+     * 根据注解 ( @SaCheckSafe ) 鉴权
      *
      * @param at 注解对象
      */
@@ -2200,7 +2270,7 @@ public class PbAuthZLogic {
     }
 
     /**
-     * 根据注解 ( @PbCheckDisable ) 鉴权
+     * 根据注解 ( @SaCheckDisable ) 鉴权
      *
      * @param at 注解对象
      */
@@ -2585,7 +2655,13 @@ public class PbAuthZLogic {
             return false;
         }
 
-        // 2、如果缓存中可以查询出指定的键值，则代表已认证，否则视为未认证
+        // 2、如果此 token 不处于登录状态，也将其视为未认证
+        Object loginId = getLoginIdNotHandle(tokenValue);
+        if (!isValidLoginId(loginId)) {
+            return false;
+        }
+
+        // 3、如果缓存中可以查询出指定的键值，则代表已认证，否则视为未认证
         String value = getPbCache().get(splicingKeySafe(tokenValue, service));
         return !(CommonHelper.isEmpty(value));
     }
@@ -2603,8 +2679,14 @@ public class PbAuthZLogic {
      * @param service 业务标识
      */
     public void checkSafe(String service) {
+        // 1、必须先通过登录校验
+        checkLogin();
+
+        // 2、再进行二级认证校验
+        // 		如果缓存中可以查询出指定的键值，则代表已认证，否则视为未认证
         String tokenValue = getTokenValue();
-        if (!isSafe(tokenValue, service)) {
+        String value = getPbCache().get(splicingKeySafe(tokenValue, service));
+        if (CommonHelper.isEmpty(value)) {
             throw new NotSafeException(loginType, tokenValue, service).setCode(PbErrorCode.CODE_11071);
         }
     }
@@ -2828,5 +2910,6 @@ public class PbAuthZLogic {
     public boolean isSupportExtra() {
         return false;
     }
+
 
 }

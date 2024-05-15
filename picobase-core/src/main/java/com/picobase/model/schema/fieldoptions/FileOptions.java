@@ -87,4 +87,5 @@ public class FileOptions implements FieldOptions, MultiValuer {
         this.maxSize = maxSize;
         return this;
     }
+
 }

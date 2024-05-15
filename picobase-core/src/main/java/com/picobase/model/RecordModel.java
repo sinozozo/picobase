@@ -11,8 +11,6 @@ import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.secure.BCrypt;
 import com.picobase.util.TypeSafe;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +19,9 @@ import java.util.regex.Pattern;
 
 import static com.picobase.error.PbErrorCode.CODE_14000;
 import static com.picobase.error.PbErrorCode.CODE_14001;
-import static com.picobase.util.PbConstants.*;
 import static com.picobase.util.PbConstants.FieldName.*;
 import static com.picobase.util.PbConstants.FieldType.File;
+import static com.picobase.util.PbConstants.*;
 
 
 //@JsonSerialize(using = RecordJsonSerialize.class)
@@ -119,8 +117,7 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
         return switch (key) {
             case EmailVisibility, Verified -> TypeSafe.anyToBool(value);
             case LastResetSentAt, LastVerificationSentAt -> TypeSafe.anyToLocalDateTime(value);
-            case Username, Email, TokenKey, PasswordHash ->
-                    TypeSafe.anyToString(value);
+            case Username, Email, TokenKey, PasswordHash -> TypeSafe.anyToString(value);
             default -> value;
         };
     }
@@ -637,5 +634,14 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
 
     public CollectionModel getCollection() {
         return collection;
+    }
+
+    public boolean isIgnoreEmailVisibility() {
+        return ignoreEmailVisibility;
+    }
+
+    public RecordModel setIgnoreEmailVisibility(boolean ignoreEmailVisibility) {
+        this.ignoreEmailVisibility = ignoreEmailVisibility;
+        return this;
     }
 }

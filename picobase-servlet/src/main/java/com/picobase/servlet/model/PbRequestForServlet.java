@@ -10,7 +10,6 @@ import com.picobase.util.CommonHelper;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +17,7 @@ import java.util.*;
 /**
  * 对 PbRequest 包装类的实现（Servlet 版）
  */
-public class PbRequestForServlet  extends PbRequestWithContentCache implements PbRequest {
+public class PbRequestForServlet extends PbRequestWithContentCache implements PbRequest {
 
     /**
      * 底层Request对象
@@ -161,8 +160,13 @@ public class PbRequestForServlet  extends PbRequestWithContentCache implements P
     }
 
     @Override
-    public String getUrlQuery() {
+    public String getQueryString() {
         return request.getQueryString();
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        return request.getHeaderNames();
     }
 
 

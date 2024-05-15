@@ -5,7 +5,7 @@ import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
 import com.picobase.util.CommonHelper;
 
-import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -176,25 +176,27 @@ public interface PbRequest {
 
     /**
      * 获取请求体长度
+     *
      * @return 请求体长度
      */
     int getContentLength();
 
     /**
      * 获取请求 ContentType
+     *
      * @return ContentType
      */
     String getContentType();
 
     /**
-     *
      * @return
      */
-    default byte[] getCachedContent(){
+    default byte[] getCachedContent() {
         throw new PbException("不支持此方法,请在实现类中自行实现，可参考 ContentCachingRequestWrapper 实现");
     }
 
-    String getUrlQuery();
+    String getQueryString();
 
 
+    Enumeration<String> getHeaderNames();
 }

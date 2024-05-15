@@ -13,10 +13,7 @@ import com.picobase.console.json.SchemaDeserializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
 import com.picobase.console.mapper.MapperManagerWithProxy;
-import com.picobase.console.web.AdminController;
-import com.picobase.console.web.ConsoleController;
-import com.picobase.console.web.PbConsoleExceptionHandler;
-import com.picobase.console.web.SettingsController;
+import com.picobase.console.web.*;
 import com.picobase.exception.PbException;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.jwt.PbAuthZLogicJwtForStateless;
@@ -34,9 +31,13 @@ import org.springframework.context.annotation.Primary;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
+import static com.picobase.console.PbConsoleConstants.LOGIN_TYPE_ADMIN;
+
 @Configuration
 @Import({AdminController.class,
         ConsoleController.class,
+        CollectionController.class,
+        RecordController.class,
         SettingsController.class,
         PbConsoleRegister.class,
         PbConsoleExceptionHandler.class,
@@ -54,7 +55,7 @@ public class PbConsoleInject {
         //为普通 user、pbAdmin 用户注入 jwt token实现 ，最终会由 autoconfig 模块注入， 在PbManager中会根据 type 进行 PbAuthZLogic对象的缓存
         PbUtil.setPbAuthZLogic(new PbAuthZLogicJwtForStateless());
 
-        PbAdminUtil.setPbAuthZLogic(new PbAuthZLogicJwtForStateless("pbAdmin"));
+        PbAdminUtil.setPbAuthZLogic(new PbAuthZLogicJwtForStateless(LOGIN_TYPE_ADMIN));
 
     }
 

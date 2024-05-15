@@ -1,31 +1,15 @@
 package com.picobase.console;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
-import com.picobase.console.json.SchemaDeserializer;
-import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.context.PbHolder;
-import com.picobase.exception.PbException;
 import com.picobase.filter.PbServletFilter;
-import com.picobase.json.PbJsonTemplate;
-import com.picobase.jwt.PbAuthZLogicJwtForStateless;
-import com.picobase.logic.authz.PbAuthZLogic;
-import com.picobase.model.AdminModel;
-import com.picobase.model.schema.Schema;
 import com.picobase.router.PbRouter;
-import com.picobase.spring.json.PbJsonTemplateForJackson;
-import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
 import com.picobase.util.PbConstants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 /**
  * Admin 相关 Bean 注册
@@ -89,11 +73,9 @@ public class PbConsoleRegister {
                         setError(e -> e.getMessage());
     }
 
-    private boolean isSomeOneLogin() {
+    public static boolean isSomeOneLogin() {
         return PbUtil.isLogin() || PbAdminUtil.isLogin();
     }
-
-
 
 
 }

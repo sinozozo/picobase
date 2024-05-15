@@ -26,6 +26,6 @@ public interface Err {
     }
 
     static Errors newErrors() {
-        return newErrors();
+        return new Errors();
     }
 }

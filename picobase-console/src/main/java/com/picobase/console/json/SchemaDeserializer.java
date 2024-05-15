@@ -50,7 +50,7 @@ public class SchemaDeserializer extends JsonDeserializer<Schema> {
                         // bindReuquest 时，options为ObjectNode
                         field.setOptions(convertObjectNodeToMap((ObjectNode) fieldNode.get("options")));
                     } else {
-                        // 数据库中读取时，options为ObjectNode
+                        // 数据库中读取时，options为String
                         //这里将options类型转换为Map类型
                         String options = fieldNode.get("options").asText();
                         if (StrUtil.isNotEmpty(options)) {
