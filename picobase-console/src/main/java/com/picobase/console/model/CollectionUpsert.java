@@ -1,4 +1,4 @@
-package com.picobase.console.model.dto;
+package com.picobase.console.model;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -22,7 +22,7 @@ import com.picobase.validator.RuleFunc;
 
 import java.util.*;
 
-import static com.picobase.console.model.dto.validators.Validators.uniqueId;
+import static com.picobase.console.model.validators.Validators.uniqueId;
 import static com.picobase.util.PbConstants.*;
 import static com.picobase.util.PbConstants.CollectionType.*;
 import static com.picobase.util.PbConstants.FieldType.Relation;

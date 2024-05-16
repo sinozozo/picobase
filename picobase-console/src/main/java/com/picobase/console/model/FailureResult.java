@@ -1,4 +1,4 @@
-package com.picobase.console.model.dto;
+package com.picobase.console.model;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

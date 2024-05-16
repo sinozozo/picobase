@@ -1,4 +1,4 @@
-package com.picobase.console.model.dto;
+package com.picobase.console.model;
 
 import com.picobase.PbUtil;
 import com.picobase.validator.Errors;
@@ -7,7 +7,7 @@ import com.picobase.validator.Is;
 import static com.picobase.validator.Validation.*;
 
 /**
- *  登录请求 DTO
+ * 登录请求 DTO
  */
 public class AdminLogin {
     private String identity;
@@ -32,9 +32,9 @@ public class AdminLogin {
     }
 
     public Errors validate() {
-       return  PbUtil.validate(this,
-                field("identity",this.identity, required,length(1,255), Is.EmailFormat),
-                field("password",this.password, required,length(6,255)));
+        return PbUtil.validate(this,
+                field("identity", this.identity, required, length(1, 255), Is.EmailFormat),
+                field("password", this.password, required, length(6, 255)));
     }
 
     @Override

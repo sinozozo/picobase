@@ -1,4 +1,4 @@
-package com.picobase.console.model.dto.validators;
+package com.picobase.console.model.validators;
 
 
 import com.picobase.PbUtil;

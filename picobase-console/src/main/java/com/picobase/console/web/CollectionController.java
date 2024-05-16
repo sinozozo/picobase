@@ -9,7 +9,7 @@ import com.picobase.console.interceptor.InterceptorFunc;
 import com.picobase.console.interceptor.InterceptorNextFunc;
 import com.picobase.console.interceptor.Interceptors;
 import com.picobase.console.mapper.CollectionMapper;
-import com.picobase.console.model.dto.CollectionUpsert;
+import com.picobase.console.model.CollectionUpsert;
 import com.picobase.model.CollectionModel;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
