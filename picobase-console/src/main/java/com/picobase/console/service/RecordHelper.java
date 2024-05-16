@@ -1,4 +1,4 @@
-package com.picobase.console.util;
+package com.picobase.console.service;
 
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.ArrayUtil;
@@ -20,7 +20,6 @@ import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.resolver.RecordFieldResolver;
 import com.picobase.persistence.resolver.ResultCouple;
-import com.picobase.search.PbProvider;
 import com.picobase.search.SearchFilter;
 
 import java.nio.charset.StandardCharsets;
@@ -29,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.picobase.console.PbConsoleConstants.ExpandQueryParam;
 import static com.picobase.console.PbConsoleConstants.REQUEST_INFO_KEY;
 import static com.picobase.persistence.dbx.DbxUtil.quoteSimpleColumnName;
 import static com.picobase.persistence.dbx.DbxUtil.snakeCase;
+import static com.picobase.util.PbConstants.QueryParam.*;
 
 public class RecordHelper {
 
@@ -113,7 +112,7 @@ public class RecordHelper {
     }
 
     // Define the rule query parameters and the admin-only rule fields
-    private static String[] ruleQueryParams = {PbProvider.FilterQueryParam, PbProvider.SortQueryParam};
+    private static String[] ruleQueryParams = {FILTER, SORT};
     private static String[] adminOnlyRuleFields = {"@collection.", "@request."};
 
 
@@ -164,7 +163,7 @@ public class RecordHelper {
         var expands = defaultExpands;
         UrlQuery urlQuery = UrlQuery.of(PbHolder.getRequest().getQueryString(), StandardCharsets.UTF_8);
 
-        var param = (String) urlQuery.get(ExpandQueryParam);
+        var param = (String) urlQuery.get(EXPAND);
         if (StrUtil.isNotEmpty(param)) {
             expands = ArrayUtil.append(expands, param.split(",", -1));
         }

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.picobase.console.json.LocalDateTimeDeserializer;
 import com.picobase.console.json.LocalDateTimeSerializer;
+import com.picobase.console.json.RecordSerializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
 import com.picobase.console.web.interceptor.LoadCollectionInterceptor;
 import com.picobase.model.AdminModel;
+import com.picobase.model.RecordModel;
 import com.picobase.model.schema.Schema;
 import com.picobase.persistence.mapper.PbMapperManager;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +51,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //配置jackson mixin 不污染影响 pb core中的实体
         objectMapper.addMixIn(AdminModel.class, AdminModelMixIn.class);
         objectMapper.addMixIn(Schema.class, SchemaMixIn.class);
+
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+        simpleModule.addSerializer(RecordModel.class, new RecordSerializer());
         objectMapper.registerModule(simpleModule);
         converter.setObjectMapper(objectMapper);
         /**

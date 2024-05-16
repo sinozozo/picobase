@@ -9,6 +9,7 @@ import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
 import com.picobase.console.json.LocalDateTimeDeserializer;
 import com.picobase.console.json.LocalDateTimeSerializer;
+import com.picobase.console.json.RecordSerializer;
 import com.picobase.console.json.SchemaDeserializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
@@ -18,6 +19,7 @@ import com.picobase.exception.PbException;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.jwt.PbAuthZLogicJwtForStateless;
 import com.picobase.model.AdminModel;
+import com.picobase.model.RecordModel;
 import com.picobase.model.schema.Schema;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.spring.json.PbJsonTemplateForJackson;
@@ -106,6 +108,7 @@ public class PbConsoleInject {
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(Schema.class, new SchemaDeserializer());
+        simpleModule.addSerializer(RecordModel.class, new RecordSerializer());
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         simpleModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         objectMapper.registerModule(simpleModule);

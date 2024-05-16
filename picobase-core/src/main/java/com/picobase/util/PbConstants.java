@@ -289,4 +289,16 @@ public final class PbConstants {
 
     public static final int MAX_PER_PAGE = 500;
 
+
+    public static class QueryParam {
+        public static final String SKIP_TOTAL = "skipTotal";
+        public static final String SKIP_DATA = "skipData";
+        public static final String PAGE = "page";
+        public static final String PER_PAGE = "perPage";
+        public static final String SORT = "sort";
+        public static final String FILTER = "filter";
+        public static final String FIELDS = "fields";
+
+        public static final String EXPAND = "expand";
+    }
 }

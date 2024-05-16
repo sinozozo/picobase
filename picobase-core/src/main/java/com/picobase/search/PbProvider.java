@@ -22,6 +22,7 @@ import java.util.concurrent.*;
 
 import static com.picobase.util.PbConstants.DEFAULT_PER_PAGE;
 import static com.picobase.util.PbConstants.MAX_PER_PAGE;
+import static com.picobase.util.PbConstants.QueryParam.*;
 
 
 public class PbProvider {
@@ -29,13 +30,6 @@ public class PbProvider {
     // Execute the 2 queries concurrently
 
     private static final PbLog log = PbManager.getLog();
-
-    private static final String SkipTotalQueryParam = "skipTotal";
-    private static final String SkipDataQueryParam = "skipData";
-    private static final String PageQueryParam = "page";
-    private static final String PerPageQueryParam = "perPage";
-    public static final String SortQueryParam = "sort";
-    public static final String FilterQueryParam = "filter";
 
 
     private final FieldResolver fieldResolver;
@@ -235,32 +229,32 @@ public class PbProvider {
     private void parse(String urlQuery) {
         var params = UrlQuery.of(urlQuery, StandardCharsets.UTF_8);
 
-        var skipTotal = params.get(SkipTotalQueryParam);
+        var skipTotal = params.get(SKIP_TOTAL);
         if (StrUtil.isNotEmpty(skipTotal)) {
             this.skipTotal(Convert.toBool(skipTotal));
         }
 
-        var skipData = params.get(SkipDataQueryParam);
+        var skipData = params.get(SKIP_DATA);
         if (StrUtil.isNotEmpty(skipData)) {
             this.skipData(Convert.toBool(skipData));
         }
 
-        var pageQueryParam = params.get(PageQueryParam);
+        var pageQueryParam = params.get(PAGE);
         if (StrUtil.isNotEmpty(pageQueryParam)) {
             this.page(Convert.toInt(pageQueryParam));
         }
 
-        var perPageQueryParam = params.get(PerPageQueryParam);
+        var perPageQueryParam = params.get(PER_PAGE);
         if (StrUtil.isNotEmpty(perPageQueryParam)) {
             this.perPage(Convert.toInt(perPageQueryParam));
         }
 
-        var sortQueryParam = params.get(SortQueryParam);
+        var sortQueryParam = params.get(SORT);
         if (StrUtil.isNotEmpty(sortQueryParam)) {
             SortField.parseSortFromString(sortQueryParam.toString())
                     .forEach(this::addSort);
         }
-        var filterQueryParam = params.get(FilterQueryParam);
+        var filterQueryParam = params.get(FILTER);
         if (StrUtil.isNotEmpty(filterQueryParam)) {
             this.addFilter(new SearchFilter(filterQueryParam.toString()));
         }

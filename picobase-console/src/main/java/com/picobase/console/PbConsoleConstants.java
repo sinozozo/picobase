@@ -8,8 +8,6 @@ public class PbConsoleConstants {
 
     public static final String REQUEST_INFO_KEY = "requestInfo";
 
-    public static final String ExpandQueryParam = "expand";
-
 
     /**
      * 当用户配置了无需登录或配置文件中配置了管理员账号密码 使用该值作为 admin id
