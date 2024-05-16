@@ -1,5 +1,6 @@
 package com.picobase.model.schema;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.json.PbJsonTemplate;
@@ -7,8 +8,6 @@ import com.picobase.model.schema.fieldoptions.*;
 import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.util.StringEscapeUtils;
 import com.picobase.util.TypeSafe;
-
-import java.util.List;
 
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_ADD;
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_SUBTRACT;
@@ -196,6 +195,10 @@ public class SchemaField {
         }
     }
 
+    /**
+     * PrepareValueWithModifier returns normalized and properly formatted field value
+     * by "merging" baseValue with the modifierValue based on the specified modifier (+ or -).
+     */
     public Object prepareValueWithModifier(Object baseValue, String modifier, Object modifierValue) {
         var resolvedValue = baseValue;
         switch (type) {
@@ -210,7 +213,7 @@ public class SchemaField {
             case Select, Relation -> {
                 switch (modifier) {
                     case FIELD_VALUE_MODIFIER_ADD ->
-                            resolvedValue = List.of(ListUtil.toUniqueStringList(baseValue), ListUtil.toUniqueStringList(modifierValue));
+                            resolvedValue = CollUtil.addAllIfNotContains(ListUtil.toUniqueStringList(baseValue), ListUtil.toUniqueStringList(modifierValue));
                     case FIELD_VALUE_MODIFIER_SUBTRACT ->
                             resolvedValue = ListUtil.subtractList(ListUtil.toUniqueStringList(baseValue), ListUtil.toUniqueStringList(modifierValue));
                 }

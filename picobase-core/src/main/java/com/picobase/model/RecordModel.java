@@ -3,6 +3,7 @@ package com.picobase.model;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.exception.PbException;
 import com.picobase.model.schema.Schema;
@@ -309,7 +310,7 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
             for (String m : modifiers) {
                 if (clone.containsKey(key + m)) {
                     var mv = clone.get(key + m);
-                    if (clone.containsKey(key)) {
+                    if (!clone.containsKey(key)) {
                         // get base value from the merged data
                         clone.put(key, recordData.get().get(key));
                     }
@@ -339,7 +340,8 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
             List<String> toDelete = new ArrayList<>();
             for (String name : oldNames) {
                 String suffixedKey = key + "." + name;
-                if (Objects.nonNull(clone.get(suffixedKey)) && Objects.equals(clone.get(suffixedKey).toString(), "")) {
+                if (clone.containsKey(suffixedKey) && StrUtil.isEmptyIfStr(clone.get(suffixedKey))) {//包含key 且value 为 empty
+                    //当前缀为 file.xxx = null ,表示集合中文件名为 xxx 的文件被清除。
                     toDelete.add(name);
                     clone.remove(suffixedKey);
                 }
@@ -347,8 +349,8 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
 
             // search for individual file index to delete (eg. "file.0 = null")
             Pattern keyExp = Pattern.compile("^" + Pattern.quote(key) + "\\.\\d+$");
-            for (String indexedKey : clone.keySet()) {
-                if (keyExp.matcher(indexedKey).matches() && Objects.equals(clone.get(indexedKey).toString(), "")) {
+            for (String indexedKey : new HashSet<>(clone.keySet())) {
+                if (keyExp.matcher(indexedKey).matches() && StrUtil.isEmptyIfStr(clone.get(indexedKey))) {
                     int index = Integer.parseInt(indexedKey.substring(key.length() + 1));
                     if (index < 0 || index >= oldNames.size()) {
                         continue;
@@ -643,5 +645,13 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
     public RecordModel setIgnoreEmailVisibility(boolean ignoreEmailVisibility) {
         this.ignoreEmailVisibility = ignoreEmailVisibility;
         return this;
+    }
+
+    public boolean isAlreadyExported() {
+        return alreadyExported;
+    }
+
+    public ConcurrentHashMap<String, Object> getPublicData() {
+        return publicData;
     }
 }
