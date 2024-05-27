@@ -1,11 +1,11 @@
 package com.picobase.console.config;
 
 
-import com.picobase.config.PbConfig;
+import java.nio.file.Paths;
 
-/**
- * Admin 模块配置对象
- */
+import static com.picobase.console.PbConsoleConstants.defaultDataDir;
+import static com.picobase.console.PbConsoleConstants.localStorageDirName;
+
 public class PbConsoleConfig {
 
     /**
@@ -35,9 +35,13 @@ public class PbConsoleConfig {
     private String exclude = "";
 
     /**
-     *  是否打印执行sql
+     * 是否打印执行sql
      */
     private boolean sqlLogEnable = false;
+
+
+    private S3Config s3Config;
+    private String dataDirPath = Paths.get(System.getProperty("user.dir"), defaultDataDir, localStorageDirName).toString();
 
     public Boolean getAuth() {
         return auth;
@@ -91,11 +95,22 @@ public class PbConsoleConfig {
 
     /**
      * 是否打印 mapper 构造的 sql
+     *
      * @param sqlLog true 打印 , false 不打印
      * @return 对象自身
      */
     public PbConsoleConfig setSqlLogEnable(boolean sqlLog) {
         this.sqlLogEnable = sqlLog;
+        return this;
+    }
+
+
+    public S3Config getS3Config() {
+        return s3Config;
+    }
+
+    public PbConsoleConfig setS3Config(S3Config s3Config) {
+        this.s3Config = s3Config;
         return this;
     }
 
@@ -108,6 +123,16 @@ public class PbConsoleConfig {
                 ", include='" + include + '\'' +
                 ", exclude='" + exclude + '\'' +
                 ", sqlLogEnable=" + sqlLogEnable +
+                ", s3Config=" + s3Config +
                 '}';
+    }
+
+    public String getDataDirPath() {
+        return this.dataDirPath;
+    }
+
+    public PbConsoleConfig setDataDirPath(String dataDirPath) {
+        this.dataDirPath = dataDirPath;
+        return this;
     }
 }

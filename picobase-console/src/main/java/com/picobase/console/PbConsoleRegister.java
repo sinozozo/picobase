@@ -2,8 +2,12 @@ package com.picobase.console;
 
 import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
+import com.picobase.console.filesystem.LocalFileSystem;
+import com.picobase.console.filesystem.S3FileSystem;
 import com.picobase.context.PbHolder;
+import com.picobase.file.PbFileSystem;
 import com.picobase.filter.PbServletFilter;
+import com.picobase.json.PbJsonTemplate;
 import com.picobase.router.PbRouter;
 import com.picobase.util.PbConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -75,6 +79,30 @@ public class PbConsoleRegister {
 
     public static boolean isSomeOneLogin() {
         return PbUtil.isLogin() || PbAdminUtil.isLogin();
+    }
+
+
+    @Bean
+    public PbFileSystem pbFileSystem(PbConsoleConfig config, PbJsonTemplate jsonTemplate) throws Exception {
+        PbFileSystem fileSystem;
+        if (doesNotExistClass("com.amazonaws.services.s3.AmazonS3") || config.getS3Config() == null) {
+            fileSystem = new LocalFileSystem(config, jsonTemplate);
+        } else {
+            fileSystem = new S3FileSystem(config);
+        }
+        fileSystem.init();
+
+
+        return fileSystem;
+    }
+
+    public static boolean doesNotExistClass(String name) {
+        try {
+            Class.forName(name);
+            return false;
+        } catch (ClassNotFoundException e) {
+            return true;
+        }
     }
 
 

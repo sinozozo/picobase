@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * The Mysql database basic operation.
@@ -339,4 +340,7 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
     }
 
 
+    default Object runInTransaction(TransactionTemplate transactionTemplate, Function<Object, Object> action) throws IllegalTransactionStateException {
+        return transactionTemplate.execute(status -> action.apply(status));
+    }
 }

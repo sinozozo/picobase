@@ -4,6 +4,7 @@ import com.picobase.PbManager;
 import com.picobase.application.ApplicationInfo;
 import com.picobase.context.model.PbRequest;
 import com.picobase.exception.PbException;
+import com.picobase.file.PbFile;
 import com.picobase.servlet.error.PbServletErrorCode;
 import com.picobase.util.CommonHelper;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 对 PbRequest 包装类的实现（Servlet 版）
@@ -167,6 +169,27 @@ public class PbRequestForServlet extends PbRequestWithContentCache implements Pb
     @Override
     public Enumeration<String> getHeaderNames() {
         return request.getHeaderNames();
+    }
+
+    @Override
+    public List<PbFile> getPart(String name) {
+        try {
+            return request.getParts().stream().filter(part -> part.getName().equals(name) && part.getSize() > 0).map(part ->
+                    {
+                        try {
+                            return PbFile.newFileFromMultipart(part.getName(),
+                                    part.getSubmittedFileName(),
+                                    part.getSize(),
+                                    part.getContentType(),
+                                    part.getInputStream());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+            ).collect(Collectors.toList());
+        } catch (IOException | ServletException e) {
+            throw new PbException(e);
+        }
     }
 
 

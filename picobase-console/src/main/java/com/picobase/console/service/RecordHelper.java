@@ -23,10 +23,8 @@ import com.picobase.persistence.resolver.ResultCouple;
 import com.picobase.search.SearchFilter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static com.picobase.console.PbConsoleConstants.REQUEST_INFO_KEY;
 import static com.picobase.persistence.dbx.DbxUtil.quoteSimpleColumnName;
@@ -84,7 +82,7 @@ public class RecordHelper {
             requestInfo.getQuery().putAll(urlQuery.getQueryMap());
         }
         if (PbHolder.getRequest().getCachedContent() != null) {
-            requestInfo.getData().putAll(PbUtil.createObjFromRequest(Map.class).get());
+            requestInfo.getData().putAll(PbUtil.createObjFromRequest(Map.class).get());// data -> key:String[]
         }
 
         PbHolder.getStorage().set(REQUEST_INFO_KEY, requestInfo);
@@ -278,5 +276,34 @@ public class RecordHelper {
         throw new IllegalStateException("cant get the RequestInfo obj");
     }
 
+
+    // hasAuthManageAccess checks whether the client is allowed to have full
+    // [forms.RecordUpsert] auth management permissions
+    // (aka. allowing to change system auth fields without oldPassword).
+    public static boolean hasAuthManageAccess(RecordModel record, RequestInfo requestInfo) {
+        if (!record.getCollection().isAuth()) {
+            return false;
+        }
+
+        String manageRule = record.getCollection().authOptions().getManageRule();
+        if (StrUtil.isBlank(manageRule)) {
+            return false; // only for admins (manageRule can't be empty)
+        }
+
+        if (Objects.isNull(requestInfo) || Objects.isNull(requestInfo.getAuthRecord())) {
+            return false; // no auth record
+        }
+
+        Consumer<SelectQuery> ruleConsumer = selectQuery -> {
+            RecordFieldResolver resolver = new RecordFieldResolver(collectionMapper.collFetchFun, record.getCollection(), requestInfo, true);
+            Expression expression = new SearchFilter(manageRule).buildExpr(resolver);
+            resolver.updateQuery(selectQuery);
+            selectQuery.andWhere(expression);
+        };
+
+        recordMapper.findRecordById(record.getCollection().getId(), record.getId(), ruleConsumer);
+
+        return true;
+    }
 
 }

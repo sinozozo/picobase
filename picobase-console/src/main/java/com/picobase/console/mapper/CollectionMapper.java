@@ -24,6 +24,7 @@ import com.picobase.model.schema.fieldoptions.JsonOptions;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
 import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.model.Index;
 import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.StorageContextHolder;
@@ -404,9 +405,6 @@ public class CollectionMapper extends AbstractBeanPropertyRowMapper<CollectionMo
         return this.selectList(null, names, null);
     }
 
-    private List<CollectionModel> findCollectionsByType(String type) {
-        return this.selectList(type, null, null);
-    }
 
     private List<CollectionModel> findCollectionsByExcludeIds(List<String> excludeIds) {
         return this.selectList(null, null, excludeIds);
@@ -922,5 +920,22 @@ public class CollectionMapper extends AbstractBeanPropertyRowMapper<CollectionMo
             return PbUtil.getPbDbxBuilder().insert(getTableName(), map);
         }
         throw new RuntimeException("数据类型不匹配");
+    }
+
+    @Override
+    public Query update(Object data, Expression where) {
+        if (data instanceof CollectionModel collection) {
+            Map<String, Object> map = BeanUtil.beanToMap(data);
+            //序列化成json
+            map.put("schema", PbManager.getPbJsonTemplate().toJsonString(collection.getSchema()));
+            map.put("indexes", PbManager.getPbJsonTemplate().toJsonString(collection.getIndexes()));
+            map.put("options", PbManager.getPbJsonTemplate().toJsonString(collection.getOptions()));
+            return PbUtil.getPbDbxBuilder().update(getTableName(), map, where);
+        }
+        throw new RuntimeException("数据类型不匹配");
+    }
+
+    public List<CollectionModel> findCollectionsByType(String collectionType) {
+        return modelQuery().andWhere(Expression.newHashExpr(Map.of("type", collectionType))).orderBy("created ASC").all(CollectionModel.class);
     }
 }

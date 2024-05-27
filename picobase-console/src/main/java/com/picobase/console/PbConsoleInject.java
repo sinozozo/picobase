@@ -12,10 +12,13 @@ import com.picobase.console.json.LocalDateTimeSerializer;
 import com.picobase.console.json.RecordSerializer;
 import com.picobase.console.json.SchemaDeserializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
+import com.picobase.console.json.mixin.PbFileMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
 import com.picobase.console.mapper.MapperManagerWithProxy;
 import com.picobase.console.web.*;
 import com.picobase.exception.PbException;
+import com.picobase.file.PbFile;
+import com.picobase.file.PbFileSystem;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.jwt.PbAuthZLogicJwtForStateless;
 import com.picobase.model.AdminModel;
@@ -46,11 +49,17 @@ import static com.picobase.console.PbConsoleConstants.LOGIN_TYPE_ADMIN;
         WebMvcConfig.class
 })
 public class PbConsoleInject {
+
+
     @Autowired(required = false)
     public void setPbAdminConfig(PbConsoleConfig config) {
         PbConsoleManager.setConfig(config);
     }
 
+    @Autowired(required = false)
+    public void setPbFileSystem(PbFileSystem fileSystem) {
+        PbConsoleManager.setPbFileSystem(fileSystem);
+    }
 
     @PostConstruct
     public void injectPbAuthZLogic() {
@@ -98,6 +107,7 @@ public class PbConsoleInject {
         // 在这里配置你需要的ObjectMapper属性
         objectMapper.addMixIn(AdminModel.class, AdminModelMixIn.class);
         objectMapper.addMixIn(Schema.class, SchemaMixIn.class);
+        objectMapper.addMixIn(PbFile.class, PbFileMixIn.class);
 
         //反序列化时 遇到未知字段不报错
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

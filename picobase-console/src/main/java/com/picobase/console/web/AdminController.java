@@ -131,7 +131,7 @@ public class AdminController {
         var fieldResolver = FieldResolver.newSimpleFieldResolver(
                 "id", "created", "updated", "name", "email"
         );
-        Page<AdminModel> admins = PbUtil.query(fieldResolver, AdminModel.class);
+        Page<AdminModel> admins = PbUtil.queryPage(fieldResolver, AdminModel.class);
 
         PbUtil.post(new AdminsListEvent(admins));
 

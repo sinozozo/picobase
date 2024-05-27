@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.picobase.context.PbHolder;
 import com.picobase.context.model.PbRequest;
-import com.picobase.exception.PbException;
+import com.picobase.model.RecordModel;
 import com.picobase.util.Tokenizer;
 
 import java.io.IOException;
@@ -60,14 +60,18 @@ public abstract class AbstractFieldsFilterProcessor<T> extends JsonSerializer<T>
             list.forEach(item -> {
                 if (item instanceof Map m) {
                     pickMapFields(m, parsedFields);
+                } else if (item instanceof RecordModel record) {
+                    pickParsedFields(convertBeanToExportedMap((T) record), parsedFields);
+                } else {
+                    throw new IllegalArgumentException("不应存在的类型");
                 }
-                throw new PbException("List中的类型不应该出现非Map结构");
+
                 //pickMapFields(item, parsedFields);
             });
         } else if (data instanceof Map map) {
             pickMapFields(map, parsedFields);
-        } else {
-            throw new PbException("not supported yet");
+        } else if (data instanceof RecordModel record) { //当 record 中包含 expand 数据时
+            pickParsedFields(convertBeanToExportedMap((T) record), parsedFields);
         }
 
     }

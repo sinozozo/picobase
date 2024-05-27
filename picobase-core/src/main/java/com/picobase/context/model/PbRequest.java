@@ -3,6 +3,7 @@ package com.picobase.context.model;
 
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.PbException;
+import com.picobase.file.PbFile;
 import com.picobase.util.CommonHelper;
 
 import java.util.Enumeration;
@@ -199,4 +200,6 @@ public interface PbRequest {
 
 
     Enumeration<String> getHeaderNames();
+
+    List<PbFile> getPart(String name);
 }

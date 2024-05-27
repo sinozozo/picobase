@@ -18,4 +18,13 @@ public class PbConsoleConstants {
      * 多账号体系下的类型标识
      */
     public static final String LOGIN_TYPE_ADMIN = "pbAdmin";
+
+    /**
+     * form表单中可以包含的特别json payload
+     */
+    public static final String MultipartJsonKey = "@jsonPayload";
+
+
+    public static final String defaultDataDir = "pb_data";
+    public static final String localStorageDirName = "storage";
 }

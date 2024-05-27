@@ -23,6 +23,7 @@ import com.picobase.validator.Errors;
 import com.picobase.validator.FieldRules;
 import com.picobase.validator.Validation;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -381,30 +382,34 @@ public final class PbUtil {
         return PbManager.getPbMapperManager().findMapper(clazz);
     }
 
-    public static <T> Page<T> query(FieldResolver resolver, SelectQuery query, Class<T> model) {
+    public static <T> Page<T> queryPage(FieldResolver resolver, SelectQuery query, Class<T> model) {
         return new PbProvider(resolver).query(query).parseAndExec(model);
     }
 
-    public static <T> Page<T> query(SelectQuery query, Class<T> model) {
-        return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
+    public static <T> Page<T> queryPage(SelectQuery query, Class<T> model) {
+        return queryPage(FieldResolver.newSimpleFieldResolver("*"), query, model);
     }
 
-    public static <T> Page<T> query(Class<T> model) {
+    public static <T> Page<T> queryPage(Class<T> model) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
             throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
         }
-        return query(FieldResolver.newSimpleFieldResolver("*"), query, model);
+        return queryPage(FieldResolver.newSimpleFieldResolver("*"), query, model);
     }
 
-    public static <T> Page<T> query(FieldResolver resolver, Class<T> model) {
+    public static <T> Page<T> queryPage(FieldResolver resolver, Class<T> model) {
         PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
             throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
         }
-        return query(resolver, query, model);
+        return queryPage(resolver, query, model);
+    }
+
+    public static <T> List<T> query(SelectQuery query, Class<T> model) {
+        return new PbProvider(FieldResolver.newSimpleFieldResolver("*")).skipTotal(true).query(query).parseAndExec(model).getItems();
     }
 
     public static int update(Object data, Expression where) {
@@ -448,7 +453,7 @@ public final class PbUtil {
     }
 
     /**
-     * 获取当前请求线程下的 Collection
+     * 获取当前请求线程下的 Collection，需配合LoadCollection拦截器使用
      *
      * @return CollectionModel
      */

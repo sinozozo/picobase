@@ -20,7 +20,7 @@ public class RecordTest {
 
     //TODO 文档中追加使用说明
     @Test
-    public void testRecordReplaceModifers() throws JSONException {
+    public void testRecordReplaceModifiers() throws JSONException {
         CollectionModel collection = new CollectionModel();
         Schema schema = Schema.newSchema();
 

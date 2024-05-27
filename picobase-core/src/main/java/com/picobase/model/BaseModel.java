@@ -4,11 +4,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 import static com.picobase.util.PbConstants.DEFAULT_ID_LENGTH;
 
-public abstract class BaseModel implements Model{
+public abstract class BaseModel implements Model {
     private String id;
     private LocalDateTime created;
     private LocalDateTime updated;
@@ -55,7 +54,7 @@ public abstract class BaseModel implements Model{
         this.id = RandomUtil.randomString(DEFAULT_ID_LENGTH);
     }
 
-    public boolean hasId(){
+    public boolean hasId() {
         return StrUtil.isNotEmpty(id);
     }
 }

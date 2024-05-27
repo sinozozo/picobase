@@ -188,6 +188,8 @@ public final class PbConstants {
     public static class TableName {
         public static final String ADMIN = "pb_admin";
         public static final String COLLECTION = "pb_collection";
+        public static final String EXTERNAL_AUTHS = "pb_external_auths";
+
 
     }
 

@@ -18,11 +18,11 @@ import javassist.ClassPool;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * 注册 PicoBase 所需要的Bean
  * <p> Bean 的注册与注入应该分开在两个文件中，否则在某些场景下会造成循环依赖 </p>
  */
-public class PbBeanRegister implements ApplicationListener<ApplicationContextEvent> {
+public class PbBeanRegister {
 
 
     /**
@@ -95,7 +95,7 @@ public class PbBeanRegister implements ApplicationListener<ApplicationContextEve
 
     @Bean
     public PbDatabaseOperate getPbDatabaseOperate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate, PbMapperManager mapperManager) {
-        return new MysqlDatabaseOperateImpl(jdbcTemplate,namedParameterJdbcTemplate, transactionTemplate,mapperManager);
+        return new MysqlDatabaseOperateImpl(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate, mapperManager);
     }
 
     @Bean
@@ -111,30 +111,32 @@ public class PbBeanRegister implements ApplicationListener<ApplicationContextEve
         return new MysqlPbDbxBuilder(operate);
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationContextEvent event) {
 
-        if (event instanceof ContextRefreshedEvent) { //当 Spring 容器初始化完成后
-            if (PbManager.getPbEventRegisterProcessor()==null) {
-                return;
-            }
-            // 获取所有 bean 的名称
-            String[] beanNames = event.getApplicationContext().getBeanDefinitionNames();
-            // 遍历所有 bean
-            for (String beanName : beanNames) {
-                Object bean = event.getApplicationContext().getBean(beanName);
-                PbManager.getPbEventRegisterProcessor().postProcessAfterInitialization(bean);
-            }
+    @EventListener(ContextRefreshedEvent.class)
+    public void onContextRefreshedEvent(ApplicationContextEvent event) {
+        if (PbManager.getPbEventRegisterProcessor() == null) {
+            return;
+        }
+        // 获取所有 bean 的名称
+        String[] beanNames = event.getApplicationContext().getBeanDefinitionNames();
+        // 遍历所有 bean
+        for (String beanName : beanNames) {
+            Object bean = event.getApplicationContext().getBean(beanName);
+            PbManager.getPbEventRegisterProcessor().postProcessAfterInitialization(bean);
+        }
 
-        } else if (event instanceof ContextClosedEvent) {
-            if (PbManager.getPbEventBus() != null) {
-                //优雅停机
-                PbManager.getPbEventBus().destroy();
-                //spring 应用一般会自动关掉ForkJoinPool线程池
-                shutdownForkJoinPool();
-            }
+    }
+
+    @EventListener(ContextClosedEvent.class)
+    public void onContextClosedEvent() {
+        if (PbManager.getPbEventBus() != null) {
+            //优雅停机
+            PbManager.getPbEventBus().destroy();
+            //spring 应用一般会自动关掉ForkJoinPool线程池
+            shutdownForkJoinPool();
         }
     }
+
 
     private static void shutdownForkJoinPool() {
         try {
@@ -147,7 +149,6 @@ public class PbBeanRegister implements ApplicationListener<ApplicationContextEve
             throw new RuntimeException(e);
         }
     }
-
 
 
 }

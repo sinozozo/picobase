@@ -13,6 +13,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Mysql operation
@@ -129,6 +130,12 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
     @Override
     public Boolean update(List<ModifyRequest> modifyRequests, BiConsumer<Integer, Throwable> consumer) {
         return update(transactionTemplate, jdbcTemplate, namedParameterJdbcTemplate, modifyRequests, consumer);
+    }
+
+    @Override
+    public Object runInTransaction(Function<Object, Object> action) {
+        return runInTransaction(transactionTemplate, action);
+
     }
 
     @Override

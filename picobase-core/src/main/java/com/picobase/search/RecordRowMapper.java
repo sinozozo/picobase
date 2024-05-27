@@ -70,6 +70,8 @@ public class RecordRowMapper implements PbRowMapper<RecordModel> {
 
         var record = new RecordModel(collection);
         record.load(resultMap);
+        // 数据库中加载的record new 属性均为 false；
+        record.setNew(false);
         //record.publicExport(); //公共字段和结果导出 ,最终还会被Controller后置AOP拦截器修改 根据 request 中 fields param 修改publicData
         return record;
     }

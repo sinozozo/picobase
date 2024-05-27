@@ -38,6 +38,21 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
     private ConcurrentHashMap<String, Object> publicData; // all public export data
     private boolean alreadyExported = false;
 
+    /**
+     * 默认 新建时 为new 对象， 数据库加载后 变为 false
+     */
+    private boolean isNew = true;
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public BaseModel setNew(boolean aNew) {
+        isNew = aNew;
+        return this;
+    }
+
+
     public RecordModel(CollectionModel collection) {
         this.collection = collection;
         this.data = new Store<>();
@@ -653,5 +668,50 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
 
     public ConcurrentHashMap<String, Object> getPublicData() {
         return publicData;
+    }
+
+    public Map<String, Object> getOriginalData() {
+        return originalData;
+    }
+
+
+    public static List<RecordModel> newRecordsFromNullStringMaps(CollectionModel collection, List<Map<String, Object>> rows) {//TODO 考虑移除
+        List<RecordModel> result = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            result.add(newRecordFromNullStringMap(collection, row));
+        }
+        return result;
+    }
+
+    public static RecordModel newRecordFromNullStringMap(CollectionModel collection, Map<String, Object> data) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // Load schema fields
+        for (SchemaField field : collection.getSchema().getFields()) {
+            resultMap.put(field.getName(), nullStringMapValue(data, field.getName()));
+        }
+
+        // Load base model fields
+        for (String name : baseModelFieldNames) {
+            resultMap.put(name, nullStringMapValue(data, name));
+        }
+
+        // Load auth fields
+        if (collection.isAuth()) {
+            for (String name : authFieldNames) {
+                resultMap.put(name, nullStringMapValue(data, name));
+            }
+        }
+
+        RecordModel record = new RecordModel(collection);
+        record.load(resultMap);
+        record.setNew(false);// 这里标记数据为非New
+
+
+        return record;
+    }
+
+    public static Object nullStringMapValue(Map<String, Object> data, String key) {//TODO 考虑移除
+        return data.get(key);
     }
 }

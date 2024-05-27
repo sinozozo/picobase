@@ -204,7 +204,7 @@ public class SelectQuery implements Cloneable {
         return this.build().row();
     }
 
-    @Deprecated
+    
     public <T> List<T> all(Class<T> clazz) {
         if (this.from.size() == 0) {
             //TODO 这里通过反射获取表名

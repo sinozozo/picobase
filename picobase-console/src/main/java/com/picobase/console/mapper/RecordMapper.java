@@ -1,16 +1,24 @@
 package com.picobase.console.mapper;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.picobase.PbManager;
 import com.picobase.PbUtil;
+import com.picobase.console.error.BadRequestException;
+import com.picobase.console.model.RecordUpsert;
 import com.picobase.model.CollectionModel;
+import com.picobase.model.ExternalAuthModel;
 import com.picobase.model.RecordModel;
+import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
 import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.persistence.resolver.ResultCouple;
 import com.picobase.search.RecordRowMapper;
+import com.picobase.util.PbConstants;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -20,8 +28,8 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.picobase.persistence.dbx.DbxUtil.quoteColumnName;
-import static com.picobase.persistence.dbx.DbxUtil.quoteSimpleColumnName;
+import static com.picobase.model.RecordModel.newRecordsFromNullStringMaps;
+import static com.picobase.persistence.dbx.DbxUtil.*;
 import static com.picobase.persistence.dbx.expression.Expression.*;
 import static com.picobase.persistence.resolver.DbUtil.hasSingleColumnUniqueIndex;
 import static com.picobase.persistence.resolver.DbUtil.jsonEach;
@@ -382,6 +390,253 @@ public class RecordMapper extends AbstractBeanPropertyRowMapper {
                 .andWhere(newExpr("`id` = :id OR LOWER(`name`)=:name"
                         , Map.of("id", nameOrId, "name", nameOrId.toLowerCase())))
                 .limit(1).one(CollectionModel.class));
+    }
+
+
+    /**
+     * IsRecordValueUnique checks if the provided key-value pair is a unique Record value.
+     * <p>
+     * For correctness, if the collection is "auth" and the key is "username",
+     * the unique check will be case insensitive.
+     * <p>
+     * NB! Array values (eg. from multiple select fields) are matched
+     * as a serialized json strings (eg. `["a","b"]`), so the value uniqueness
+     * depends on the elements order. Or in other words the following values
+     * are considered different: `[]string{"a","b"}` and `[]string{"b","a"}`
+     */
+    public boolean isRecordValueUnique(String collectionNameOrId, String key, Object value, String... excludeIds) {
+        Optional<CollectionModel> collectionOpt = findCollectionByNameOrId(collectionNameOrId);
+        if (!collectionOpt.isPresent()) {
+            return false;
+        }
+
+        CollectionModel collection = collectionOpt.get();
+
+        Expression expr;
+        if (collection.isAuth() && PbConstants.FieldName.Username.equals(key)) {
+            expr = Expression.newExpr("LOWER(`" + PbConstants.FieldName.Username + "`)=:username", Map.of("username", String.valueOf(value).toLowerCase()));
+        } else {
+            Object normalizedVal;
+            if (value instanceof String[]) {
+                normalizedVal = List.of(value);
+            } else if (value != null && value.getClass().isArray()) {
+                normalizedVal = List.of(value);
+            } else {
+                normalizedVal = value;
+            }
+
+            expr = Expression.newHashExpr(Map.of(columnify(key), normalizedVal));
+        }
+
+
+        SelectQuery query = recordQuery(collection).
+                select("count(*) as total").
+                andWhere(expr).
+                limit(1);
+
+        Set<String> uniqueExcludeIds = Arrays.stream(excludeIds).filter(id -> !StrUtil.isBlank(id)).collect(Collectors.toSet());
+        if (!uniqueExcludeIds.isEmpty()) {
+            query.andWhere(Expression.notIn(collection.getName() + ".id", uniqueExcludeIds));
+        }
+
+        Map<String, Object> row = query.row();
+
+        return Integer.parseInt(row.get("total").toString()) == 0;
+    }
+
+    public String suggestUniqueAuthRecordUsername(String collectionNameOrId, String baseUsername, String... excludeIds) {
+        String username = baseUsername;
+        for (int i = 0; i < 10; i++) {
+            boolean isUnique = isRecordValueUnique(collectionNameOrId, PbConstants.FieldName.Username, username, excludeIds);
+            if (isUnique) {
+                break;
+            }
+            username = baseUsername + RandomUtil.randomInt(3 + i);
+        }
+        return username;
+    }
+
+
+    public void createRecord(RecordModel model) {
+        if (!model.hasId()) {
+            //自动生成 id
+            model.refreshId();
+        }
+
+
+        if (model.getCreated() == null) {
+            model.refreshCreated();
+        }
+
+        if (model.getUpdated() == null) {
+            model.refreshUpdated();
+        }
+
+        // record 数据保存
+        var dataMap = model.columnValueMap();
+        if (StrUtil.isEmpty(String.valueOf(dataMap.get("id")))) {
+            dataMap.put("id", model.getId());
+        }
+        super.insert(dataMap).execute();
+
+
+    }
+
+
+    public void updateRecord(RecordModel model) {
+        if (!model.hasId()) {
+            throw new BadRequestException("missing model id");
+        }
+
+        if (model.getCreated() == null) {
+            model.refreshCreated();
+        }
+
+        model.refreshUpdated();
+
+        /**
+         * 执行更新操作，这里没有调用父类 update ， 因为model是动态的 record ，并不知道具体操作哪张表
+         */
+        PbUtil.getPbDbxBuilder().update(model.tableName(), BeanUtil.beanToMap(model.columnValueMap()), newHashExpr(Map.of("id", model.getId()))).execute();
+
+    }
+
+
+    /**
+     * // DeleteRecord deletes the provided Record model.
+     * //
+     * // This method will also cascade the delete operation to all linked
+     * // relational records (delete or unset, depending on the rel settings).
+     * //
+     * // The delete operation may fail if the record is part of a required
+     * // reference in another record (aka. cannot be deleted or unset).
+     */
+
+    public void deleteRecord(RecordModel record) {
+        CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
+
+        // fetch rel references (if any)
+        //
+        // note: the select is outside of the transaction to minimize
+        // SQLITE_BUSY errors when mixing read&write in a single transaction
+        Map<CollectionModel, List<SchemaField>> refs = collectionMapper.findCollectionReferences(record.getCollection());
+        PbManager.getPbDatabaseOperate().runInTransaction(state -> {
+            ExternalAuthMapper externalAuthMapper = PbUtil.findMapper(ExternalAuthModel.class);
+
+            // manually trigger delete on any linked external auth to ensure
+            // that the `OnModel*` hooks are triggered
+            if (record.getCollection().isAuth()) {
+                List<ExternalAuthModel> externalAuths = externalAuthMapper.findAllExternalAuthsByRecord(record);
+                externalAuths.forEach(ea -> {
+                    PbUtil.deleteById(ea.getId(), ExternalAuthModel.class);
+                });
+
+            }
+            // delete the record before the relation references to ensure that there
+            // will be no "A<->B" relations to prevent deadlock when calling DeleteRecord recursively
+            PbUtil.deleteById(record.getId(), RecordModel.class);
+            cascadeRecordDelete(record, refs);
+            return null;
+        });
+
+    }
+
+
+    public void cascadeRecordDelete(RecordModel mainRecord, Map<CollectionModel, List<SchemaField>> refs) {
+        // Sort the refs keys to ensure that the cascade events firing order is always the same.
+        // This is not necessary for the operation to function correctly but it helps having deterministic output during testing.
+        List<CollectionModel> sortedRefKeys = new ArrayList<>(refs.keySet());
+        Collections.sort(sortedRefKeys, Comparator.comparing(CollectionModel::getName));
+        for (CollectionModel refCollection : sortedRefKeys) {
+            List<SchemaField> fields = refs.get(refCollection);
+
+            if (refCollection.isView() || fields == null) {
+                continue; // skip missing or view collections
+            }
+
+            for (SchemaField field : fields) {
+                String recordTableName = columnify(refCollection.getName());
+                String prefixedFieldName = recordTableName + "." + columnify(field.getName());
+
+                var query = recordQuery(refCollection);
+
+                if (field.getOptions() instanceof MultiValuer) {
+                    MultiValuer opt = (MultiValuer) field.getOptions();
+                    if (!opt.isMultiple()) {
+                        query.andWhere(Expression.newHashExpr(Map.of(prefixedFieldName, mainRecord.getId())));
+                    } else {
+                        query.andWhere(Expression.exists(Expression.newExpr(String.format(
+                                "SELECT 1 FROM %s, JSON_TABLE(CASE WHEN JSON_VALID(%s) THEN %s ELSE JSON_ARRAY(%s) END, '$[*]' COLUMNS(VALUE VARCHAR(255) PATH '$')) AS __je__ WHERE __je__.value = :jevalue",
+                                recordTableName, prefixedFieldName, prefixedFieldName, prefixedFieldName), Map.of("jevalue", mainRecord.getId()))));
+                    }
+                }
+
+                if (Objects.equals(refCollection.getId(), mainRecord.getCollection().getId())) {
+                    query.andWhere(Expression.not(Expression.newHashExpr(Map.of(recordTableName + ".id", mainRecord.getId()))));
+                }
+
+                int batchSize = 4000;
+                List<RecordModel> rows;
+                while (true) {
+                    query.limit(batchSize);
+                    rows = query.all(new RecordRowMapper(refCollection));
+
+                    int total = rows.size();
+                    if (total == 0) {
+                        break;
+                    }
+
+                    List<Map<String, Object>> originalDatas = rows.stream()
+                            .map(RecordModel::getOriginalData).toList();
+                    List<RecordModel> refRecords = newRecordsFromNullStringMaps(refCollection, originalDatas);
+
+                    deleteRefRecords(mainRecord, refRecords, field);
+
+                    if (total < batchSize) {
+                        break; // no more items
+                    }
+
+                    rows.clear(); // keep allocated memory
+                }
+            }
+        }
+    }
+
+
+    public void deleteRefRecords(RecordModel mainRecord, List<RecordModel> refRecords, SchemaField field) {
+        RelationOptions options = (RelationOptions) field.getOptions();
+        if (options == null) {
+            throw new BadRequestException("relation field options are not initialized");
+        }
+
+        for (RecordModel refRecord : refRecords) {
+            List<String> ids = refRecord.getStringList(field.getName());
+
+            // unset the record id
+            for (int i = ids.size() - 1; i >= 0; i--) {
+                if (ids.get(i).equals(mainRecord.getId())) {
+                    ids.remove(i);
+                    break;
+                }
+            }
+
+            // cascade delete the reference
+            // (only if there are no other active references in case of multiple select)
+            if (options.isCascadeDelete() && ids.size() == 0) {
+                // deleteRecord(refRecord);
+                // no further actions are needed (the reference is deleted)
+                continue;
+            }
+
+            if (field.isRequired() && ids.size() == 0) {
+                throw new BadRequestException(String.format("the record cannot be deleted because it is part of a required reference in record %s (%s collection)", refRecord.getId(), refRecord.getCollection().getName()));
+            }
+
+            // save the reference changes
+            refRecord.set(field.getName(), field.prepareValue(ids));
+            new RecordUpsert(refRecord).saveRecord();
+
+        }
     }
 
     @Override
