@@ -16,7 +16,7 @@ public class FileController {
         return null;
     }
 
-    @LoadCollection()
+    @LoadCollection
     @GetMapping("/{collectionIdOrName}/{recordId}/{filename}")
     public Object download(
             @PathVariable("recordId") String recordId,
