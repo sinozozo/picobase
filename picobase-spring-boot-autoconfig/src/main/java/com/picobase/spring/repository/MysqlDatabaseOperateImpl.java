@@ -38,7 +38,7 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
 
     @Override
     public <R> R queryOne(String sql, Class<R> cls) {
-        return queryOne(sql, new Object[]{}, cls);
+        return queryOne(sql, new Object[0], cls);
     }
 
     @Override
