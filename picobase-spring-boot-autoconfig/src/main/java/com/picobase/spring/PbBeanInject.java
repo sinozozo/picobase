@@ -14,6 +14,7 @@ import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
+import com.picobase.persistence.repository.PbRowMapperFactory;
 import com.picobase.spring.pathmatch.PbPathMatcherHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -136,6 +137,11 @@ public class PbBeanInject {
     @Autowired(required = false)
     public void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder) {
         PbManager.setPbDbxBuilder(pbDbxBuilder);
+    }
+
+    @Autowired(required = false)
+    public void setPbRowMapperFactory(PbRowMapperFactory pbRowMapperFactory) {
+        PbManager.setPbRowMapperFactory(pbRowMapperFactory);
     }
 
 }

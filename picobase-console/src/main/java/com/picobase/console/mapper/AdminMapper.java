@@ -1,8 +1,9 @@
 package com.picobase.console.mapper;
 
 import com.picobase.model.AdminModel;
-import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.persistence.mapper.AbstractMapper;
 import com.picobase.util.PbConstants;
 
 import java.util.Arrays;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.picobase.persistence.dbx.expression.Expression.newExpr;
 
-public class AdminMapper extends AbstractBeanPropertyRowMapper<AdminModel> {
+public class AdminMapper extends AbstractMapper<AdminModel> {
 
 
     @Override

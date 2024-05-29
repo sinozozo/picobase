@@ -15,6 +15,7 @@ import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.persistence.mapper.AbstractMapper;
 import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.persistence.resolver.ResultCouple;
 import com.picobase.search.RecordRowMapper;
@@ -37,7 +38,7 @@ import static com.picobase.persistence.resolver.ListUtil.toUniqueStringList;
 import static com.picobase.util.PbConstants.FieldType.Relation;
 import static com.picobase.util.PbConstants.IndirectExpandRegexPattern;
 
-public class RecordMapper extends AbstractBeanPropertyRowMapper {
+public class RecordMapper extends AbstractMapper {
     /**
      * MaxExpandDepth specifies the max allowed nested expand depth path.
      */
@@ -477,7 +478,7 @@ public class RecordMapper extends AbstractBeanPropertyRowMapper {
         if (StrUtil.isEmpty(String.valueOf(dataMap.get("id")))) {
             dataMap.put("id", model.getId());
         }
-        super.insert(dataMap).execute();
+        super.insertQuery(dataMap).execute();
 
 
     }

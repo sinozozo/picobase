@@ -15,6 +15,7 @@ import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.PbMapper;
+import com.picobase.persistence.mapper.UpsertOptions;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.search.PbProvider;
@@ -379,7 +380,7 @@ public final class PbUtil {
      * @return mapper
      */
     public static <R, T> R findMapper(Class<T> clazz) {
-        return PbManager.getPbMapperManager().findMapper(clazz);
+        return findMapper(clazz);
     }
 
     public static <T> Page<T> queryPage(FieldResolver resolver, SelectQuery query, Class<T> model) {
@@ -391,7 +392,7 @@ public final class PbUtil {
     }
 
     public static <T> Page<T> queryPage(Class<T> model) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
+        PbMapper mapper = findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
             throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
@@ -400,7 +401,7 @@ public final class PbUtil {
     }
 
     public static <T> Page<T> queryPage(FieldResolver resolver, Class<T> model) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(model);
+        PbMapper mapper = findMapper(model);
         SelectQuery query = mapper.modelQuery();
         if (query == null) {
             throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
@@ -412,9 +413,15 @@ public final class PbUtil {
         return new PbProvider(FieldResolver.newSimpleFieldResolver("*")).skipTotal(true).query(query).parseAndExec(model).getItems();
     }
 
-    public static int update(Object data, Expression where) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
-        return mapper.update(data, where).execute();
+
+    public static int update(Object data, Expression where, String... includeFields) {
+        PbMapper mapper = findMapper(data.getClass());
+        return mapper.updateQuery(data, where, includeFields).execute();
+    }
+
+    public static int update(Object data, Expression where, UpsertOptions options) {
+        PbMapper mapper = findMapper(data.getClass());
+        return mapper.updateQuery(data, where, options).execute();
     }
 
 
@@ -423,7 +430,7 @@ public final class PbUtil {
     }
 
     public static int delete(Class c, Expression where) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        PbMapper mapper = (PbMapper) findMapper(c);
         return mapper.delete(where).execute();
     }
 
@@ -431,18 +438,23 @@ public final class PbUtil {
         return delete(model, Expression.newExpr("id=:id", Map.of("id", id)));
     }
 
-    public static int save(Object data) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(data.getClass());
-        return mapper.insert(data).execute();
+    public static int save(Object data, String... includeFields) {
+        PbMapper mapper = findMapper(data.getClass());
+        return mapper.insertQuery(data, includeFields).execute();
+    }
+
+    public static int save(Object data, UpsertOptions options) {
+        PbMapper mapper = findMapper(data.getClass());
+        return mapper.insertQuery(data, options).execute();
     }
 
     public static <T> T findOne(Class<T> c, Expression where) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        PbMapper mapper = findMapper(c);
         return mapper.findBy(where).one(c);
     }
 
     public static <T> T findById(Class<T> c, Object id) {
-        PbMapper mapper = PbManager.getPbMapperManager().findMapper(c);
+        PbMapper mapper = findMapper(c);
         return mapper.findBy(Expression.newExpr("id=:id", Map.of("id", id))).one(c);
     }
 

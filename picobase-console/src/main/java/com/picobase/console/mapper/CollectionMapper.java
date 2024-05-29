@@ -1,6 +1,5 @@
 package com.picobase.console.mapper;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
@@ -26,6 +25,7 @@ import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.AbstractMapper;
+import com.picobase.persistence.mapper.UpsertOptions;
 import com.picobase.persistence.model.Index;
 import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.StorageContextHolder;
@@ -49,6 +49,7 @@ import static com.picobase.util.PbConstants.baseModelFieldNames;
 
 public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
+    public static final String[] ToJsonStrFieldNames = new String[]{"schema", "indexes", "options"};
     public PbCollFetchFun collFetchFun = idOrName -> Optional.of(this.findCollectionByNameOrId(idOrName));
 
     @Override
@@ -495,7 +496,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
         newCollection.setSchema(viewSchema);
 
-        super.insert(newCollection);
+        super.insertQuery(newCollection).execute();
     }
 
     // normalizeViewQueryId wraps (if necessary) the provided view query
@@ -910,28 +911,41 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
      * @return
      */
 
+
+    /**
+     * 实现Collection的保(存重写根方法)
+     *
+     * @param data
+     * @param options
+     * @return
+     */
     @Override
-    public Query insert(Object data) {
-        if (data instanceof CollectionModel collection) {
-            Map<String, Object> map = BeanUtil.beanToMap(data);
-            //序列化成json
-            map.put("schema", PbManager.getPbJsonTemplate().toJsonString(collection.getSchema()));
-            map.put("indexes", PbManager.getPbJsonTemplate().toJsonString(collection.getIndexes()));
-            map.put("options", PbManager.getPbJsonTemplate().toJsonString(collection.getOptions()));
-            return PbUtil.getPbDbxBuilder().insert(getTableName(), map);
+    public Query insertQuery(Object data, UpsertOptions options) {
+        if (data instanceof CollectionModel) {
+
+            options.setFieldValueEditor(((fieldName, fieldValue) -> {
+                if (ArrayUtil.contains(ToJsonStrFieldNames, fieldName)) {
+                    return PbManager.getPbJsonTemplate().toJsonString(fieldValue);
+                }
+                return fieldValue;
+            }));
+
+            return super.insertQuery(data, options);
         }
         throw new RuntimeException("数据类型不匹配");
     }
 
     @Override
-    public Query update(Object data, Expression where) {
+    public Query updateQuery(Object data, Expression where, UpsertOptions options) {
         if (data instanceof CollectionModel collection) {
-            Map<String, Object> map = BeanUtil.beanToMap(data);
-            //序列化成json
-            map.put("schema", PbManager.getPbJsonTemplate().toJsonString(collection.getSchema()));
-            map.put("indexes", PbManager.getPbJsonTemplate().toJsonString(collection.getIndexes()));
-            map.put("options", PbManager.getPbJsonTemplate().toJsonString(collection.getOptions()));
-            return PbUtil.getPbDbxBuilder().update(getTableName(), map, where);
+            options.setFieldValueEditor(((fieldName, fieldValue) -> {
+                if (ArrayUtil.contains(ToJsonStrFieldNames, fieldName)) {
+                    return PbManager.getPbJsonTemplate().toJsonString(fieldValue);
+                }
+                return fieldValue;
+            }));
+
+            return super.updateQuery(data, where, options);
         }
         throw new RuntimeException("数据类型不匹配");
     }

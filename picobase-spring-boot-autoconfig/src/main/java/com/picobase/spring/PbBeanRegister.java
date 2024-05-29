@@ -10,6 +10,8 @@ import com.picobase.persistence.dbx.MysqlPbDbxBuilder;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
+import com.picobase.persistence.repository.PbRowMapper;
+import com.picobase.persistence.repository.PbRowMapperFactory;
 import com.picobase.spring.context.path.ApplicationContextPathLoading;
 import com.picobase.spring.json.PbJsonTemplateForJackson;
 import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
@@ -23,6 +25,7 @@ import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -148,6 +151,19 @@ public class PbBeanRegister {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Bean
+    public PbRowMapperFactory getPbRowMapperFactory() {
+        return new PbRowMapperFactory() {
+            @Override
+            public <T> PbRowMapper<T> getPbRowMapper(Class<T> modelClass) {
+                return (rs, rowNum) -> {
+                    BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(modelClass);
+                    return mapper.mapRow(rs, rowNum);
+                };
+            }
+        };
     }
 
 

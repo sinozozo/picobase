@@ -6,8 +6,8 @@ import com.picobase.config.PbConfig;
 import com.picobase.config.PbConfigFactory;
 import com.picobase.context.PbContext;
 import com.picobase.error.PbErrorCode;
-import com.picobase.event.PbEventRegisterProcessor;
 import com.picobase.event.PbEventBus;
+import com.picobase.event.PbEventRegisterProcessor;
 import com.picobase.exception.PbException;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.json.PbJsonTemplateDefaultImpl;
@@ -20,6 +20,7 @@ import com.picobase.logic.authz.PermissionInterfaceDefaultImpl;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
+import com.picobase.persistence.repository.PbRowMapperFactory;
 import com.picobase.strategy.PbStrategy;
 import com.picobase.util.CommonHelper;
 
@@ -314,5 +315,16 @@ public class PbManager {
 
     public static PbDbxBuilder getPbDbxBuilder() {
         return pbDbxBuilder;
+    }
+
+    public volatile static PbRowMapperFactory pbRowMapperFactory;
+
+    public static void setPbRowMapperFactory(PbRowMapperFactory pbRowMapperFactory) {
+        PbManager.pbRowMapperFactory = pbRowMapperFactory;
+        PbEventCenter.doRegisterComponent("PbRowMapperFactory", pbRowMapperFactory);
+    }
+
+    public static PbRowMapperFactory getPbRowMapperFactory() {
+        return pbRowMapperFactory;
     }
 }
