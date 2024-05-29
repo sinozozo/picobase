@@ -10,7 +10,9 @@ outline: deep
 
 ### 配置解析 {#config-resolution}
 
-配置文件总是从 `<root>/.vitepress/config.[ext]` 解析，其中 `<root>` 是 VitePress [项目根目录](../guide/routing#root-and-source-directory)，`[ext]` 是支持的文件扩展名之一。开箱即用地支持 TypeScript。支持的扩展名包括 `.js`、`.ts`、`.mjs` 和 `.mts`。
+配置文件总是从 `<root>/.vitepress/config.[ext]` 解析，其中 `<root>` 是
+VitePress [项目根目录](../guide/realworld#root-and-source-directory)，`[ext]` 是支持的文件扩展名之一。开箱即用地支持
+TypeScript。支持的扩展名包括 `.js`、`.ts`、`.mjs` 和 `.mts`。
 
 建议在配置文件中使用 ES 模块语法。配置文件应该默认导出一个对象：
 
@@ -82,7 +84,8 @@ export default defineConfig({
 
 ### 配置智能提示 {#config-intellisense}
 
-使用 `defineConfig` 辅助函数将为配置选项提供 TypeScript 支持的智能提示。假设 IDE 支持它，那么在 JavaScript 和 TypeScript 中都将触发智能提示。
+使用 `defineConfig` 辅助函数将为配置选项提供 TypeScript 支持的智能提示。假设 IDE 支持它，那么在 JavaScript 和 TypeScript
+中都将触发智能提示。
 
 ```js
 import { defineConfig } from 'vitepress'
@@ -127,11 +130,13 @@ export default defineConfigWithTheme<ThemeConfig>({
 
 - **Vue**
 
-  VitePress 已经包含 Vite 的官方 Vue 插件 ([@vitejs/plugin-vue](https://github.com/vitejs/vite-plugin-vue))，所以我们可以配置 VitePress 中的 [vue](#vue) 选项。
+  VitePress 已经包含 Vite 的官方 Vue 插件 ([@vitejs/plugin-vue](https://github.com/vitejs/vite-plugin-vue))，所以我们可以配置
+  VitePress 中的 [vue](#vue) 选项。
 
 - **Markdown**
 
-  可以使用 VitePress 配置中的 [markdown](#markdown) 选项配置底层的 [Markdown-It](https://github.com/markdown-it/markdown-it) 实例。
+  可以使用 VitePress 配置中的 [markdown](#markdown)
+  选项配置底层的 [Markdown-It](https://github.com/markdown-it/markdown-it) 实例。
 
 ## 站点元数据 {#site-metadata}
 
@@ -143,7 +148,8 @@ export default defineConfigWithTheme<ThemeConfig>({
 
 站点的标题。使用默认主题时，这将显示在导航栏中。
 
-它还将用作所有单独页面标题的默认后缀，除非定义了 [`titleTemplate`](#titletemplate)。单个页面的最终标题将是其第一个 `<h1>` 标题的文本内容加上的全局 `title`。例如使用以下配置和页面内容：
+它还将用作所有单独页面标题的默认后缀，除非定义了 [`titleTemplate`](#titletemplate)。单个页面的最终标题将是其第一个 `<h1>`
+标题的文本内容加上的全局 `title`。例如使用以下配置和页面内容：
 
 ```ts
 export default {
@@ -333,7 +339,9 @@ export default {
 - 类型：`string`
 - 默认值： `/`
 
-站点将部署到的 base URL。如果计划在子路径例如 GitHub 页面）下部署站点，则需要设置此项。如果计划将站点部署到 `https://foo.github.io/bar/`，那么应该将 `base` 设置为 `“/bar/”`。它应该始终以 `/` 开头和结尾。
+站点将部署到的 base URL。如果计划在子路径例如 GitHub
+页面）下部署站点，则需要设置此项。如果计划将站点部署到 `https://foo.github.io/bar/`，那么应该将 `base` 设置为 `
+“/bar/”`。它应该始终以 `/` 开头和结尾。
 
 base 会自动添加到其他选项中以 `/` 开头的所有 URL 前面，因此只需指定一次。
 
@@ -350,17 +358,19 @@ export default {
 - 类型：`boolean`
 - 默认值： `false`
 
-当设置为 `true` 时，VitePress 将从 URL 中删除 `.html` 后缀。另请参阅[生成简洁的 URL](../guide/routing#generating-clean-url)。
+当设置为 `true` 时，VitePress 将从 URL 中删除 `.html`
+后缀。另请参阅[生成简洁的 URL](../guide/realworld#generating-clean-url)。
 
 ::: warning 需要服务器支持
-要启用此功能，可能需要在托管平台上进行额外配置。要使其正常工作，服务器必须能够在**不重定向的情况下**访问 `/foo` 时提供 `/foo.html`。
+要启用此功能，可能需要在托管平台上进行额外配置。要使其正常工作，服务器必须能够在**不重定向的情况下**访问 `/foo`
+时提供 `/foo.html`。
 :::
 
 ### rewrites
 
 - 类型：`Record<string, string>`
 
-自定义目录 &lt;-&gt; URL 映射。详细信息请参阅[路由：路由重写](../guide/routing#route-rewrites)。
+自定义目录 &lt;-&gt; URL 映射。详细信息请参阅[路由：路由重写](../guide/realworld#route-rewrites)。
 
 ```ts
 export default {
@@ -377,7 +387,7 @@ export default {
 - 类型：`string`
 - 默认值： `.`
 
-相对于项目根目录的 markdown 文件所在的文件夹。另请参阅[根目录和源目录](../guide/routing#root-and-source-directory)。
+相对于项目根目录的 markdown 文件所在的文件夹。另请参阅[根目录和源目录](../guide/realworld#root-and-source-directory)。
 
 ```ts
 export default {
@@ -390,7 +400,8 @@ export default {
 - 类型：`string`
 - 默认值： `undefined`
 
-用于匹配应排除作为源内容输出的 markdown 文件，语法详见 [glob pattern](https://github.com/mrmlnc/fast-glob#pattern-syntax)。
+用于匹配应排除作为源内容输出的 markdown
+文件，语法详见 [glob pattern](https://github.com/mrmlnc/fast-glob#pattern-syntax)。
 
 ```ts
 export default {
@@ -403,7 +414,7 @@ export default {
 - 类型：`string`
 - 默认值： `./.vitepress/dist`
 
-项目的构建输出位置，相对于[项目根目录](../guide/routing#root-and-source-directory)。
+项目的构建输出位置，相对于[项目根目录](../guide/realworld#root-and-source-directory)。
 
 ```ts
 export default {
@@ -429,7 +440,8 @@ export default {
 - 类型：`string`
 - 默认值： `./.vitepress/cache`
 
-缓存文件的目录，相对于[项目根目录](../guide/routing#root-and-source-directory)。另请参阅：[cacheDir](https://vitejs.dev/config/shared-options.html#cachedir)。
+缓存文件的目录，相对于[项目根目录](../guide/realworld#root-and-source-directory)
+。另请参阅：[cacheDir](https://vitejs.dev/config/shared-options.html#cachedir)。
 
 ```ts
 export default {
@@ -476,18 +488,20 @@ export default {
 - 类型：`boolean`
 - 默认值：`false`
 
-当设置为 `true` 时，将页面元数据提取到单独的 JavaScript 块中，而不是内联在初始 HTML 中。这使每个页面的 HTML 负载更小，并使页面元数据可缓存，从而当站点中有很多页面时可以减少服务器带宽。
+当设置为 `true` 时，将页面元数据提取到单独的 JavaScript 块中，而不是内联在初始 HTML 中。这使每个页面的 HTML
+负载更小，并使页面元数据可缓存，从而当站点中有很多页面时可以减少服务器带宽。
 
 ### mpa <Badge type="warning" text="experimental" />
 
 - 类型：`boolean`
 - 默认值： `false`
 
-设置为 `true` 时，生产应用程序将在 [MPA 模式](../guide/mpa-mode)下构建。MPA 模式默认提供 零 JavaScript 支持，代价是禁用客户端导航，并且需要明确选择加入才能进行交互。
+设置为 `true` 时，生产应用程序将在 [MPA 模式](../guide/mpa-mode)下构建。MPA 模式默认提供 零 JavaScript
+支持，代价是禁用客户端导航，并且需要明确选择加入才能进行交互。
 
 ## 主题 {#theming}
 
-### appearance 
+### appearance
 
 - 类型：`boolean | 'dark' | 'force-dark' | import('@vueuse/core').UseDarkOptions`
 - 默认值： `true`
@@ -498,7 +512,8 @@ export default {
 - 如果该选项设置为 `dark`，则默认情况下主题将是深色的，除非用户手动切换它。
 - 如果该选项设置为 `false`，用户将无法切换主题。
 
-此选项注入一个内联脚本，使用 `vitepress-theme-appearance` key 从本地存储恢复用户设置。这确保在呈现页面之前应用 `.dark` 类以避免闪烁。
+此选项注入一个内联脚本，使用 `vitepress-theme-appearance` key 从本地存储恢复用户设置。这确保在呈现页面之前应用 `.dark`
+类以避免闪烁。
 
 `appearance.initialValue` 只能是 `'dark' | undefined`。 不支持 Refs 或 getters。
 
@@ -507,9 +522,11 @@ export default {
 - 类型：`boolean`
 - 默认值： `false`
 
-是否使用 Git 获取每个页面的最后更新时间戳。时间戳将包含在每个页面的页面数据中，可通过 [`useData`](./runtime-api#usedata) 访问。
+是否使用 Git 获取每个页面的最后更新时间戳。时间戳将包含在每个页面的页面数据中，可通过 [`useData`](./runtime-api#usedata)
+访问。
 
-使用默认主题时，启用此选项将显示每个页面的最后更新时间。可以通过 [`themeConfig.lastUpdatedText`](./default-theme-config#lastupdatedtext) 选项自定义文本。
+使用默认主题时，启用此选项将显示每个页面的最后更新时间。可以通过 [`themeConfig.lastUpdatedText`](./default-theme-config#lastupdatedtext)
+选项自定义文本。
 
 ## 自定义 {#customization}
 
@@ -517,7 +534,9 @@ export default {
 
 - 类型：`MarkdownOption`
 
-配置 Markdown 解析器选项。VitePress 使用 [Markdown-it](https://github.com/markdown-it/markdown-it) 作为解析器，使用 [Shiki](https://github.com/shikijs/shiki) 来高亮不同语言语法。在此选项中，可以传递各种 Markdown 相关选项以满足你的需要。
+配置 Markdown 解析器选项。VitePress 使用 [Markdown-it](https://github.com/markdown-it/markdown-it)
+作为解析器，使用 [Shiki](https://github.com/shikijs/shiki) 来高亮不同语言语法。在此选项中，可以传递各种 Markdown
+相关选项以满足你的需要。
 
 ```js
 export default {
@@ -545,7 +564,8 @@ export default {
 
 - 类型：`import('@vitejs/plugin-vue').Options`
 
-将原始的 [@vitejs/plugin-vue 选项](https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options)传递给内部插件实例。
+将原始的 [@vitejs/plugin-vue 选项](https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options)
+传递给内部插件实例。
 
 ```js
 export default {
@@ -559,8 +579,8 @@ export default {
 
 VitePress 构建钩子允许向站点添加新功能和行为：
 
-- Sitemap 
-- Search Indexing 
+- Sitemap
+- Search Indexing
 - PWA
 - Teleport
 
@@ -582,7 +602,7 @@ export default {
 
 - 类型：`(context: SSGContext) => Awaitable<SSGContext | void>`
 
- `postRender` 是一个构建钩子，在 SSG 渲染完成时调用。它将允许在 SSG 期间处理传递的内容。
+`postRender` 是一个构建钩子，在 SSG 渲染完成时调用。它将允许在 SSG 期间处理传递的内容。
 
 ```ts
 export default {
@@ -604,7 +624,8 @@ interface SSGContext {
 
 - 类型：`(context: TransformContext) => Awaitable<HeadConfig[]>`
 
-`transformHead` 是一个构建钩子，用于在生成每个页面之前转换 head。它将允许添加无法静态添加到 VitePress 配置中的 head entries。只需要返回额外的 entries，它们将自动与现有 entries 合并。
+`transformHead` 是一个构建钩子，用于在生成每个页面之前转换 head。它将允许添加无法静态添加到 VitePress 配置中的 head
+entries。只需要返回额外的 entries，它们将自动与现有 entries 合并。
 
 ::: warning
 不要改变 `context` 中的任何东西。
@@ -632,7 +653,8 @@ interface TransformContext {
 }
 ```
 
-请注意，仅在静态生成站点时才会调用此钩子。在开发期间不会调用它。如果需要在开发期间添加动态 head 条目，可以使用 [`transformPageData`](#transformpagedata) 钩子来替代：
+请注意，仅在静态生成站点时才会调用此钩子。在开发期间不会调用它。如果需要在开发期间添加动态 head
+条目，可以使用 [`transformPageData`](#transformpagedata) 钩子来替代：
 
 ```ts
 export default {
@@ -652,7 +674,7 @@ export default {
 }
 ```
 
-#### 示例：添加 canonical URL `<link>` {#example-adding-a-canonical-url-link} 
+#### 示例：添加 canonical URL `<link>` {#example-adding-a-canonical-url-link}
 
 ```ts
 export default {
@@ -676,7 +698,7 @@ export default {
 
 `transformHtml` 是一个构建钩子，用于在保存到磁盘之前转换每个页面的内容。
 
-::: warning 
+::: warning
 不要改变 `context` 中的任何东西。另外，修改 html 内容可能会导致运行时出现激活问题。
 :::
 
@@ -690,12 +712,14 @@ export default {
 
 ### transformPageData
 
-- 类型：`(pageData: PageData, context: TransformPageContext) => Awaitable<Partial<PageData> | { [key: string]: any } | void>`
+-
+类型：`(pageData: PageData, context: TransformPageContext) => Awaitable<Partial<PageData> | { [key: string]: any } | void>`
 
 `transformPageData` 是一个钩子，用于转换每个页面的 `pageData`。可以直接改变 `pageData` 或返回将合并到 `PageData` 中的更改值。
 
 ::: warning
-不要改变 `context` 中的任何东西。请注意，这可能会影响开发服务器的性能，特别是当在钩子中有一些网络请求或大量计算 (例如生成图像) 时。可以通过判断 `process.env.NODE_ENV === 'production'` 匹配符合条件的情况。
+不要改变 `context` 中的任何东西。请注意，这可能会影响开发服务器的性能，特别是当在钩子中有一些网络请求或大量计算 (
+例如生成图像) 时。可以通过判断 `process.env.NODE_ENV === 'production'` 匹配符合条件的情况。
 :::
 
 ```ts

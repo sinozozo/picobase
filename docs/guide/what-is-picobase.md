@@ -20,7 +20,7 @@ PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [Baas 应用](http
 
   如下能力开箱即用：
 
-  ::: info
+  ::: info 一些特性
     1. 数据存储：允许开发者在应用中存储和管理数据，通常支持结构化数据、文件存储等功能。
     2. 用户身份认证：提供用户注册、登录、密码重置等身份验证功能，保护数据安全。
     3. 实时数据库：支持实时同步数据更新和查询，用于构建实时应用或即时通讯应用。
@@ -90,7 +90,7 @@ PicoBase 灵感来源于 [PocketBase](https://pocketbase.io/)。PocketBase 是�
 的嵌入式实时数据库（sqlite），提供了实时订阅、内建认证管理、方便的
 Dashboard UI，以及简单的 REST-ish API。
 
-PocketBase 其内嵌 sqlite，作者并不愿意将其底层迁移到大型数据库，它的出现就是为了小而美，所以并不适合做大型应用。
+PocketBase 其内嵌 sqlite，作者并不愿意将其底层迁移到大型数据库，它追求小而美，所以并不适合做大型应用。
 
 PicoBase 基于 java 和 Mysql 为实现企业级应用而生，同时最小化投入原则，其也复用了 PocketBase 的众多优秀设计和组件，完全兼容其
 API ，所以 PocketBase 的 Dashboard UI 和客户端 SDK 组件可直接复用，同时 PicoBase 也扩展了很多它所不具备的能力。随着后续

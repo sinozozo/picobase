@@ -2,9 +2,11 @@
 
 VitePress 提供了几个内置的 API 来让你访问应用程序数据。VitePress 还附带了一些可以在全局范围内使用的内置组件。
 
-辅助函数可从 `vitepress` 全局导入，通常用于自定义主题 Vue 组件。但是，它们也可以在 `.md` 页面内使用，因为 markdown 文件被编译成 Vue [单文件组件](https://cn.vuejs.org/guide/scaling-up/sfc.html)。
+辅助函数可从 `vitepress` 全局导入，通常用于自定义主题 Vue 组件。但是，它们也可以在 `.md` 页面内使用，因为 markdown 文件被编译成
+Vue [单文件组件](https://cn.vuejs.org/guide/scaling-up/sfc.html)。
 
-以 `use*` 开头的方法表示它是一个 [Vue 3 组合式 API](https://cn.vuejs.org/guide/introduction.html#composition-api) 函数，只能在 `setup()` 或 `<script setup>` 中使用。
+以 `use*` 开头的方法表示它是一个 [Vue 3 组合式 API](https://cn.vuejs.org/guide/introduction.html#composition-api)
+函数，只能在 `setup()` 或 `<script setup>` 中使用。
 
 ## `useData` <Badge type="info" text="composable" />
 
@@ -130,7 +132,8 @@ interface Router {
 
 `<ClientOnly />` 组件仅在客户端渲染其插槽。
 
-由于 VitePress 应用程序在生成静态构建时是在 Node.js 中服务器渲染的，因此任何 Vue 使用都必须符合通用代码要求。简而言之，确保仅在 beforeMount 或 mounted 钩子中访问 Browser/DOM API。
+由于 VitePress 应用程序在生成静态构建时是在 Node.js 中服务器渲染的，因此任何 Vue 使用都必须符合通用代码要求。简而言之，确保仅在
+beforeMount 或 mounted 钩子中访问 Browser/DOM API。
 
 如果正在使用或演示对 SSR 不友好的组件 (例如，包含自定义指令)，可以将它们包装在 `ClientOnly` 组件中。
 
@@ -156,7 +159,7 @@ title: Hello
 
 ## `$params` <Badge type="info" text="template global" />
 
-在 Vue 表达式中直接访问当前页面的[动态路由参数](../guide/routing#dynamic-routes)。
+在 Vue 表达式中直接访问当前页面的[动态路由参数](../guide/realworld#dynamic-routes)。
 
 ```md
 - package name: {{ $params.pkg }}

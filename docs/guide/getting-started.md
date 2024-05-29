@@ -11,7 +11,8 @@
 - [Node.js](https://nodejs.org/) 18 及以上版本。
 - 通过命令行界面 (CLI) 访问 VitePress 的终端。
 - 支持 [Markdown](https://en.wikipedia.org/wiki/Markdown) 语法的编辑器。
-  - 推荐 [VSCode](https://code.visualstudio.com/) 及其[官方 Vue 扩展](https://marketplace.visualstudio.com/items?itemName=Vue.volar)。
+    - 推荐 [VSCode](https://code.visualstudio.com/)
+      及其[官方 Vue 扩展](https://marketplace.visualstudio.com/items?itemName=Vue.volar)。
 
 VitePress 可以单独使用，也可以安装到现有项目中。在这两种情况下，都可以使用以下方式安装它：
 
@@ -36,16 +37,17 @@ $ bun add -D vitepress
 :::
 
 ::: details 遇到了 missing peer deps 警告？
-如果使用 PNPM，会注意到对 `@docsearch/js` 的 missing peer deps 警告。这不会影响 VitePress 运行。如果希望禁止显示此警告，请将以下内容添加到 `package.json`：
+如果使用 PNPM，会注意到对 `@docsearch/js` 的 missing peer deps 警告。这不会影响 VitePress
+运行。如果希望禁止显示此警告，请将以下内容添加到 `package.json`：
 
 ```json
 "pnpm": {
-  "peerDependencyRules": {
-    "ignoreMissing": [
-      "@algolia/client-search",
-      "search-insights"
-    ]
-  }
+"peerDependencyRules": {
+"ignoreMissing": [
+"@algolia/client-search",
+"search-insights"
+]
+}
 }
 ```
 
@@ -53,7 +55,10 @@ $ bun add -D vitepress
 
 ::: tip 注意
 
-VitePress 是仅 ESM 的软件包。不要使用 `require()` 导入它，并确保最新的 `package.json` 包含 `"type": "module"`，或者更改相关文件的文件扩展名，例如 `.vitepress/config.js` 到 `.mjs`/`.mts`。更多详情请参考 [Vite 故障排除指南](http://vitejs.dev/guide/troubleshooting.html#this-package-is-esm-only)。此外，在异步 CJS 上下文中，可以使用 `await import('vitepress')` 代替。
+VitePress 是仅 ESM 的软件包。不要使用 `require()` 导入它，并确保最新的 `package.json` 包含 `"type": "module"`
+，或者更改相关文件的文件扩展名，例如 `.vitepress/config.js` 到 `.mjs`/`.mts`
+。更多详情请参考 [Vite 故障排除指南](http://vitejs.dev/guide/troubleshooting.html#this-package-is-esm-only)。此外，在异步
+CJS 上下文中，可以使用 `await import('vitepress')` 代替。
 
 :::
 
@@ -91,7 +96,8 @@ $ bun vitepress init
 
 ## 文件结构 {#file-structure}
 
-如果正在构建一个独立的 VitePress 站点，可以在当前目录 (`./`) 中搭建站点。但是，如果在现有项目中与其他源代码一起安装 VitePress，建议将站点搭建在嵌套目录 (例如 `./docs`) 中，以便它与项目的其余部分分开。
+如果正在构建一个独立的 VitePress 站点，可以在当前目录 (`./`) 中搭建站点。但是，如果在现有项目中与其他源代码一起安装
+VitePress，建议将站点搭建在嵌套目录 (例如 `./docs`) 中，以便它与项目的其余部分分开。
 
 假设选择在 `./docs` 中搭建 VitePress 项目，生成的文件结构应该是这样的：
 
@@ -106,10 +112,11 @@ $ bun vitepress init
 └─ package.json
 ```
 
- `docs` 目录作为 VitePress 站点的项目**根目录**。`.vitepress` 目录是 VitePress 配置文件、开发服务器缓存、构建输出和可选主题自定义代码的位置。
+`docs` 目录作为 VitePress 站点的项目**根目录**。`.vitepress` 目录是 VitePress 配置文件、开发服务器缓存、构建输出和可选主题自定义代码的位置。
 
 :::tip
-默认情况下，VitePress 将其开发服务器缓存存储在 `.vitepress/cache` 中，并将生产构建输出存储在 `.vitepress/dist` 中。如果使用 Git，应该将它们添加到 `.gitignore` 文件中。也可以手动[配置](../reference/site-config#outdir)这些位置。
+默认情况下，VitePress 将其开发服务器缓存存储在 `.vitepress/cache` 中，并将生产构建输出存储在 `.vitepress/dist` 中。如果使用
+Git，应该将它们添加到 `.gitignore` 文件中。也可以手动[配置](../reference/site-config#outdir)这些位置。
 :::
 
 ### 配置文件 {#the-config-file}
@@ -135,9 +142,10 @@ export default {
 
 `.vitepress` 目录之外的 Markdown 文件被视为**源文件**。
 
-VitePress 使用 **基于文件的路由**：每个 `.md` 文件将在相同的路径被编译成为 `.html` 文件。例如，`index.md` 将会被编译成 `index.html`，可以在生成的 VitePress 站点的根路径 `/` 进行访问。
+VitePress 使用 **基于文件的路由**：每个 `.md` 文件将在相同的路径被编译成为 `.html` 文件。例如，`index.md`
+将会被编译成 `index.html`，可以在生成的 VitePress 站点的根路径 `/` 进行访问。
 
-VitePress 还提供了生成简洁 URL、重写路径和动态生成页面的能力。这些将在[路由指南](./routing)中进行介绍。
+VitePress 还提供了生成简洁 URL、重写路径和动态生成页面的能力。这些将在[路由指南](./realworld)中进行介绍。
 
 ## 启动并运行 {#up-and-running}
 
@@ -205,9 +213,10 @@ $ bun vitepress dev docs
 
 ## 下一步 {#what-s-next}
 
-- 想要进一步了解 Markdown 文件是怎么映射到对应的 HTML，请继续阅读[路由指南](./routing)。
+- 想要进一步了解 Markdown 文件是怎么映射到对应的 HTML，请继续阅读[路由指南](./realworld)。
 
-- 要了解有关可以在页面上执行的操作的更多信息，例如编写 Markdown 内容或使用 Vue 组件，请参见指南的“编写”部分。一个很好的起点是了解 [Markdown 扩展](./markdown)。
+- 要了解有关可以在页面上执行的操作的更多信息，例如编写 Markdown 内容或使用 Vue
+  组件，请参见指南的“编写”部分。一个很好的起点是了解 [Markdown 扩展](./markdown)。
 
 - 要探索默认文档主题提供的功能，请查看[默认主题配置参考](../reference/default-theme-config)。
 

@@ -88,7 +88,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '什么是 PicoBase？', link: 'what-is-picobase'},
                 {text: '快速开始', link: 'getting-started'},
-                {text: '路由', link: 'routing'},
+                {text: 'RealWorld', link: 'realworld'},
                 {text: '部署', link: 'deploy'}
             ]
         },
