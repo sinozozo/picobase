@@ -1,6 +1,6 @@
 package com.picobase.spring.repository;
 
-import com.picobase.model.Model;
+import cn.hutool.core.util.ClassUtil;
 import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.ModifyRequest;
@@ -38,38 +38,35 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
 
     @Override
     public <R> R queryOne(String sql, Class<R> cls) {
-        if (Model.class.isAssignableFrom(cls)) {
-            PbMapper mapper = mapperManager.findMapper(cls);
-            return (R) queryOne(jdbcTemplate, sql, mapper.getPbRowMapper());
-        } else if (Map.class.isAssignableFrom(cls)) {
-            return queryOne(jdbcTemplate, sql, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
-        }
-
-        return queryOne(jdbcTemplate, sql, cls);
+        return queryOne(sql, new Object[]{}, cls);
     }
 
     @Override
     public <R> R queryOne(String sql, Object[] args, Class<R> cls) {
-        if (Model.class.isAssignableFrom(cls)) {
-            PbMapper mapper = mapperManager.findMapper(cls);
-            return (R) queryOne(jdbcTemplate, sql, args, mapper.getPbRowMapper());
-        } else if (Map.class.isAssignableFrom(cls)) {
+        if (ClassUtil.isBasicType(cls)) {
+            return queryOne(jdbcTemplate, sql, args, cls);
+        }
+
+        if (Map.class.isAssignableFrom(cls)) {
             return queryOne(jdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        return queryOne(jdbcTemplate, sql, args, cls);
+        PbMapper mapper = mapperManager.findMapper(cls);
+        return (R) queryOne(jdbcTemplate, sql, args, mapper.getPbRowMapper());
     }
 
     @Override
     public <R> R queryOne(String sql, Map<String, Object> args, Class<R> cls) {
-        if (Model.class.isAssignableFrom(cls)) {
-            PbMapper mapper = mapperManager.findMapper(cls);
-            return (R) queryOne(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
-        } else if (Map.class.isAssignableFrom(cls)) {
+        if (ClassUtil.isBasicType(cls)) {
+            return queryOne(namedParameterJdbcTemplate, sql, args, cls);
+        }
+
+        if (Map.class.isAssignableFrom(cls)) {
             return queryOne(namedParameterJdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        return queryOne(namedParameterJdbcTemplate, sql, args, cls);
+        PbMapper mapper = mapperManager.findMapper(cls);
+        return (R) queryOne(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
     }
 
     @Override
@@ -94,26 +91,30 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
 
     @Override
     public <R> List<R> queryMany(String sql, Object[] args, Class<R> rClass) {
-        if (Model.class.isAssignableFrom(rClass)) {
-            PbMapper mapper = mapperManager.findMapper(rClass);
-            return queryMany(jdbcTemplate, sql, args, mapper.getPbRowMapper());
-        } else if (Map.class.isAssignableFrom(rClass)) {
+        if (ClassUtil.isBasicType(rClass)) {
+            return queryMany(jdbcTemplate, sql, args, rClass);
+        }
+
+        if (Map.class.isAssignableFrom(rClass)) {
             return queryMany(jdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        return queryMany(jdbcTemplate, sql, args, rClass);
+        PbMapper mapper = mapperManager.findMapper(rClass);
+        return queryMany(jdbcTemplate, sql, args, mapper.getPbRowMapper());
     }
 
     @Override
     public <R> List<R> queryMany(String sql, Map<String, Object> args, Class<R> rClass) {
-        if (Model.class.isAssignableFrom(rClass)) {
-            PbMapper mapper = mapperManager.findMapper(rClass);
-            return queryMany(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
-        } else if (Map.class.isAssignableFrom(rClass)) {
+        if (ClassUtil.isBasicType(rClass)) {
+            return queryMany(namedParameterJdbcTemplate, sql, args, rClass);
+        }
+
+        if (Map.class.isAssignableFrom(rClass)) {
             return queryMany(namedParameterJdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        return queryMany(namedParameterJdbcTemplate, sql, args, rClass);
+        PbMapper mapper = mapperManager.findMapper(rClass);
+        return queryMany(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
     }
 
     @Override
