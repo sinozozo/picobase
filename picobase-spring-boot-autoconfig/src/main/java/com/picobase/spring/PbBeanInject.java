@@ -104,6 +104,7 @@ public class PbBeanInject {
 
     /**
      * 注入自定义的 PbAuthZLogic
+     *
      * @param logic /
      */
     @Autowired(required = false)
@@ -114,24 +115,26 @@ public class PbBeanInject {
 
     /**
      * 注入PbDatabaseOperate
+     *
      * @param pbDatabaseOperate /
      */
     @Autowired(required = false)
-    public void setPbDatabaseOperate(PbDatabaseOperate pbDatabaseOperate){
+    public void setPbDatabaseOperate(PbDatabaseOperate pbDatabaseOperate) {
         PbManager.setPbDataBaseOperate(pbDatabaseOperate);
     }
 
     /**
      * 注入 PbMapperManager
+     *
      * @param pbMapperManager
      */
     @Autowired(required = false)
-    public void setPbMapperManager(PbMapperManager pbMapperManager){
+    public void setPbMapperManager(PbMapperManager pbMapperManager) {
         PbManager.setPbMapperManager(pbMapperManager);
     }
 
     @Autowired(required = false)
-    public void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder){
+    public void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder) {
         PbManager.setPbDbxBuilder(pbDbxBuilder);
     }
 

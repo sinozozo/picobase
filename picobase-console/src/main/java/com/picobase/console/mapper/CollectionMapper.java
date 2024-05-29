@@ -25,6 +25,7 @@ import com.picobase.model.schema.fieldoptions.RelationOptions;
 import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.persistence.mapper.AbstractMapper;
 import com.picobase.persistence.model.Index;
 import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.StorageContextHolder;
@@ -46,7 +47,7 @@ import static com.picobase.util.PbConstants.FieldType.*;
 import static com.picobase.util.PbConstants.baseModelFieldNames;
 
 
-public class CollectionMapper extends AbstractBeanPropertyRowMapper<CollectionModel> {
+public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
     public PbCollFetchFun collFetchFun = idOrName -> Optional.of(this.findCollectionByNameOrId(idOrName));
 

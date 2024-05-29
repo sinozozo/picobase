@@ -1,4 +1,3 @@
-
 package com.picobase.persistence.mapper;
 
 
@@ -16,22 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * DataSource plugin PbMapper sql proxy.
- *
  **/
 @Deprecated
 public class MapperProxy implements InvocationHandler {
-    
+
     private static final PbLog LOGGER = PbManager.getLog();
-    
+
     private PbMapper mapper;
-    
+
     private static final Map<String, PbMapper> SINGLE_MAPPER_PROXY_MAP = new ConcurrentHashMap<>(16);
-    
+
     public <R> R createProxy(PbMapper mapper) {
         this.mapper = mapper;
         return (R) Proxy.newProxyInstance(MapperProxy.class.getClassLoader(), mapper.getClass().getInterfaces(), this);
     }
-    
+
     /**
      * create proxy-mapper single instead of using method createProxy.
      */
@@ -39,11 +37,11 @@ public class MapperProxy implements InvocationHandler {
         return (R) SINGLE_MAPPER_PROXY_MAP.computeIfAbsent(mapper.getClass().getSimpleName(), key ->
                 new MapperProxy().createProxy(mapper));
     }
-    
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object invoke = method.invoke(mapper, args);
-        
+
         String className = mapper.getClass().getSimpleName();
         String methodName = method.getName();
         String sql;

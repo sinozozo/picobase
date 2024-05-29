@@ -257,6 +257,7 @@ public class PbManager {
     private volatile static PbEventBus pbEventBus;
 
     private volatile static PbEventRegisterProcessor pbEventRegisterProcessor;
+
     public static PbEventBus getPbEventBus() {
         return pbEventBus;
     }
@@ -283,6 +284,7 @@ public class PbManager {
     }
 
     public volatile static PbDatabaseOperate pbDatabaseOperate;
+
     public static void setPbDataBaseOperate(PbDatabaseOperate pbDatabaseOperate) {
         PbManager.pbDatabaseOperate = pbDatabaseOperate;
         PbEventCenter.doRegisterComponent("PbDatabaseOperate", pbDatabaseOperate);
@@ -304,10 +306,12 @@ public class PbManager {
     }
 
     public volatile static PbDbxBuilder pbDbxBuilder;
+
     public static void setPbDbxBuilder(PbDbxBuilder pbDbxBuilder) {
         PbManager.pbDbxBuilder = pbDbxBuilder;
         PbEventCenter.doRegisterComponent("PbDbxBuilder", pbDbxBuilder);
     }
+
     public static PbDbxBuilder getPbDbxBuilder() {
         return pbDbxBuilder;
     }
