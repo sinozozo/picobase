@@ -177,6 +177,9 @@ public final class PbConstants {
 
     public static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
+    public static final String APPLICATION_JSON_VALUE = "application/json";
+    public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data";
+
     // filter modifiersonst
     public static final String EachModifier = "each";
     public static final String IssetModifier = "isset";
@@ -303,4 +306,22 @@ public final class PbConstants {
 
         public static final String EXPAND = "expand";
     }
+
+    /**
+     * form表单中可以包含的特别json payload
+     */
+    public static final String MultipartJsonKey = "@jsonPayload";
+
+    public static final String REQUEST_INFO_KEY = "requestInfo";
+
+
+    /**
+     * 当用户配置了无需登录或配置文件中配置了管理员账号密码 使用该值作为 admin id
+     */
+    public static final String InnerAdminId = "pbAdminId";
+
+    /**
+     * 多账号体系下的类型标识
+     */
+    public static final String LOGIN_TYPE_ADMIN = "pbAdmin";
 }

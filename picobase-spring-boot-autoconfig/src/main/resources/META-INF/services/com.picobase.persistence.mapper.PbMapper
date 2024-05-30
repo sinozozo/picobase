@@ -1,0 +1,4 @@
+com.picobase.logic.mapper.AdminMapper
+com.picobase.logic.mapper.CollectionMapper
+com.picobase.logic.mapper.RecordMapper
+com.picobase.logic.mapper.ExternalAuthMapper

@@ -100,10 +100,11 @@ public interface PbDatabaseOperate {
     /**
      * 在事务中执行action
      *
-     * @param action 第一个object
+     * @param action   第一个object
+     * @param rollBack 事务最终是否回滚
      * @return
      */
-    Object runInTransaction(Function<Object, Object> action);
+    Object runInTransaction(Function<Object, Object> action, boolean rollBack);
 
     /**
      * data modify transaction.

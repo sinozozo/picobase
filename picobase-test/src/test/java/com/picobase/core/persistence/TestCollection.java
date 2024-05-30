@@ -3,7 +3,7 @@ package com.picobase.core.persistence;
 
 import com.picobase.PbUtil;
 import com.picobase.StartUpApplication;
-import com.picobase.console.mapper.CollectionMapper;
+import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.model.CollectionModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

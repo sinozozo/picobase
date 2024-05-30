@@ -3,7 +3,7 @@ package com.picobase.console.filesystem;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import com.picobase.console.error.BadRequestException;
+import com.picobase.exception.BadRequestException;
 import com.picobase.file.PbFile;
 import com.picobase.file.PbFileSystem;
 import net.coobird.thumbnailator.Thumbnails;

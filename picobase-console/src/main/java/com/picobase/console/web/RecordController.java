@@ -3,19 +3,19 @@ package com.picobase.console.web;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.error.BadRequestException;
-import com.picobase.console.error.ForbiddenException;
-import com.picobase.console.error.NotFoundException;
 import com.picobase.console.event.*;
-import com.picobase.console.interceptor.InterceptorFunc;
-import com.picobase.console.mapper.CollectionMapper;
-import com.picobase.console.mapper.RecordMapper;
-import com.picobase.console.model.RecordUpsert;
 import com.picobase.console.web.interceptor.LoadCollection;
 import com.picobase.console.web.interceptor.LoadCollectionInterceptor;
+import com.picobase.exception.BadRequestException;
+import com.picobase.exception.ForbiddenException;
+import com.picobase.exception.NotFoundException;
+import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.log.PbLog;
+import com.picobase.logic.mapper.CollectionMapper;
+import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
+import com.picobase.model.RecordUpsert;
 import com.picobase.model.RequestInfo;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import static com.picobase.console.service.RecordHelper.*;
+import static com.picobase.logic.RecordHelper.*;
 import static com.picobase.util.PbConstants.CollectionType.Auth;
 import static com.picobase.util.PbConstants.CollectionType.Base;
 
@@ -179,8 +179,6 @@ public class RecordController {
                 }
                 hasFullManageAccess.set(hasAuthManageAccess(recordOptional.get(), requestInfo));
             });
-
-            throw new RuntimeException("not implemented"); // TODO
 
         }
 

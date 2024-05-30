@@ -2,10 +2,10 @@ package com.picobase.console.web;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.picobase.PbManager;
-import com.picobase.console.error.BadRequestException;
-import com.picobase.console.error.ForbiddenException;
-import com.picobase.console.model.FailureResult;
+import com.picobase.exception.BadRequestException;
+import com.picobase.exception.ForbiddenException;
 import com.picobase.exception.PbException;
+import com.picobase.model.FailureResult;
 import com.picobase.validator.Err;
 import com.picobase.validator.Errors;
 import org.springframework.core.annotation.Order;

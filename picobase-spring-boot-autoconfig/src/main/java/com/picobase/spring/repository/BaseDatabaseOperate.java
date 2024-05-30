@@ -340,7 +340,15 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
     }
 
 
-    default Object runInTransaction(TransactionTemplate transactionTemplate, Function<Object, Object> action) throws IllegalTransactionStateException {
-        return transactionTemplate.execute(status -> action.apply(status));
+    default Object runInTransaction(TransactionTemplate transactionTemplate, Function<Object, Object> action, boolean rollBack) throws IllegalTransactionStateException {
+        return transactionTemplate.execute(status -> {
+            try {
+                return action.apply(status);
+            } finally {
+                if (rollBack) {
+                    status.setRollbackOnly();
+                }
+            }
+        });
     }
 }

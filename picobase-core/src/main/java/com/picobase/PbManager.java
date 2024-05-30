@@ -9,6 +9,7 @@ import com.picobase.error.PbErrorCode;
 import com.picobase.event.PbEventBus;
 import com.picobase.event.PbEventRegisterProcessor;
 import com.picobase.exception.PbException;
+import com.picobase.file.PbFileSystem;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.json.PbJsonTemplateDefaultImpl;
 import com.picobase.listener.PbEventCenter;
@@ -326,5 +327,16 @@ public class PbManager {
 
     public static PbRowMapperFactory getPbRowMapperFactory() {
         return pbRowMapperFactory;
+    }
+
+    public volatile static PbFileSystem pbFileSystem;
+
+    public static void setPbFileSystem(PbFileSystem fileSystem) {
+        PbManager.pbFileSystem = fileSystem;
+        PbEventCenter.doRegisterComponent("PbFileSystem", fileSystem);
+    }
+
+    public static PbFileSystem getPbFileSystem() {
+        return pbFileSystem;
     }
 }

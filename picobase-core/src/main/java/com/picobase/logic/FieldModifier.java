@@ -1,4 +1,4 @@
-package com.picobase.console.json;
+package com.picobase.logic;
 
 import cn.hutool.core.util.BooleanUtil;
 import com.picobase.exception.BadRequestException;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FieldModifier {
 
-    public static final NilModifier Nil_Modifier = new NilModifier();
+    public final NilModifier Nil_Modifier = new NilModifier();
 
     Object modify(Object value);
 
