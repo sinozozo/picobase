@@ -1,6 +1,6 @@
 # PicoBase 是什么？ {#what-is-picobase}
 
-PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [Baas 应用](https://cloud.tencent.com/developer/article/1045253) (
+PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [BaaS 应用](https://cloud.tencent.com/developer/article/1045253) (
 后端即服务)
 ，专为快速构建业务应用而设计，提供开发者在构建业务应用程序时的底层基础通用能力。
 
@@ -9,6 +9,15 @@ PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [Baas 应用](http
 只是想尝试一下？跳到[快速开始](./getting-started)。
 
 </div>
+
+::: details 了解下 BaaS
+BaaS（Backend as a
+Service）应用是一种利用第三方提供的云服务平台来处理后端服务的应用程序。这种应用模型允许开发人员专注于构建前端用户界面和业务逻辑，而无需花费大量精力在后端基础设施的搭建和管理上。通过使用
+BaaS 服务，开发人员可以快速构建应用程序，减少开发时间和成本，并利用云服务提供商提供的弹性、可扩展的基础设施。
+
+BaaS 应用通常提供用户管理、数据存储、推送通知、文件存储、身份验证等功能，使开发人员能够快速集成这些功能到他们的应用程序中，而无需自行开发和维护相应的后端服务。常见的BaaS服务提供商包括
+Firebase、AWS Amplify、Parse 等。
+:::
 
 ## 为什么选择 PicoBase {#why-choose-picobase}
 
@@ -101,7 +110,7 @@ PicoBase 基于 java 和 Mysql 为实现企业级应用而生，同时最小化�
 API ，所以 PocketBase 的 Dashboard UI 和客户端 SDK 组件可直接复用，同时 PicoBase 也扩展了很多它所不具备的能力。随着后续
 PocketBase 的持续迭代，PicoBase也始终与其保持同步。
 
-## 一些开源的 Baas 平台 {#open-source-baas}
+## 一些开源的 BaaS 平台 {#open-source-baas}
 
 - [Parser](https://parseplatform.org/)： 是一个开源的移动应用后端服务平台，它提供了用于构建移动应用的后端基础设施，包括用户管理、数据存储、推送通知等功能。开发人员可以使用
   Parse 平台来快速搭建和部署移动应用的后端，简化开发流程并加快应用上线速度。 基于 Nodejs + MongoDB/PostgreSql，licence
