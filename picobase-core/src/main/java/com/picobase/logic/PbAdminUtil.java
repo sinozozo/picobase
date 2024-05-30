@@ -1,20 +1,18 @@
-package com.picobase.console;
+package com.picobase.logic;
 
 import com.picobase.PbManager;
 import com.picobase.listener.PbEventCenter;
-import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
 
-import static com.picobase.console.PbConsoleConstants.LOGIN_TYPE_ADMIN;
+import static com.picobase.util.PbConstants.LOGIN_TYPE_ADMIN;
 
 /**
  * 多类型用户下用于区分Admin 和 user ，这里主要提供Admin登录相关接口， 其他能力请使用 PbUtil
  */
 public class PbAdminUtil {
 
-    private static final PbLog log = PbManager.getLog();
 
     private PbAdminUtil() {
     }

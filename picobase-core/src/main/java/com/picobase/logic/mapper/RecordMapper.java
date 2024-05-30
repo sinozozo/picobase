@@ -1,15 +1,15 @@
-package com.picobase.console.mapper;
+package com.picobase.logic.mapper;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.model.RecordUpsert;
 import com.picobase.exception.BadRequestException;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.ExternalAuthModel;
 import com.picobase.model.RecordModel;
+import com.picobase.model.RecordUpsert;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
@@ -538,7 +538,7 @@ public class RecordMapper extends AbstractMapper {
             PbUtil.deleteById(record.getId(), RecordModel.class);
             cascadeRecordDelete(record, refs);
             return null;
-        });
+        }, false);
 
     }
 

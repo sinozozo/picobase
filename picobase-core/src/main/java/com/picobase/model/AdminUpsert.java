@@ -1,15 +1,14 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbUtil;
-import com.picobase.console.mapper.AdminMapper;
-import com.picobase.model.AdminModel;
+import com.picobase.logic.mapper.AdminMapper;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.validator.Errors;
 import com.picobase.validator.Is;
 import com.picobase.validator.RuleFunc;
 
-import static com.picobase.console.model.validators.Validators.uniqueId;
+import static com.picobase.model.validators.Validators.uniqueId;
 import static com.picobase.util.PbConstants.*;
 import static com.picobase.validator.Err.newError;
 import static com.picobase.validator.Validation.*;

@@ -1,4 +1,4 @@
-package com.picobase.console.mapper;
+package com.picobase.logic.mapper;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -8,14 +8,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.model.Identifier;
-import com.picobase.console.model.IdentifiersParser;
-import com.picobase.console.model.QueryField;
-import com.picobase.console.model.TableInfoRow;
 import com.picobase.exception.BadRequestException;
 import com.picobase.exception.PbException;
 import com.picobase.fun.PbCollFetchFun;
-import com.picobase.model.CollectionModel;
+import com.picobase.model.*;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.Schema;
 import com.picobase.model.schema.SchemaField;

@@ -1,4 +1,4 @@
-package com.picobase.console.util;
+package com.picobase.util;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.map.SafeConcurrentHashMap;

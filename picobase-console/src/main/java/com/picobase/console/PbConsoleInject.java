@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
 import com.picobase.console.json.LocalDateTimeDeserializer;
@@ -21,6 +22,7 @@ import com.picobase.file.PbFile;
 import com.picobase.file.PbFileSystem;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.jwt.PbAuthZLogicJwtForStateless;
+import com.picobase.logic.PbAdminUtil;
 import com.picobase.model.AdminModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.schema.Schema;
@@ -36,7 +38,8 @@ import org.springframework.context.annotation.Primary;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
-import static com.picobase.console.PbConsoleConstants.LOGIN_TYPE_ADMIN;
+import static com.picobase.util.PbConstants.LOGIN_TYPE_ADMIN;
+
 
 @Configuration
 @Import({AdminController.class,
@@ -58,7 +61,7 @@ public class PbConsoleInject {
 
     @Autowired(required = false)
     public void setPbFileSystem(PbFileSystem fileSystem) {
-        PbConsoleManager.setPbFileSystem(fileSystem);
+        PbManager.setPbFileSystem(fileSystem);
     }
 
     @PostConstruct

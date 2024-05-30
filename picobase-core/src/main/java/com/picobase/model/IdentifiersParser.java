@@ -1,4 +1,4 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 import java.util.List;
 

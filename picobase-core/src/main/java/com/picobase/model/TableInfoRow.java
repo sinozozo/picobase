@@ -1,4 +1,4 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 /**
  * the `db:"pk"` tag has special semantic so we cannot rename

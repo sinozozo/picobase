@@ -1,16 +1,15 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.interceptor.InterceptorFunc;
-import com.picobase.console.interceptor.InterceptorNextFunc;
-import com.picobase.console.interceptor.Interceptors;
-import com.picobase.console.mapper.CollectionMapper;
 import com.picobase.exception.BadRequestException;
+import com.picobase.interceptor.InterceptorFunc;
+import com.picobase.interceptor.InterceptorNextFunc;
+import com.picobase.interceptor.Interceptors;
 import com.picobase.json.PbJsonTemplate;
-import com.picobase.model.CollectionModel;
+import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.model.schema.Schema;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.CollectionAuthOptions;
@@ -26,7 +25,7 @@ import com.picobase.validator.RuleFunc;
 
 import java.util.*;
 
-import static com.picobase.console.model.validators.Validators.uniqueId;
+import static com.picobase.model.validators.Validators.uniqueId;
 import static com.picobase.util.PbConstants.*;
 import static com.picobase.util.PbConstants.CollectionType.*;
 import static com.picobase.util.PbConstants.FieldType.Relation;

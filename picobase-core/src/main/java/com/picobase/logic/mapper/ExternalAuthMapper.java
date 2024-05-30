@@ -1,4 +1,4 @@
-package com.picobase.console.mapper;
+package com.picobase.logic.mapper;
 
 import com.picobase.PbUtil;
 import com.picobase.model.ExternalAuthModel;

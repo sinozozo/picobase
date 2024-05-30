@@ -134,8 +134,8 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
     }
 
     @Override
-    public Object runInTransaction(Function<Object, Object> action) {
-        return runInTransaction(transactionTemplate, action);
+    public Object runInTransaction(Function<Object, Object> action, boolean rollBack) {
+        return runInTransaction(transactionTemplate, action, rollBack);
 
     }
 

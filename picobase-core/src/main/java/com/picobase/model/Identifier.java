@@ -1,4 +1,4 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 import com.picobase.exception.BadRequestException;
 import com.picobase.persistence.resolver.ResultCouple;

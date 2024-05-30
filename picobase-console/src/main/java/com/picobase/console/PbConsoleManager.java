@@ -31,13 +31,5 @@ public class PbConsoleManager {
         return config;
     }
 
-    public static void setPbFileSystem(PbFileSystem fileSystem) {
-        PbConsoleManager.pbFileSystem = fileSystem;
-        PbEventCenter.doRegisterComponent("[PbConsoleManager]PbFileSystem", fileSystem);
-    }
-
-    public static PbFileSystem getPbFileSystem() {
-        return pbFileSystem;
-    }
 
 }

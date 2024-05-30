@@ -1,14 +1,13 @@
-package com.picobase.console.model.validators;
+package com.picobase.model.validators;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picobase.console.mapper.RecordMapper;
+import com.picobase.PbManager;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.file.PbFile;
+import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.schema.SchemaField;
@@ -316,11 +315,12 @@ public class RecordDataValidator {
     }
 
     public Err checkJsonValue(SchemaField field, Object value) {
+
+
         String raw;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            raw = objectMapper.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
+            raw = PbManager.getPbJsonTemplate().toJsonString(value);
+        } catch (Exception e) {
             return newError("validation_invalid_json", "Must be a valid json value");
         }
 

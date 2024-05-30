@@ -1,43 +1,38 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.PbConsoleManager;
-import com.picobase.console.interceptor.InterceptorFunc;
-import com.picobase.console.interceptor.Interceptors;
-import com.picobase.console.mapper.CollectionMapper;
-import com.picobase.console.mapper.RecordMapper;
-import com.picobase.console.model.validators.RecordDataValidator;
 import com.picobase.context.PbHolder;
 import com.picobase.context.model.PbRequest;
 import com.picobase.exception.BadRequestException;
 import com.picobase.file.PbFile;
 import com.picobase.file.PbFileSystem;
+import com.picobase.interceptor.InterceptorFunc;
+import com.picobase.interceptor.Interceptors;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.log.PbLog;
-import com.picobase.model.CollectionModel;
-import com.picobase.model.RecordModel;
+import com.picobase.logic.mapper.CollectionMapper;
+import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.FileOptions;
+import com.picobase.model.validators.RecordDataValidator;
 import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.persistence.resolver.ResultCouple;
 import com.picobase.util.PbConstants;
 import com.picobase.util.TypeSafe;
 import com.picobase.validator.*;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.picobase.console.PbConsoleConstants.MultipartJsonKey;
-import static com.picobase.console.model.validators.Validators.uniqueId;
 import static com.picobase.file.PbFileSystem.THUMB_PREFIX;
+import static com.picobase.model.validators.Validators.uniqueId;
 import static com.picobase.persistence.resolver.ListUtil.subtractList;
 import static com.picobase.persistence.resolver.ListUtil.toUniqueStringList;
 import static com.picobase.util.PbConstants.*;
@@ -46,8 +41,6 @@ import static com.picobase.util.PbConstants.FieldType.Email;
 import static com.picobase.util.PbConstants.FieldType.File;
 import static com.picobase.validator.Err.newError;
 import static com.picobase.validator.Validation.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 
 /**
@@ -74,7 +67,7 @@ public class RecordUpsert implements Validatable {
     private List<String> filesToDelete;
     private Map<String, List<PbFile>> filesToUpload;
 
-    private PbFileSystem pbFileSystem = PbConsoleManager.getPbFileSystem();
+    private PbFileSystem pbFileSystem = PbManager.getPbFileSystem();
 
     private PbRequest request = PbHolder.getRequest();
 
@@ -216,7 +209,7 @@ public class RecordUpsert implements Validatable {
 
         FileOptions options = (FileOptions) field.getOptions();
 
-        if (CollectionUtils.isEmpty(files)) {
+        if (CollUtil.isEmpty(files)) {
             return; // nothing to upload
         }
 
@@ -634,19 +627,14 @@ public class RecordUpsert implements Validatable {
         }
 
         PbManager.getPbDatabaseOperate().runInTransaction(s -> {
-            var status = (TransactionStatus) s;
-            try {
-                saveRecord();
+            saveRecord();
 
-                if (action != null) {
-                    action.accept(s);
-                }
-
-                return null;
-            } finally {
-                status.setRollbackOnly();// rollback
+            if (action != null) {
+                action.accept(s);
             }
-        });
+
+            return null;
+        }, true);
     }
 
     /**
@@ -697,7 +685,7 @@ public class RecordUpsert implements Validatable {
             // Cross-check that the auth record id is unique for all auth collections.
             // This is to make sure that the filter `@request.auth.id` always returns a unique id.
             List<CollectionModel> authCollections = collectionMapper.findCollectionsByType(PbConstants.CollectionType.Auth);
-            if (CollectionUtils.isEmpty(authCollections)) {
+            if (CollUtil.isEmpty(authCollections)) {
                 throw new BadRequestException("unable to fetch the auth collections for cross-id unique check");
             }
 
@@ -723,7 +711,7 @@ public class RecordUpsert implements Validatable {
 
     private void processFilesToUpload() {
         var upsert = this;
-        if (CollectionUtils.isEmpty(upsert.getFilesToUpload())) {
+        if (CollUtil.isEmpty(upsert.getFilesToUpload())) {
             return; // no parsed file fields
         }
 
@@ -749,7 +737,7 @@ public class RecordUpsert implements Validatable {
 
 
     private void deleteFilesByNamesList(List<String> filenames) {
-        if (CollectionUtils.isEmpty(filenames)) {
+        if (CollUtil.isEmpty(filenames)) {
             return; // nothing to delete
         }
 

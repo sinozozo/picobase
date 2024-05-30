@@ -1,7 +1,6 @@
-package com.picobase.console.model;
+package com.picobase.model;
 
 
-import com.picobase.model.CollectionModel;
 import com.picobase.model.schema.SchemaField;
 
 public class QueryField {
