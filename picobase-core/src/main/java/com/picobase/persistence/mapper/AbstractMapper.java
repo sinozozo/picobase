@@ -93,7 +93,9 @@ public abstract class AbstractMapper<T> implements PbMapper {
     private CopyOptions toCopyOptions(UpsertOptions options) {
         CopyOptions copyOptions = new CopyOptions();
         copyOptions.setIgnoreNullValue(options.ignoreNullValue);
-        copyOptions.setFieldNameEditor(string -> options.fieldNameEditor.edit(string));
+        if (options.fieldNameEditor != null) {
+            copyOptions.setFieldNameEditor(string -> options.fieldNameEditor.edit(string));
+        }
         copyOptions.setFieldValueEditor(options.fieldValueEditor);
         copyOptions.setIgnoreProperties(options.ignoreFields);
         return copyOptions;
