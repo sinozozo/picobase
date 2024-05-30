@@ -1,6 +1,6 @@
 package com.picobase.console.model;
 
-import com.picobase.console.error.BadRequestException;
+import com.picobase.exception.BadRequestException;
 import com.picobase.persistence.resolver.ResultCouple;
 import com.picobase.util.Tokenizer;
 

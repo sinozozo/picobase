@@ -2,8 +2,8 @@ package com.picobase.console.web.interceptor;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.picobase.PbUtil;
-import com.picobase.console.error.NotFoundException;
 import com.picobase.console.mapper.CollectionMapper;
+import com.picobase.exception.NotFoundException;
 import com.picobase.model.CollectionModel;
 import com.picobase.persistence.mapper.PbMapperManager;
 import org.springframework.web.method.HandlerMethod;

@@ -1,8 +1,8 @@
 package com.picobase.console.json;
 
 import cn.hutool.core.util.BooleanUtil;
-import com.picobase.console.error.BadRequestException;
 import com.picobase.console.util.HtmlUtil;
+import com.picobase.exception.BadRequestException;
 
 import java.util.List;
 

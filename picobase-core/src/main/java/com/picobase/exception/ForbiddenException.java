@@ -1,8 +1,6 @@
-package com.picobase.console.error;
+package com.picobase.exception;
 
-import com.picobase.exception.PbException;
-
-import static com.picobase.console.error.PbConsoleErrorCode.CODE_403;
+import static com.picobase.error.PbErrorCode.CODE_403;
 
 public class ForbiddenException extends PbException {
 

@@ -1,23 +1,20 @@
-package com.picobase.console.error;
+package com.picobase.exception;
 
-import com.picobase.exception.PbException;
-import com.picobase.validator.Errors;
-
-import static com.picobase.console.error.PbConsoleErrorCode.CODE_404;
+import static com.picobase.error.PbErrorCode.CODE_404;
 
 public class NotFoundException extends PbException {
 
 
     @Override
     public int getCode() {
-        if (super.getCode()==0){
+        if (super.getCode() == 0) {
             return CODE_404;
         }
         return super.getCode();
     }
 
 
-    public NotFoundException(){
+    public NotFoundException() {
         super("NotFoundException");
     }
 

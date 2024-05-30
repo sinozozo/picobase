@@ -1,13 +1,11 @@
-package com.picobase.console.error;
+package com.picobase.exception;
 
-import com.picobase.error.PbErrorCode;
-import com.picobase.exception.PbException;
 import com.picobase.validator.Errors;
 
-import static com.picobase.console.error.PbConsoleErrorCode.CODE_400;
+import static com.picobase.error.PbErrorCode.CODE_400;
 
 /**
- *  一个异常：代表请求参数不合法 默认 code 为 400
+ * 一个异常：代表请求参数不合法 默认 code 为 400
  */
 public class BadRequestException extends PbException {
 
@@ -16,7 +14,7 @@ public class BadRequestException extends PbException {
 
     @Override
     public int getCode() {
-        if (super.getCode()==0){
+        if (super.getCode() == 0) {
             return CODE_400;
         }
         return super.getCode();
@@ -34,10 +32,12 @@ public class BadRequestException extends PbException {
     public BadRequestException(String message) {
         super(message);
     }
-    public BadRequestException(String message,Errors errors) {
+
+    public BadRequestException(String message, Errors errors) {
         super(message);
         this.errors = errors;
     }
+
     public BadRequestException(Errors errors) {
         super("An error occurred while submitting the form.");
         this.errors = errors;

@@ -2,11 +2,11 @@ package com.picobase.console.web;
 
 
 import com.picobase.PbUtil;
-import com.picobase.console.error.BadRequestException;
 import com.picobase.console.event.*;
 import com.picobase.console.interceptor.InterceptorFunc;
 import com.picobase.console.mapper.CollectionMapper;
 import com.picobase.console.model.CollectionUpsert;
+import com.picobase.exception.BadRequestException;
 import com.picobase.model.CollectionModel;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
