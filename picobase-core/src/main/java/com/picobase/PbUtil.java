@@ -380,7 +380,7 @@ public final class PbUtil {
      * @return mapper
      */
     public static <R, T> R findMapper(Class<T> clazz) {
-        return findMapper(clazz);
+        return PbManager.getPbMapperManager().findMapper(clazz);
     }
 
     public static <T> Page<T> queryPage(FieldResolver resolver, SelectQuery query, Class<T> model) {
