@@ -37,7 +37,7 @@ PicoBase 中可以为 Collection 定义一系列字段 **fields**,如下:
 Collection panel 如下：
 ![collection-panel.png](..%2Fpublic%2Fcollection%2Fcollection-panel.png)
 
-有三种类型的 Collection 可以选择创建。
+有三种类型的 Collection 可以选择创建 Base collection、View collection 和 Auth collection。
 
 ## Base collection {#basecollection}
 
