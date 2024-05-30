@@ -10,6 +10,10 @@ PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [Baas 应用](http
 
 </div>
 
+## 为什么选择 PicoBase {#why-choose-picobase}
+
+PicoBase 的目的是为了让开发者少写或者不写代码实现业务。在熟练掌握的情况下，可以在数小时内完成传统 javaEE 技术栈万行代码量的应用开发。🎉
+
 ## 使用场景 {#use-cases}
 
 - **开箱即用的数据管理类服务（中小应用）**
@@ -90,9 +94,20 @@ PicoBase 灵感来源于 [PocketBase](https://pocketbase.io/)。PocketBase 是�
 的嵌入式实时数据库（sqlite），提供了实时订阅、内建认证管理、方便的
 Dashboard UI，以及简单的 REST-ish API。
 
-PocketBase 其内嵌 sqlite，作者并不愿意将其底层迁移到大型数据库，它追求小而美，所以并不适合做大型应用。
+但 PocketBase 其内嵌 sqlite，作者并不愿意将其底层迁移到大型数据库，它追求小而美，并不适合做大型项目应用。
+同时国内并没有类似的产品或框架，很多开源项目也都是基于nodejs 或 python 开发，所以萌生了构造 PicoBase 的想法。
 
 PicoBase 基于 java 和 Mysql 为实现企业级应用而生，同时最小化投入原则，其也复用了 PocketBase 的众多优秀设计和组件，完全兼容其
 API ，所以 PocketBase 的 Dashboard UI 和客户端 SDK 组件可直接复用，同时 PicoBase 也扩展了很多它所不具备的能力。随着后续
 PocketBase 的持续迭代，PicoBase也始终与其保持同步。
+
+## 一些开源的 Baas 平台 {#open-source-baas}
+
+- [Parser](https://parseplatform.org/)： 是一个开源的移动应用后端服务平台，它提供了用于构建移动应用的后端基础设施，包括用户管理、数据存储、推送通知等功能。开发人员可以使用
+  Parse 平台来快速搭建和部署移动应用的后端，简化开发流程并加快应用上线速度。 基于 Nodejs + MongoDB/PostgreSql，licence
+  apache 2.0，star 38K，是一个较为成熟的项目。
+
+- [Kuzzle](https://kuzzle.io/) 是一个开源的实时后端服务平台，用于构建现代应用程序的后端。Kuzzle
+  提供了诸如数据存储、实时通信、身份验证、地理位置跟踪等功能，使开发人员能够快速构建功能丰富且高性能的应用程序。基于 Nodejs +
+  Elasticsearch，licence apache 2.0，star 1.3K，成熟度一般。
 

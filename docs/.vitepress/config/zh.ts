@@ -96,7 +96,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             text: '基础',
             collapsed: false,
             items: [
-                {text: 'Collection & Record', link: 'markdown'},
+                {text: 'Collection', link: 'collection'},
                 {text: 'Api规则和过滤', link: 'asset-handling'},
                 {text: '认证授权', link: 'frontmatter'},
                 {text: '级联关系', link: 'using-vue'},
