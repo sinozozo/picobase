@@ -6,14 +6,15 @@ outline: deep
 
 ## 概述 {#overview}
 
-**Collection** 代表了你应用程序的数据实体(领域实体)。假设拿博客系统举例，博客系统中的用户、文章、评论等领域模型在
+**Collection** 是 PicoBase 中的一个重要概念，控制台所维护的也是一系列 Collection，其代表了你应用程序的数据实体(领域实体)
+。假设拿博客系统举例，博客系统中的用户、文章、评论等领域模型在
 PicoBase中都叫做
 Collection。在数据库层面这些都是物理存在的实体表。在底层 Collection 会包含一系列元数据（**Schema**）信息，这些信息维护在
 **pb_collection** 表中。
 
 Collection 中单独的一条记录叫做 **record** ，可以简单的理解为实体表中的一条数据，如某一条用户数据、评论数据等。
 
-PicoBase 中可以为 Collection 定义一系列字段 **fields**,如下:
+PicoBase 中可以为 Collection 定义一系列字段 **fields**,如下: {#fields}
 
 | Field          |                         举例值                         |       支持的 modifiers |
 |:---------------|:---------------------------------------------------:|--------------------:|

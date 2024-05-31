@@ -97,7 +97,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             collapsed: false,
             items: [
                 {text: 'Collection', link: 'collection'},
-                {text: 'Api规则和过滤', link: 'asset-handling'},
+                {text: 'API访问规则和过滤', link: 'api-rules-and-filters'},
                 {text: '认证授权', link: 'frontmatter'},
                 {text: '级联关系', link: 'using-vue'},
                 {text: '文件上传和处理', link: 'i18n'}
