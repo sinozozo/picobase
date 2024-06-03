@@ -19,27 +19,20 @@ import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
 import com.picobase.spring.repository.MysqlDatabaseOperateImpl;
 import javassist.ClassPool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +42,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class PbBeanRegister {
 
+
+    private static void shutdownForkJoinPool() {
+        try {
+            ForkJoinPool.commonPool().shutdown();
+
+            if (ForkJoinPool.commonPool().awaitTermination(10, TimeUnit.SECONDS)) {
+                ForkJoinPool.commonPool().shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * 获取配置Bean
@@ -122,7 +127,6 @@ public class PbBeanRegister {
         return new MysqlPbDbxBuilder(operate);
     }
 
-
     @EventListener(ContextRefreshedEvent.class)
     public void onContextRefreshedEvent(ApplicationContextEvent event) {
         if (PbManager.getPbEventRegisterProcessor() == null) {
@@ -148,19 +152,6 @@ public class PbBeanRegister {
         }
     }
 
-
-    private static void shutdownForkJoinPool() {
-        try {
-            ForkJoinPool.commonPool().shutdown();
-
-            if (ForkJoinPool.commonPool().awaitTermination(10, TimeUnit.SECONDS)) {
-                ForkJoinPool.commonPool().shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Bean
     public PbRowMapperFactory getPbRowMapperFactory() {
         return new PbRowMapperFactory() {
@@ -175,33 +166,6 @@ public class PbBeanRegister {
     }
 
 
-
-/*    @Bean
-    public void getAllPbMapper(PbMapperManager mapperManager, ConfigurableListableBeanFactory beanFactory){
-        mapperManager.getAllMappers().forEach(mapper->{
-            beanFactory.registerSingleton(mapper.getClass().getSimpleName(), mapper);
-        });
-    }*/
-
-
-
-/*
-    @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        List<PbMapper> allMappers = PbManager.getPbMapperManager().getAllMappers();
-        for (PbMapper mapper : allMappers) {
-            // 创建一个GenericBeanDefinition并注册到registry中
-            GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
-            beanDefinition.setBeanClass(mapper.getClass());
-            beanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-            String beanName = mapper.getClass().getSimpleName(); // 或者使用其他策略来生成beanName
-            registry.registerBeanDefinition(beanName, beanDefinition);
-        }
-    }
-*/
-
-
-
     @Autowired
     public void registerSpiBeans(ConfigurableListableBeanFactory beanFactory) {
 
@@ -209,7 +173,6 @@ public class PbBeanRegister {
             beanFactory.registerSingleton(mapper.getClass().getName(), mapper);
         }
     }
-
 
 
 }
