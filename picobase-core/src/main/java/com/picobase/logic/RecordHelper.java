@@ -34,7 +34,8 @@ public class RecordHelper {
 
     private static final PbLog log = PbManager.getLog();
 
-    private static final CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
+    private static final CollectionMapper collectionMapper =
+            PbUtil.findMapper(CollectionModel.class);
     private static final RecordMapper recordMapper = PbUtil.findMapper(RecordModel.class);
 
     /**

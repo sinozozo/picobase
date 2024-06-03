@@ -298,7 +298,20 @@ public class PbManager {
 
     public volatile static PbMapperManager pbMapperManager;
 
+
+    /**
+     * 获取 PbMapperManager ， 该组件初始化优先级较高，可在spring组件中直接通过静态方式获取mapper
+     * @return
+     */
     public static PbMapperManager getPbMapperManager() {
+        if (pbMapperManager==null){
+            synchronized (PbManager.class) {
+                if (pbMapperManager==null){
+                    PbMapperManager.loadInitial();
+                    pbMapperManager = new PbMapperManager();
+                }
+            }
+        }
         return pbMapperManager;
     }
 

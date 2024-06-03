@@ -51,7 +51,7 @@ public class CollectionUpsert {
 
     private CollectionModel collection;
 
-    private CollectionMapper mapper;
+    private final CollectionMapper mapper = PbUtil.findMapper(CollectionModel.class);;
     private PbJsonTemplate jsonTemplate;
 
     public CollectionUpsert() {
@@ -72,7 +72,6 @@ public class CollectionUpsert {
         this.updateRule = collection.getUpdateRule();
         this.deleteRule = collection.getDeleteRule();
         this.options = collection.getOptions();
-        this.mapper = PbManager.getPbMapperManager().findMapper(CollectionModel.class);
         this.jsonTemplate = PbManager.getPbJsonTemplate();
     }
 

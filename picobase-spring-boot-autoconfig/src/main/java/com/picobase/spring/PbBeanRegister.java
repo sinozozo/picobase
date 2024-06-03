@@ -18,6 +18,7 @@ import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
 import com.picobase.spring.repository.MysqlDatabaseOperateImpl;
 import javassist.ClassPool;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -102,11 +103,9 @@ public class PbBeanRegister {
     }
 
     @Bean
+    @ConditionalOnMissingClass("com.picobase.console.mapper.MapperManagerWithProxy")
     public PbMapperManager getMapperManager(PbConfig pbConfig) {
-        PbMapperManager pbMapperManager = new PbMapperManager();
-        //加载 mapper
-        pbMapperManager.loadInitial();
-        return pbMapperManager;
+        return PbManager.getPbMapperManager();
     }
 
     @Bean

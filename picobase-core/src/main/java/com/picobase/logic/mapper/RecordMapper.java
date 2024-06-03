@@ -43,6 +43,7 @@ public class RecordMapper extends AbstractMapper {
      * MaxExpandDepth specifies the max allowed nested expand depth path.
      */
     public static final int MaxExpandDepth = 6;
+    CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
 
 
     @FunctionalInterface
@@ -52,8 +53,7 @@ public class RecordMapper extends AbstractMapper {
 
 
     public Optional<RecordModel> findRecordById(String collectionNameOrId, String recordId, Consumer<SelectQuery>... optFilters) {
-        CollectionMapper mapper = PbUtil.findMapper(CollectionModel.class);
-        Optional<CollectionModel> collOptional = mapper.collFetchFun.findByIdOrName(collectionNameOrId); // TODO 这里collection 都查过一遍了
+        Optional<CollectionModel> collOptional = collectionMapper.collFetchFun.findByIdOrName(collectionNameOrId); // TODO 这里collection 都查过一遍了
         if (collOptional.isEmpty()) {
             throw new RuntimeException(String.format("Collection %s not found", collectionNameOrId));
         }
@@ -514,7 +514,7 @@ public class RecordMapper extends AbstractMapper {
      */
 
     public void deleteRecord(RecordModel record) {
-        CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
+
 
         // fetch rel references (if any)
         //

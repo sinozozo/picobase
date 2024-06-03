@@ -34,7 +34,7 @@ public class PbMapperManager {
     /**
      * The init method.
      */
-    public synchronized void loadInitial() {
+    public synchronized static void loadInitial() {
         Collection<PbMapper> mappers = PbServiceLoader.load(PbMapper.class);
         for (PbMapper mapper : mappers) {
             putMapper(mapper);

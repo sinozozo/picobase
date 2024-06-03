@@ -85,7 +85,6 @@ public class PbConsoleInject {
     @Primary
     public PbMapperManager getPbMapperManager() {
         MapperManagerWithProxy mapperManagerWithProxy = new MapperManagerWithProxy();
-        mapperManagerWithProxy.loadInitial();
         return mapperManagerWithProxy;
     }
 

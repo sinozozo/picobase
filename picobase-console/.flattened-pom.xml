@@ -11,6 +11,8 @@
   <artifactId>picobase-console</artifactId>
   <version>0.0.1</version>
   <properties>
+    <thumbnailator.version>0.4.20</thumbnailator.version>
+    <s3.version>1.12.267</s3.version>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +33,16 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.coobird</groupId>
+      <artifactId>thumbnailator</artifactId>
+      <version>${thumbnailator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-s3</artifactId>
+      <version>${s3.version}</version>
     </dependency>
   </dependencies>
 </project>

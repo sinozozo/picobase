@@ -7,6 +7,7 @@ import com.picobase.event.PbEvent;
 import com.picobase.exception.PbException;
 import com.picobase.listener.PbEventCenter;
 import com.picobase.log.PbLog;
+import com.picobase.logic.PbRecordLogic;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
@@ -48,6 +49,8 @@ public final class PbUtil {
      * 底层使用的 PbAuthZLogic 对象
      */
     public static PbAuthZLogic pbAzLogic = new PbAuthZLogic(TYPE);
+
+    public static PbRecordLogic pbRecordLogic = new PbRecordLogic();
 
 
     /**
