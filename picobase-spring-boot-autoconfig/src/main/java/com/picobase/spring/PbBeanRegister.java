@@ -202,6 +202,13 @@ public class PbBeanRegister {
 
 
 
+    @Autowired
+    public void registerSpiBeans(ConfigurableListableBeanFactory beanFactory) {
+
+        for (PbMapper mapper : PbManager.getPbMapperManager().getAllMappers()) {
+            beanFactory.registerSingleton(mapper.getClass().getName(), mapper);
+        }
+    }
 
 
 

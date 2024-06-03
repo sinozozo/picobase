@@ -42,9 +42,9 @@ public class RecordController {
     private RecordMapper recordMapper;
     private static final PbLog log = PbManager.getLog();
 
-    public RecordController(PbMapperManager manager) {
-        this.collectionMapper = manager.findMapper(CollectionModel.class);
-        this.recordMapper = manager.findMapper(RecordModel.class);
+    public RecordController(CollectionMapper collectionMapper, RecordMapper recordMapper) {
+        this.collectionMapper = collectionMapper;
+        this.recordMapper = recordMapper;
     }
 
     @LoadCollection

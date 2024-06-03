@@ -28,8 +28,8 @@ public class CollectionController {
     private static final Logger log = LoggerFactory.getLogger(CollectionController.class);
 
     private CollectionMapper mapper;
-    public CollectionController(PbMapperManager mapperManager) {
-        this.mapper = mapperManager.findMapper(CollectionModel.class);
+    public CollectionController(CollectionMapper mapper) {
+        this.mapper = mapper;
     }
 
     @GetMapping
