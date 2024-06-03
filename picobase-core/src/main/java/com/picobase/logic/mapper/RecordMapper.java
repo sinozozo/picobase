@@ -43,7 +43,7 @@ public class RecordMapper extends AbstractMapper {
      * MaxExpandDepth specifies the max allowed nested expand depth path.
      */
     public static final int MaxExpandDepth = 6;
-    CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
+    CollectionMapper collectionMapper = new CollectionMapper();
 
 
     @FunctionalInterface

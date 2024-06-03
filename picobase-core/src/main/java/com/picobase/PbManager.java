@@ -307,8 +307,8 @@ public class PbManager {
         if (pbMapperManager==null){
             synchronized (PbManager.class) {
                 if (pbMapperManager==null){
-                    PbMapperManager.loadInitial();
                     pbMapperManager = new PbMapperManager();
+                    pbMapperManager.loadInitial();
                 }
             }
         }

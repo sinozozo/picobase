@@ -6,10 +6,7 @@ import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
 import com.picobase.spi.PbServiceLoader;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.picobase.error.PbErrorCode.CODE_13000;
 
@@ -31,10 +28,18 @@ public class PbMapperManager {
     }
 
 
+    public List<PbMapper> getAllMappers() {
+        List<PbMapper> mappers = new ArrayList<>();
+        for (Map<Class, PbMapper> mapperMap : MAPPER_SPI_MAP.values()) {
+            mappers.addAll(mapperMap.values());
+        }
+        return mappers;
+    }
+
     /**
      * The init method.
      */
-    public synchronized static void loadInitial() {
+    public synchronized  void loadInitial() {
         Collection<PbMapper> mappers = PbServiceLoader.load(PbMapper.class);
         for (PbMapper mapper : mappers) {
             putMapper(mapper);

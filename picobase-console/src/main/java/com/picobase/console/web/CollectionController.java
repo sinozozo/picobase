@@ -8,12 +8,17 @@ import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.CollectionUpsert;
+import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/collections")
@@ -21,8 +26,8 @@ public class CollectionController {
 
 
     private static final Logger log = LoggerFactory.getLogger(CollectionController.class);
-    private CollectionMapper mapper;
 
+    private CollectionMapper mapper;
     public CollectionController(PbMapperManager mapperManager) {
         this.mapper = mapperManager.findMapper(CollectionModel.class);
     }
