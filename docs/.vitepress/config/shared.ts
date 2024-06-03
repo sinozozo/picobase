@@ -46,10 +46,10 @@ export const shared = defineConfig({
         logo: {src: '/pico-base-mini-logo.png', width: 24, height: 24},
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/vuejs/vitepress'}
+            {icon: 'github', link: 'https://github.com/jincieryi/picobase'}
         ],
 
-        search: {
+        /*search: {
             provider: 'algolia',
             options: {
                 appId: '8J64VVRP8K',
@@ -57,6 +57,10 @@ export const shared = defineConfig({
                 indexName: 'vitepress',
                 locales: {...zhSearch}
             }
+        }*/
+        search: {
+            provider: 'local'
+
         }
     }
 })

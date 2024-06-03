@@ -64,16 +64,21 @@ function nav(): DefaultTheme.NavItem[] {
             link: '/reference/site-config',
             activeMatch: '/reference/'
         },
+        /*{
+            text: '加入讨论群',
+            link: '/join-discussion',
+            activeMatch: '/join-discussion'
+        },*/
         {
             text: pkg.version,
             items: [
                 {
                     text: '更新日志',
-                    link: 'https://github.com/vuejs/vitepress/blob/main/CHANGELOG.md'
+                    link: '/guide/changelog'
                 },
                 {
                     text: '参与贡献',
-                    link: 'https://github.com/vuejs/vitepress/blob/main/.github/contributing.md'
+                    link: '/guide/contributing'
                 }
             ]
         }
@@ -98,9 +103,9 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: 'Collection', link: 'collection'},
                 {text: 'API访问规则和过滤', link: 'api-rules-and-filters'},
-                {text: '认证授权', link: 'frontmatter'},
-                {text: '级联关系', link: 'using-vue'},
-                {text: '文件上传和处理', link: 'i18n'}
+                {text: '认证授权', link: 'authentication'},
+                {text: '实体关系', link: 'model-relation'},
+                {text: '文件上传和处理', link: 'file-upload'}
             ]
         },
         {
