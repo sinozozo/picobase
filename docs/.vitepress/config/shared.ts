@@ -22,7 +22,7 @@ export const shared = defineConfig({
     },
 
     sitemap: {
-        hostname: 'https://vitepress.dev',
+        hostname: 'https://picobase.cn',
         transformItems(items) {
             return items.filter((item) => !item.url.includes('migration'))
         }
@@ -30,8 +30,8 @@ export const shared = defineConfig({
 
     /* prettier-ignore */
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/vitepress-logo-mini.svg'}],
-        ['link', {rel: 'icon', type: 'image/png', href: '/vitepress-logo-mini.png'}],
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/pico-base-mini.svg'}],
+        ['link', {rel: 'icon', type: 'image/png', href: '/pico-base-mini.png'}],
         ['meta', {name: 'theme-color', content: '#5f67ee'}],
         ['meta', {property: 'og:type', content: 'website'}],
         ['meta', {property: 'og:locale', content: 'en'}],
@@ -43,7 +43,7 @@ export const shared = defineConfig({
     ],
 
     themeConfig: {
-        logo: {src: '/vitepress-logo-mini.svg', width: 24, height: 24},
+        logo: {src: '/pico-base-mini-logo.png', width: 24, height: 24},
 
         socialLinks: [
             {icon: 'github', link: 'https://github.com/vuejs/vitepress'}

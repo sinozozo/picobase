@@ -6,7 +6,7 @@ const pkg = require('vitepress/package.json')
 
 export const zh = defineConfig({
     lang: 'zh-Hans',
-    description: '由 Vite 和 Vue 驱动的静态站点生成器',
+    description: 'zzz由 Vite 和 Vue 驱动的静态站点生成器',
 
     themeConfig: {
         nav: nav(),
