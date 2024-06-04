@@ -1,10 +1,10 @@
 package com.picobase.spring.repository;
 
 import cn.hutool.core.util.ClassUtil;
-import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.ModifyRequest;
 import com.picobase.persistence.repository.PbRowMapper;
+import com.picobase.persistence.repository.PbRowMapperRegistry;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -51,8 +51,7 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
             return queryOne(jdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        PbMapper mapper = mapperManager.findMapper(cls);
-        return (R) queryOne(jdbcTemplate, sql, args, mapper.getPbRowMapper());
+        return (R) queryOne(jdbcTemplate, sql, args, PbRowMapperRegistry.getInstance().getPbRowMapper(cls, true));
     }
 
     @Override
@@ -65,8 +64,7 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
             return queryOne(namedParameterJdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        PbMapper mapper = mapperManager.findMapper(cls);
-        return (R) queryOne(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
+        return (R) queryOne(namedParameterJdbcTemplate, sql, args, PbRowMapperRegistry.getInstance().getPbRowMapper(cls, true));
     }
 
     @Override
@@ -99,8 +97,7 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
             return queryMany(jdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        PbMapper mapper = mapperManager.findMapper(rClass);
-        return queryMany(jdbcTemplate, sql, args, mapper.getPbRowMapper());
+        return queryMany(jdbcTemplate, sql, args, PbRowMapperRegistry.getInstance().getPbRowMapper(rClass, true));
     }
 
     @Override
@@ -113,8 +110,7 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
             return queryMany(namedParameterJdbcTemplate, sql, args, (rs, rowNum) -> (R) new ColumnMapRowMapper().mapRow(rs, rowNum));
         }
 
-        PbMapper mapper = mapperManager.findMapper(rClass);
-        return queryMany(namedParameterJdbcTemplate, sql, args, mapper.getPbRowMapper());
+        return queryMany(namedParameterJdbcTemplate, sql, args, PbRowMapperRegistry.getInstance().getPbRowMapper(rClass, true));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.picobase.search;
+package com.picobase.logic.mapper;
 
 import com.picobase.exception.PbException;
 import com.picobase.model.CollectionModel;
@@ -16,6 +16,7 @@ import static com.picobase.util.PbConstants.baseModelFieldNames;
 
 public class RecordRowMapper implements PbRowMapper<RecordModel> {
     private final CollectionModel collection;
+
 
     public RecordRowMapper(CollectionModel collection) {
         this.collection = collection;

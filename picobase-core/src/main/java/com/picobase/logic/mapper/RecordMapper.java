@@ -18,7 +18,6 @@ import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.AbstractMapper;
 import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.persistence.resolver.ResultCouple;
-import com.picobase.search.RecordRowMapper;
 import com.picobase.util.PbConstants;
 
 import java.util.*;
@@ -38,23 +37,16 @@ import static com.picobase.persistence.resolver.ListUtil.toUniqueStringList;
 import static com.picobase.util.PbConstants.FieldType.Relation;
 import static com.picobase.util.PbConstants.IndirectExpandRegexPattern;
 
-public class RecordMapper extends AbstractMapper {
+public class RecordMapper extends AbstractMapper<RecordModel> {
     /**
      * MaxExpandDepth specifies the max allowed nested expand depth path.
      */
     public static final int MaxExpandDepth = 6;
     CollectionMapper collectionMapper = new CollectionMapper();
 
-
-    @FunctionalInterface
-    public interface ExpandFetchFunc extends BiFunction<CollectionModel, List<String>, ResultCouple<List<RecordModel>>> {
-
-    }
-
-
     public Optional<RecordModel> findRecordById(String collectionNameOrId, String recordId, Consumer<SelectQuery>... optFilters) {
         CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId); // TODO 这里collection 都查过一遍了
-        if (collection == null ) {
+        if (collection == null) {
             throw new RuntimeException(String.format("Collection %s not found", collectionNameOrId));
         }
         SelectQuery recordQuery = this.recordQuery(collection);
@@ -62,7 +54,6 @@ public class RecordMapper extends AbstractMapper {
         Arrays.stream(optFilters).filter(Objects::nonNull).forEach(filter -> filter.accept(recordQuery));
         return Optional.of(query.limit(1).one(new RecordRowMapper(collection)));
     }
-
 
     /**
      * ExpandRecords expands the relations of the provided Record models list.
@@ -85,7 +76,6 @@ public class RecordMapper extends AbstractMapper {
         });
         return failed;
     }
-
 
     /**
      * // notes:
@@ -319,7 +309,6 @@ public class RecordMapper extends AbstractMapper {
         return null;
     }
 
-
     /**
      * normalizeExpands normalizes expand strings and merges self containing paths
      * (eg. ["a.b.c", "a.b", "   test  ", "  ", "test"] -> ["a.b.c", "test"]).
@@ -393,7 +382,6 @@ public class RecordMapper extends AbstractMapper {
                 .limit(1).one(CollectionModel.class));
     }
 
-
     /**
      * IsRecordValueUnique checks if the provided key-value pair is a unique Record value.
      * <p>
@@ -457,7 +445,6 @@ public class RecordMapper extends AbstractMapper {
         return username;
     }
 
-
     public void createRecord(RecordModel model) {
         if (!model.hasId()) {
             //自动生成 id
@@ -483,7 +470,6 @@ public class RecordMapper extends AbstractMapper {
 
     }
 
-
     public void updateRecord(RecordModel model) {
         if (!model.hasId()) {
             throw new BadRequestException("missing model id");
@@ -501,7 +487,6 @@ public class RecordMapper extends AbstractMapper {
         PbUtil.getPbDbxBuilder().update(model.tableName(), BeanUtil.beanToMap(model.columnValueMap()), newHashExpr(Map.of("id", model.getId()))).execute();
 
     }
-
 
     /**
      * // DeleteRecord deletes the provided Record model.
@@ -541,7 +526,6 @@ public class RecordMapper extends AbstractMapper {
         }, false);
 
     }
-
 
     public void cascadeRecordDelete(RecordModel mainRecord, Map<CollectionModel, List<SchemaField>> refs) {
         // Sort the refs keys to ensure that the cascade events firing order is always the same.
@@ -603,7 +587,6 @@ public class RecordMapper extends AbstractMapper {
         }
     }
 
-
     public void deleteRefRecords(RecordModel mainRecord, List<RecordModel> refRecords, SchemaField field) {
         RelationOptions options = (RelationOptions) field.getOptions();
         if (options == null) {
@@ -645,8 +628,9 @@ public class RecordMapper extends AbstractMapper {
         return PbUtil.getCurrentCollection().getName();
     }
 
-    @Override
-    public Class getModelClass() {
-        return RecordModel.class;
+
+    @FunctionalInterface
+    public interface ExpandFetchFunc extends BiFunction<CollectionModel, List<String>, ResultCouple<List<RecordModel>>> {
+
     }
 }

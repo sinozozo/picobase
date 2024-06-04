@@ -1,7 +1,6 @@
 package com.picobase.logic.mapper;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -10,7 +9,6 @@ import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.exception.BadRequestException;
 import com.picobase.exception.PbException;
-import com.picobase.fun.PbCollFetchFun;
 import com.picobase.model.*;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.Schema;
@@ -23,7 +21,6 @@ import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.AbstractMapper;
 import com.picobase.persistence.mapper.UpsertOptions;
 import com.picobase.persistence.model.Index;
-import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.StorageContextHolder;
 import com.picobase.util.PbConstants;
 import com.picobase.util.Tokenizer;
@@ -51,11 +48,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     public String getTableName() {
         return PbConstants.TableName.COLLECTION;
     }
-
-    @Override
-    public Class<CollectionModel> getModelClass() {
-        return CollectionModel.class;
-    }
+    
 
     public SelectQuery modelQuery() {
         return PbUtil.getPbDbxBuilder().select("*").from(getTableName());
@@ -424,39 +417,6 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
 
         return selectQuery.build().all(CollectionModel.class);
-    }
-
-
-    @Override
-    public PbRowMapper<CollectionModel> getPbRowMapper() {
-        return (rs, rowNum) -> {
-            CollectionModel model = new CollectionModel();
-            model.setId(rs.getString("id"));
-            model.setName(rs.getString("name"));
-            model.setType(rs.getString("type"));
-            model.setSystem(rs.getBoolean("system"));
-
-            Schema schema = PbManager.getPbJsonTemplate().parseJsonToObject(rs.getString("schema"), Schema.class);
-            model.setSchema(schema);
-
-            List<String> indexList = PbManager.getPbJsonTemplate().parseJsonToObject(rs.getString("indexes"), List.class);
-            model.setIndexes(indexList);
-
-            model.setListRule(rs.getString("listRule"));
-            model.setCreateRule(rs.getString("createRule"));
-            model.setDeleteRule(rs.getString("deleteRule"));
-            model.setUpdateRule(rs.getString("updateRule"));
-            model.setViewRule(rs.getString("viewRule"));
-
-            Map<String, Object> options = PbManager.getPbJsonTemplate().parseJsonToObject(rs.getString("options"), Map.class);
-            model.setOptions(options);
-
-            model.setCreated(DateUtil.toLocalDateTime(rs.getTimestamp("created")));
-            model.setUpdated(DateUtil.toLocalDateTime(rs.getTimestamp("updated")));
-
-
-            return model;
-        };
     }
 
 

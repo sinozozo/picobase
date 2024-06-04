@@ -3,7 +3,6 @@ package com.picobase.persistence.mapper;
 import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
-import com.picobase.persistence.repository.PbRowMapper;
 
 import static com.picobase.persistence.mapper.PbMapperManager.DEFAULT_DATA_SOURCE;
 
@@ -12,9 +11,6 @@ import static com.picobase.persistence.mapper.PbMapperManager.DEFAULT_DATA_SOURC
  **/
 
 public interface PbMapper {
-
-    PbRowMapper getPbRowMapper();
-
 
     /**
      * Get the name of table.
@@ -32,8 +28,6 @@ public interface PbMapper {
         return DEFAULT_DATA_SOURCE;
     }
 
-
-    <T> Class<T> getModelClass();
 
     SelectQuery modelQuery();
 

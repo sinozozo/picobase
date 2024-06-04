@@ -7,6 +7,7 @@ import com.picobase.PbManager;
 import com.picobase.context.PbHolder;
 import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
+import com.picobase.logic.mapper.RecordRowMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
 import com.picobase.persistence.dbx.SelectQuery;
@@ -33,14 +34,14 @@ public class PbProvider {
 
 
     private final FieldResolver fieldResolver;
+    private final List<SortField> sort = new ArrayList<>();
+    private final List<SearchFilter> filter = new ArrayList<>();
     private SelectQuery query;
     private boolean skipTotal;
     private boolean skipData;
     private int page = 1;
     private int perPage = DEFAULT_PER_PAGE;
     private String countCol = "id";
-    private final List<SortField> sort = new ArrayList<>();
-    private final List<SearchFilter> filter = new ArrayList<>();
     private CollectionModel collection;
 
     public PbProvider(FieldResolver fieldResolver) {

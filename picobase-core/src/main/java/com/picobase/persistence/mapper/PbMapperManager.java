@@ -1,11 +1,14 @@
 package com.picobase.persistence.mapper;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.TypeUtil;
 import com.picobase.PbManager;
 import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
 import com.picobase.spi.PbServiceLoader;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.picobase.error.PbErrorCode.CODE_13000;
@@ -16,36 +19,12 @@ import static com.picobase.error.PbErrorCode.CODE_13000;
  **/
 public class PbMapperManager {
 
-    private static final PbLog LOGGER = PbManager.getLog();
-
     public static final Map<String, Map<Class, PbMapper>> MAPPER_SPI_MAP = new HashMap<>();
-
-
     public static final String DEFAULT_DATA_SOURCE = "default";
+    private static final PbLog LOGGER = PbManager.getLog();
 
     public PbMapperManager() {
 
-    }
-
-
-    public List<PbMapper> getAllMappers() {
-        List<PbMapper> mappers = new ArrayList<>();
-        for (Map<Class, PbMapper> mapperMap : MAPPER_SPI_MAP.values()) {
-            mappers.addAll(mapperMap.values());
-        }
-        return mappers;
-    }
-
-    /**
-     * The init method.
-     */
-    public synchronized  void loadInitial() {
-        Collection<PbMapper> mappers = PbServiceLoader.load(PbMapper.class);
-        for (PbMapper mapper : mappers) {
-            putMapper(mapper);
-            LOGGER.info("[PbMapperManager] Load PbMapper({}) datasource({}) modelClass({})  successfully.",
-                    mapper.getClass(), mapper.getDataSource(), mapper.getModelClass());
-        }
     }
 
     /**
@@ -64,7 +43,33 @@ public class PbMapperManager {
     private static void putMapper(PbMapper mapper) {
         Map<Class, PbMapper> mapperMap = MAPPER_SPI_MAP.computeIfAbsent(mapper.getDataSource(), key ->
                 new HashMap<>(16));
-        mapperMap.putIfAbsent(mapper.getModelClass(), mapper);
+        Type type = TypeUtil.getTypeArgument(ClassUtil.getClass(mapper));
+        if (type == null) {
+            throw new PbException("PbMapper {} type is null.", mapper);
+        }
+        mapperMap.putIfAbsent(TypeUtil.getClass(type), mapper);
+    }
+
+    public List<PbMapper> getAllMappers() {
+        List<PbMapper> mappers = new ArrayList<>();
+        for (Map<Class, PbMapper> mapperMap : MAPPER_SPI_MAP.values()) {
+            mappers.addAll(mapperMap.values());
+        }
+        return mappers;
+    }
+
+    /**
+     * The init method.
+     */
+    public synchronized void loadInitial() {
+        Collection<PbMapper> mappers = PbServiceLoader.load(PbMapper.class);
+        for (PbMapper mapper : mappers) {
+            putMapper(mapper);
+
+            Type type = TypeUtil.getTypeArgument(ClassUtil.getClass(mapper));
+            LOGGER.info("[PbMapperManager] Load PbMapper({}) datasource({}) modelClass({})  successfully.",
+                    mapper.getClass(), mapper.getDataSource(), TypeUtil.getClass(type));
+        }
     }
 
     /**

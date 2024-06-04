@@ -17,11 +17,6 @@ public class ExternalAuthMapper extends AbstractMapper<ExternalAuthModel> {
         return EXTERNAL_AUTHS;
     }
 
-    @Override
-    public Class<ExternalAuthModel> getModelClass() {
-        return ExternalAuthModel.class;
-    }
-
 
     public List<ExternalAuthModel> findAllExternalAuthsByRecord(RecordModel record) {
         return PbUtil.query(modelQuery().andWhere(Expression.newHashExpr(Map.of("collectionId", record.getCollection().getId(), "recordId", record.getId()))), ExternalAuthModel.class);

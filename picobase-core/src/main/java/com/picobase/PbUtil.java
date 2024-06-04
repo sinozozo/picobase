@@ -35,23 +35,19 @@ import static com.picobase.util.PbConstants.STORAGE_KEY_COLLECTION;
  * PB 工具类 （面相使用者的门面类）
  */
 public final class PbUtil {
-    private static final PbLog log = PbManager.getLog();
-
-    private PbUtil() {
-    }
-
     /**
      * 多账号体系下的类型标识
      */
     public static final String TYPE = "user";
-
+    private static final PbLog log = PbManager.getLog();
     /**
      * 底层使用的 PbAuthZLogic 对象
      */
     public static PbAuthZLogic pbAzLogic = new PbAuthZLogic(TYPE);
-
     public static PbRecordLogic pbRecordLogic = new PbRecordLogic();
 
+    private PbUtil() {
+    }
 
     /**
      * 安全的重置 PbAuthZLogic 对象
@@ -410,6 +406,10 @@ public final class PbUtil {
             throw new PbException("{} 未实现modelQuery方法", model.getSimpleName());
         }
         return queryPage(resolver, query, model);
+    }
+
+    public static <T> List<T> query(Class<T> model) {
+        return query(PbUtil.findMapper(model), model);
     }
 
     public static <T> List<T> query(SelectQuery query, Class<T> model) {

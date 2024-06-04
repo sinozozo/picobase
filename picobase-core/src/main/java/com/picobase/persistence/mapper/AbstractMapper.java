@@ -4,12 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
-import com.picobase.persistence.repository.PbRowMapper;
 
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -19,21 +17,6 @@ import java.util.Set;
  **/
 
 public abstract class AbstractMapper<T> implements PbMapper {
-
- /*   private final Class<T> clazz;
-    public AbstractMapper(Class<T> clazz) {
-        this.clazz = clazz;
-       *//* ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.clazz = (Class<T>) genericSuperclass.getActualTypeArguments()[0];*//*
-    }
-
-    public Class<T> getModelClass(){
-        return this.clazz;
-    }*/
-
-    public PbRowMapper<T> getPbRowMapper() {
-        return PbManager.getPbRowMapperFactory().getPbRowMapper(getModelClass());
-    }
 
 
     public SelectQuery modelQuery() {

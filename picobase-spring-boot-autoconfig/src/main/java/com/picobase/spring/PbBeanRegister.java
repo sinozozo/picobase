@@ -33,7 +33,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
@@ -157,9 +156,9 @@ public class PbBeanRegister {
     public PbRowMapperFactory getPbRowMapperFactory() {
         return new PbRowMapperFactory() {
             @Override
-            public <T> PbRowMapper<T> getPbRowMapper(Class<T> modelClass) {
+            public <T> PbRowMapper<T> getPbRowMapper(Class<T> clazz) {
                 return (rs, rowNum) -> {
-                    BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(modelClass);
+                    BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(clazz);
                     return mapper.mapRow(rs, rowNum);
                 };
             }
@@ -169,6 +168,7 @@ public class PbBeanRegister {
 
     /**
      * 注入 PbMapper 到容器中 // TODO 移植到 PbBeanInject 中会报错
+     *
      * @param beanFactory
      */
     @Autowired

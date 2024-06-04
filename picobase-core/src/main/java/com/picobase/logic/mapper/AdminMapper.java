@@ -22,11 +22,6 @@ public class AdminMapper extends AbstractMapper<AdminModel> {
         return PbConstants.TableName.ADMIN;
     }
 
-    @Override
-    public Class<AdminModel> getModelClass() {
-        return AdminModel.class;
-    }
-
 
     public SelectQuery isAdminEmailUnique(String email, String... excludeIds) {
         // 过滤掉null值并转换为Set确保唯一性
