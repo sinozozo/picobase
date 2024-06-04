@@ -12,12 +12,14 @@ import com.picobase.listener.PbListener;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.persistence.dbx.PbDbxBuilder;
+import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.persistence.repository.PbRowMapperFactory;
 import com.picobase.spring.pathmatch.PbPathMatcherHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.util.PathMatcher;
 
 import java.util.List;
@@ -143,5 +145,6 @@ public class PbBeanInject {
     public void setPbRowMapperFactory(PbRowMapperFactory pbRowMapperFactory) {
         PbManager.setPbRowMapperFactory(pbRowMapperFactory);
     }
+
 
 }

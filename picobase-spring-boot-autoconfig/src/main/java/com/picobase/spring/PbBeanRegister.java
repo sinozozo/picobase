@@ -33,6 +33,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
@@ -166,13 +167,15 @@ public class PbBeanRegister {
     }
 
 
+    /**
+     * 注入 PbMapper 到容器中 // TODO 移植到 PbBeanInject 中会报错
+     * @param beanFactory
+     */
     @Autowired
     public void registerSpiBeans(ConfigurableListableBeanFactory beanFactory) {
-
         for (PbMapper mapper : PbManager.getPbMapperManager().getAllMappers()) {
             beanFactory.registerSingleton(mapper.getClass().getName(), mapper);
         }
     }
-
 
 }

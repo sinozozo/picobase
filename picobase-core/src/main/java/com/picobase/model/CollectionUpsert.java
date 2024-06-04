@@ -507,7 +507,7 @@ public class CollectionUpsert {
             dummy.setSystem(this.system);
             dummy.setOptions(this.options);
             try {
-                RecordFieldResolver resolver = new RecordFieldResolver(idOrName -> Optional.of(mapper.findCollectionByNameOrId(idOrName)), dummy, null, true);
+                RecordFieldResolver resolver = new RecordFieldResolver(dummy, null, true);
                 new SearchFilter((String) value).buildExpr(resolver);
             } catch (Exception e) {
                 return newError("validation_invalid_rule", "Invalid filter rule. Raw error: " + e.getMessage());

@@ -3,7 +3,9 @@ package com.picobase.persistence.resolver;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.picobase.PbUtil;
 import com.picobase.fun.PbCollFetchFun;
+import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RequestInfo;
 import com.picobase.persistence.dbx.expression.Expression;
@@ -17,7 +19,6 @@ import static com.picobase.util.PbConstants.IssetModifier;
 
 
 public class RecordFieldResolver implements FieldResolver {
-    private PbCollFetchFun collFetchFun;
     private CollectionModel baseCollection;
     private RequestInfo requestInfo;
     private Map<String, Object> staticRequestInfo;
@@ -26,11 +27,12 @@ public class RecordFieldResolver implements FieldResolver {
     private List<Join> joins;
     private boolean allowHiddenFields;
 
-    public RecordFieldResolver(PbCollFetchFun collFetchFun,
+    private final CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
+
+    public RecordFieldResolver(
                                CollectionModel baseCollection,
                                RequestInfo requestInfo,
                                boolean allowHiddenFields) {
-        this.collFetchFun = collFetchFun;
         this.baseCollection = baseCollection;
         this.requestInfo = requestInfo;
         this.allowHiddenFields = allowHiddenFields;
@@ -119,12 +121,12 @@ public class RecordFieldResolver implements FieldResolver {
             return collectionModel;
         }
 
-        Optional<CollectionModel> collOpt = collFetchFun.findByIdOrName(collectionNameOrId);//
-        if (collOpt.isEmpty()) {
+        CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId);//
+        if (collection==null) {
             return null;
         }
-        this.loadedCollections.add(collOpt.get());
-        return collOpt.get();
+        this.loadedCollections.add(collection);
+        return collection;
     }
 
     public void registerJoin(String tableName, String tableAlias, Expression on) {
@@ -208,15 +210,6 @@ public class RecordFieldResolver implements FieldResolver {
         }
     }
 
-
-    public PbCollFetchFun getCollFetchFun() {
-        return collFetchFun;
-    }
-
-    public RecordFieldResolver setCollFetchFun(PbCollFetchFun collFetchFun) {
-        this.collFetchFun = collFetchFun;
-        return this;
-    }
 
     public CollectionModel getBaseCollection() {
         return baseCollection;

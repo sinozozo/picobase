@@ -46,7 +46,6 @@ import static com.picobase.util.PbConstants.baseModelFieldNames;
 public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
     public static final String[] ToJsonStrFieldNames = new String[]{"schema", "indexes", "options"};
-    public PbCollFetchFun collFetchFun = idOrName -> Optional.of(this.findCollectionByNameOrId(idOrName));
 
     @Override
     public String getTableName() {

@@ -53,14 +53,14 @@ public class RecordMapper extends AbstractMapper {
 
 
     public Optional<RecordModel> findRecordById(String collectionNameOrId, String recordId, Consumer<SelectQuery>... optFilters) {
-        Optional<CollectionModel> collOptional = collectionMapper.collFetchFun.findByIdOrName(collectionNameOrId); // TODO 这里collection 都查过一遍了
-        if (collOptional.isEmpty()) {
+        CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId); // TODO 这里collection 都查过一遍了
+        if (collection == null ) {
             throw new RuntimeException(String.format("Collection %s not found", collectionNameOrId));
         }
-        SelectQuery recordQuery = this.recordQuery(collOptional.get());
-        SelectQuery query = recordQuery.andWhere(newHashExpr(Map.of(collOptional.get().getName() + ".id", recordId)));
+        SelectQuery recordQuery = this.recordQuery(collection);
+        SelectQuery query = recordQuery.andWhere(newHashExpr(Map.of(collection.getName() + ".id", recordId)));
         Arrays.stream(optFilters).filter(Objects::nonNull).forEach(filter -> filter.accept(recordQuery));
-        return Optional.of(query.limit(1).one(new RecordRowMapper(collOptional.get())));
+        return Optional.of(query.limit(1).one(new RecordRowMapper(collection)));
     }
 
 

@@ -65,7 +65,6 @@ public class RecordController {
         }
 
         var fieldsResolver = new RecordFieldResolver(
-                collectionMapper.collFetchFun,
                 collection,
                 requestInfo,
                 // hidden fields are searchable only by admins
@@ -109,7 +108,7 @@ public class RecordController {
 
         Consumer<SelectQuery> ruleFunc = selectQuery -> {
             if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getViewRule())) {
-                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collectionMapper.collFetchFun, collection, requestInfo, true);
+                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collection, requestInfo, true);
                 Expression expression = new SearchFilter(collection.getViewRule()).buildExpr(recordFieldResolver);
                 recordFieldResolver.updateQuery(selectQuery);
                 selectQuery.andWhere(expression);
@@ -165,7 +164,7 @@ public class RecordController {
                 if (StrUtil.isEmpty(collection.getCreateRule())) {
                     return;
                 }
-                RecordFieldResolver resolver = new RecordFieldResolver(collectionMapper.collFetchFun, collection, requestInfo, true);
+                RecordFieldResolver resolver = new RecordFieldResolver(collection, requestInfo, true);
 
                 Expression expr = new SearchFilter(collection.getCreateRule()).buildExpr(resolver);
                 resolver.updateQuery(selectQuery);
@@ -235,7 +234,7 @@ public class RecordController {
 
         Consumer<SelectQuery> ruleFunc = selectQuery -> {
             if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getUpdateRule())) {
-                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collectionMapper.collFetchFun, collection, requestInfo, true);
+                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collection, requestInfo, true);
                 Expression expression = new SearchFilter(collection.getUpdateRule()).buildExpr(recordFieldResolver);
                 recordFieldResolver.updateQuery(selectQuery);
                 selectQuery.andWhere(expression);
@@ -289,7 +288,7 @@ public class RecordController {
 
         Consumer<SelectQuery> ruleFunc = selectQuery -> {
             if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getDeleteRule())) {
-                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collectionMapper.collFetchFun, collection, requestInfo, true);
+                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collection, requestInfo, true);
                 Expression expression = new SearchFilter(collection.getDeleteRule()).buildExpr(recordFieldResolver);
                 recordFieldResolver.updateQuery(selectQuery);
                 selectQuery.andWhere(expression);

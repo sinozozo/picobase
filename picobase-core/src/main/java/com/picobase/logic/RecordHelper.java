@@ -34,8 +34,6 @@ public class RecordHelper {
 
     private static final PbLog log = PbManager.getLog();
 
-    private static final CollectionMapper collectionMapper =
-            PbUtil.findMapper(CollectionModel.class);
     private static final RecordMapper recordMapper = PbUtil.findMapper(RecordModel.class);
 
     /**
@@ -193,7 +191,7 @@ public class RecordHelper {
                         throw new IllegalStateException(String.format("Only admins can view collection %s records", relCollection.getName()));
                     }
 
-                    var resolver = new RecordFieldResolver(collectionMapper.collFetchFun, relCollection, requestInfo, true);
+                    var resolver = new RecordFieldResolver(relCollection, requestInfo, true);
                     var expr = new SearchFilter(relCollection.getViewRule()).buildExpr(resolver);
                     resolver.updateQuery(q);
                     q.andWhere(expr);
@@ -250,7 +248,7 @@ public class RecordHelper {
         SelectQuery query = recordMapper.recordQuery(collection)
                 .select(quoteSimpleColumnName(collection.getName()) + ".id")
                 .andWhere(Expression.in(quoteSimpleColumnName(collection.getName()) + ".id", recordIds));
-        var resolver = new RecordFieldResolver(collectionMapper.collFetchFun, collection, requestInfo, true);
+        var resolver = new RecordFieldResolver( collection, requestInfo, true);
         var expr = new SearchFilter(authOptions.getManageRule()).buildExpr(resolver);
         resolver.updateQuery(query);
         query.andWhere(expr);
@@ -295,7 +293,7 @@ public class RecordHelper {
         }
 
         Consumer<SelectQuery> ruleConsumer = selectQuery -> {
-            RecordFieldResolver resolver = new RecordFieldResolver(collectionMapper.collFetchFun, record.getCollection(), requestInfo, true);
+            RecordFieldResolver resolver = new RecordFieldResolver( record.getCollection(), requestInfo, true);
             Expression expression = new SearchFilter(manageRule).buildExpr(resolver);
             resolver.updateQuery(selectQuery);
             selectQuery.andWhere(expression);
