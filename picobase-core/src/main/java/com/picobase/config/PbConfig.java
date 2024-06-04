@@ -18,7 +18,7 @@ public class PbConfig implements Serializable {
     /**
      * token 名称 （同时也是： cookie 名称、提交 token 时参数的名称、存储 token 时的 key 前缀）
      */
-    private String tokenName = "pbtoken";
+    private String tokenName = "Authorization";
     /**
      * token 有效期（单位：秒） 默认30天，-1 代表永久有效
      */
@@ -113,7 +113,6 @@ public class PbConfig implements Serializable {
      * jwt秘钥（只有集成 jwt 相关模块时此参数才会生效）
      */
     private String jwtSecretKey;
-
 
 
     /**
