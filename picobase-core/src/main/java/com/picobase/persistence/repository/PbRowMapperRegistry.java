@@ -57,7 +57,7 @@ public class PbRowMapperRegistry {
     /**
      * 登记自定义PbRowMapper
      *
-     * @param type           转换的目标类型
+     * @param type           映射的目标类型
      * @param rowMapperClass PbRowMapper类，必须有默认构造方法
      * @return PbRowMapperRegistry
      */
@@ -68,7 +68,7 @@ public class PbRowMapperRegistry {
     /**
      * 登记自定义PbRowMapper
      *
-     * @param type           转换的目标类型
+     * @param type           映射的目标类型
      * @param rowMapperClass PbRowMapper
      * @return ConverterRegistry
      */
@@ -87,7 +87,7 @@ public class PbRowMapperRegistry {
     /**
      * 获得PbRowMapper<br>
      *
-     * @param <T>           转换的目标类型
+     * @param <T>           映射的目标类型
      * @param type          类型
      * @param isCustomFirst 是否自定义PbRowMapper优先
      * @return PbRowMapper
@@ -112,7 +112,7 @@ public class PbRowMapperRegistry {
     /**
      * 获得默认PbRowMapper
      *
-     * @param <T>  转换的目标类型（PbRowMapper转换到的类型）
+     * @param <T>  映射的目标类型（PbRowMapper转换到的类型）
      * @param type 类型
      * @return PbRowMapper
      */
@@ -126,7 +126,7 @@ public class PbRowMapperRegistry {
     /**
      * 获得自定义PbRowMapper
      *
-     * @param <T>  转换的目标类型（PbRowMapper转换到的类型）
+     * @param <T>  映射的目标类型（PbRowMapper转换到的类型）
      * @param type 类型
      * @return PbRowMapper
      */
