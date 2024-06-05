@@ -1,6 +1,7 @@
 package com.picobase.model.validators;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -34,12 +35,11 @@ import static com.picobase.validator.Validation.required;
 
 public class RecordDataValidator {
 
-    List<String> emptyJsonValues = CollUtil.newArrayList("null", "\"\"", "[]", "{}");
-    Err requiredErr = newError("validation_required", "Missing required value");
-
     private final RecordMapper recordMapper;
     private final RecordModel record;
     private final Map<String, List<PbFile>> uploadedFiles;
+    List<String> emptyJsonValues = CollUtil.newArrayList("null", "\"\"", "[]", "{}");
+    Err requiredErr = newError("validation_required", "Missing required value");
 
     public RecordDataValidator(RecordMapper recordMapper, RecordModel record, Map<String, List<PbFile>> uploadedFiles) {
         this.recordMapper = recordMapper;
@@ -143,7 +143,7 @@ public class RecordDataValidator {
 
 
     public Err checkTextValue(SchemaField field, Object value) {
-        String val = (String) value;
+        String val = Convert.toStr(value);
         if (StrUtil.isEmpty(val)) {
             return null; // nothing to check (skip zero-defaults)
         }
@@ -172,7 +172,7 @@ public class RecordDataValidator {
 
 
     public Err checkNumberValue(SchemaField field, Object value) {
-        double val = (double) value;
+        double val = Convert.toDouble(value);
         if (val == 0) {
             return null; // nothing to check (skip zero-defaults)
         }
@@ -200,7 +200,7 @@ public class RecordDataValidator {
     }
 
     public Err checkEmailValue(SchemaField field, Object value) {
-        String val = (String) value;
+        String val = Convert.toStr(value);
         if (val == null || val.isEmpty()) {
             return null; // nothing to check
         }
@@ -226,7 +226,7 @@ public class RecordDataValidator {
     }
 
     public Err checkUrlValue(SchemaField field, Object value) {
-        var val = (String) value;
+        var val = Convert.toStr(value);
         if (StrUtil.isEmpty(val)) {
             return null; // nothing to check
         }
@@ -259,7 +259,7 @@ public class RecordDataValidator {
     }
 
     public Err checkDateValue(SchemaField field, Object value) {
-        LocalDateTime val = (LocalDateTime) value;
+        LocalDateTime val = Convert.toLocalDateTime(value);
         if (null == val) {
             if (field.isRequired()) {
                 return requiredErr;
