@@ -186,7 +186,64 @@ public final class PbConstants {
     public static final String LengthModifier = "length";
 
     public static final Pattern ThumbSizeRegex = Pattern.compile("^(\\d+)x(\\d+)(t|b|f)?$");
+    public static final String FIELD_VALUE_MODIFIER_ADD = "+";
+    public static final String FIELD_VALUE_MODIFIER_SUBTRACT = "-";
+    public static final String DefaultDateLayout = "yyyy-MM-dd HH:mm:ss";
+    public static final String[] plainRequestAuthFields = new String[]{
+            "@request.auth." + Id,
+            "@request.auth." + CollectionId,
+            "@request.auth." + CollectionName,
+            "@request.auth." + Username,
+            "@request.auth." + Email,
+            "@request.auth." + EmailVisibility,
+            "@request.auth." + Verified,
+            "@request.auth." + Created,
+            "@request.auth." + Updated
+    };
+    public static final String[] systemFieldNames = new String[]{
+            CollectionId,
+            CollectionName,
+            Expand
+    };
+    public static final String[] authFieldNames = new String[]{
+            Username,
+            Email,
+            EmailVisibility,
+            Verified,
+            TokenKey,
+            PasswordHash,
+            LastResetSentAt,
+            LastVerificationSentAt
+    };
+    public static final Pattern IndirectExpandRegexPattern = Pattern.compile("^(\\w+)_via_(\\w+)$");
+    public static final int DEFAULT_PER_PAGE = 30;
+    public static final int MAX_PER_PAGE = 500;
+    /**
+     * form表单中可以包含的特别json payload
+     */
+    public static final String MultipartJsonKey = "@jsonPayload";
+    public static final String REQUEST_INFO_KEY = "requestInfo";
+    /**
+     * 当用户配置了无需登录或配置文件中配置了管理员账号密码 使用该值作为 admin id
+     */
+    public static final String InnerAdminId = "pbAdminId";
+    /**
+     * 多账号体系下的类型标识
+     */
+    public static final String LOGIN_TYPE_ADMIN = "pbAdmin";
+    public static String[] baseModelFieldNames = new String[]{
+            Id,
+            Created,
+            Updated,
+    };
 
+    public static String[] FieldValueModifiers() {
+        return new String[]{FIELD_VALUE_MODIFIER_ADD, FIELD_VALUE_MODIFIER_SUBTRACT};
+    }
+
+    public static String[] ArraybleFieldTypes() {
+        return new String[]{FieldType.Select, FieldType.File, FieldType.Relation};
+    }
 
     public static class TableName {
         public static final String ADMIN = "pb_admin";
@@ -195,15 +252,6 @@ public final class PbConstants {
 
 
     }
-
-    public static final String FIELD_VALUE_MODIFIER_ADD = "+";
-    public static final String FIELD_VALUE_MODIFIER_SUBTRACT = "-";
-
-    public static String[] FieldValueModifiers() {
-        return new String[]{FIELD_VALUE_MODIFIER_ADD, FIELD_VALUE_MODIFIER_SUBTRACT};
-    }
-
-    public static final String DefaultDateLayout = "yyyy-MM-dd HH:mm:ss";
 
     public static class CollectionType {
         public static final String Base = "base";
@@ -226,7 +274,6 @@ public final class PbConstants {
         public static final String Relation = "relation";
     }
 
-
     public static class FieldName {
         // commonly used field names
         public static final String Id = "id";
@@ -248,53 +295,6 @@ public final class PbConstants {
         public static final String LastVerificationSentAt = "lastVerificationSentAt";
     }
 
-    public static final String[] plainRequestAuthFields = new String[]{
-            "@request.auth." + Id,
-            "@request.auth." + CollectionId,
-            "@request.auth." + CollectionName,
-            "@request.auth." + Username,
-            "@request.auth." + Email,
-            "@request.auth." + EmailVisibility,
-            "@request.auth." + Verified,
-            "@request.auth." + Created,
-            "@request.auth." + Updated
-    };
-
-    public static String[] baseModelFieldNames = new String[]{
-            Id,
-            Created,
-            Updated,
-    };
-
-
-    public static final String[] systemFieldNames = new String[]{
-            CollectionId,
-            CollectionName,
-            Expand
-    };
-
-    public static final String[] authFieldNames = new String[]{
-            Username,
-            Email,
-            EmailVisibility,
-            Verified,
-            TokenKey,
-            PasswordHash,
-            LastResetSentAt,
-            LastVerificationSentAt
-    };
-
-    public static String[] ArraybleFieldTypes() {
-        return new String[]{FieldType.Select, FieldType.File, FieldType.Relation};
-    }
-
-    public static final Pattern IndirectExpandRegexPattern = Pattern.compile("^(\\w+)_via_(\\w+)$");
-
-    public static final int DEFAULT_PER_PAGE = 30;
-
-    public static final int MAX_PER_PAGE = 500;
-
-
     public static class QueryParam {
         public static final String SKIP_TOTAL = "skipTotal";
         public static final String SKIP_DATA = "skipData";
@@ -303,25 +303,6 @@ public final class PbConstants {
         public static final String SORT = "sort";
         public static final String FILTER = "filter";
         public static final String FIELDS = "fields";
-
         public static final String EXPAND = "expand";
     }
-
-    /**
-     * form表单中可以包含的特别json payload
-     */
-    public static final String MultipartJsonKey = "@jsonPayload";
-
-    public static final String REQUEST_INFO_KEY = "requestInfo";
-
-
-    /**
-     * 当用户配置了无需登录或配置文件中配置了管理员账号密码 使用该值作为 admin id
-     */
-    public static final String InnerAdminId = "pbAdminId";
-
-    /**
-     * 多账号体系下的类型标识
-     */
-    public static final String LOGIN_TYPE_ADMIN = "pbAdmin";
 }

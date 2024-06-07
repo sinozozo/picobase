@@ -73,8 +73,15 @@ public class PbProvider {
         if (urlQuery == null) {
             urlQuery = "";
         }
-        parse(urlQuery);
-        return exec(clz);
+        return parseAndExec(urlQuery, clz);
+    }
+
+    /**
+     * 搜索 普通 Model（静态）
+     */
+    public <T> Page<T> parseAndExec(String urlQuery, CollectionModel collection) {
+        this.collection = collection;
+        return (Page<T>) parseAndExec(urlQuery, RecordModel.class);
     }
 
     /**

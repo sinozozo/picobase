@@ -1,4 +1,4 @@
-package com.picobase.console.event;
+package com.picobase.model.event;
 
 public enum TimePosition {
 

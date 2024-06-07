@@ -9,10 +9,8 @@ import com.picobase.context.PbHolder;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
-import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.AdminModel;
-import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.RequestInfo;
 import com.picobase.persistence.dbx.SelectQuery;
@@ -35,6 +33,9 @@ public class RecordHelper {
     private static final PbLog log = PbManager.getLog();
 
     private static final RecordMapper recordMapper = PbUtil.findMapper(RecordModel.class);
+    // Define the rule query parameters and the admin-only rule fields
+    private static String[] ruleQueryParams = {FILTER, SORT};
+    private static String[] adminOnlyRuleFields = {"@collection.", "@request."};
 
     /**
      * RequestInfo exports cached base request data fields
@@ -42,7 +43,7 @@ public class RecordHelper {
      *
      * @return
      */
-    public static RequestInfo newRequestInfo() {
+    public static RequestInfo createRequestInfo() {
         // return cached to avoid copying the body multiple times
         RequestInfo requestInfo = (RequestInfo) PbHolder.getStorage().get(REQUEST_INFO_KEY);
 
@@ -93,7 +94,7 @@ public class RecordHelper {
         String userId = (String) PbUtil.getLoginIdDefaultNull();
         if (StrUtil.isNotEmpty(userId)) {
             //requestInfo.setAuthRecord((RecordModel) PbSessionCustomUtil.getSessionById(userId).get(userId));
-            throw new PbException("not implemented");
+            throw new PbException("not implemented");// TODO
         }
 
         String adminId = (String) PbAdminUtil.getLoginIdDefaultNull();
@@ -105,12 +106,8 @@ public class RecordHelper {
             }
             requestInfo.setAdmin(admin);
         }
+
     }
-
-    // Define the rule query parameters and the admin-only rule fields
-    private static String[] ruleQueryParams = {FILTER, SORT};
-    private static String[] adminOnlyRuleFields = {"@collection.", "@request."};
-
 
     /**
      * Checks and returns an error if the provided RequestInfo contains rule fields that only the admin can use.
@@ -157,9 +154,8 @@ public class RecordHelper {
         }
 
         var expands = defaultExpands;
-        UrlQuery urlQuery = UrlQuery.of(PbHolder.getRequest().getQueryString(), StandardCharsets.UTF_8);
 
-        var param = (String) urlQuery.get(EXPAND);
+        var param = PbHolder.getRequest().getParam(EXPAND);
         if (StrUtil.isNotEmpty(param)) {
             expands = ArrayUtil.append(expands, param.split(",", -1));
         }
@@ -248,7 +244,7 @@ public class RecordHelper {
         SelectQuery query = recordMapper.recordQuery(collection)
                 .select(quoteSimpleColumnName(collection.getName()) + ".id")
                 .andWhere(Expression.in(quoteSimpleColumnName(collection.getName()) + ".id", recordIds));
-        var resolver = new RecordFieldResolver( collection, requestInfo, true);
+        var resolver = new RecordFieldResolver(collection, requestInfo, true);
         var expr = new SearchFilter(authOptions.getManageRule()).buildExpr(resolver);
         resolver.updateQuery(query);
         query.andWhere(expr);
@@ -293,7 +289,7 @@ public class RecordHelper {
         }
 
         Consumer<SelectQuery> ruleConsumer = selectQuery -> {
-            RecordFieldResolver resolver = new RecordFieldResolver( record.getCollection(), requestInfo, true);
+            RecordFieldResolver resolver = new RecordFieldResolver(record.getCollection(), requestInfo, true);
             Expression expression = new SearchFilter(manageRule).buildExpr(resolver);
             resolver.updateQuery(selectQuery);
             selectQuery.andWhere(expression);

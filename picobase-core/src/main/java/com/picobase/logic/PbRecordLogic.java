@@ -1,48 +1,296 @@
 package com.picobase.logic;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.annotation.PbCollection;
+import com.picobase.exception.ForbiddenException;
+import com.picobase.exception.NotFoundException;
 import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
+import com.picobase.model.QueryParam;
 import com.picobase.model.RecordModel;
 import com.picobase.model.RequestInfo;
+import com.picobase.model.event.RecordViewEvent;
+import com.picobase.model.event.RecordsListEvent;
+import com.picobase.persistence.dbx.SelectQuery;
+import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.persistence.mapper.Editor;
+import com.picobase.persistence.mapper.MappingOptions;
 import com.picobase.persistence.repository.Page;
+import com.picobase.persistence.resolver.RecordFieldResolver;
+import com.picobase.search.PbProvider;
+import com.picobase.search.SearchFilter;
+import com.picobase.util.PbConstants;
 
-import static com.picobase.logic.RecordHelper.newRequestInfo;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import static com.picobase.logic.RecordHelper.*;
 
 public class PbRecordLogic {
     private static final PbLog log = PbManager.getLog();
-
     private final CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
     private final RecordMapper recordMapper = PbUtil.findMapper(RecordModel.class);
 
-    public <T> Page<T> rQuery(Class<T> tClass) {
-        PbCollection annotation = AnnotationUtil.getAnnotation(tClass, PbCollection.class);
-        String collNameOrId;
-        if (annotation == null || annotation.value().isEmpty()) {
-            //尝试通过 className 获取Collection
-            log.warn("Collection annotation not found in class {}", tClass.getName());
-            collNameOrId = tClass.getSimpleName();
-        } else {
-            collNameOrId = annotation.value();
+    /**
+     * 取出expand值内容，填充到Map中，将 Record 转换成平铺形式的Map 结构
+     *
+     * @param record RecordModel对象
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> flatRecordMap(RecordModel record) {
+        if (!record.isAlreadyExported()) {
+            record.publicExport();
+        }
+        Map<String, Object> sourceMap = record.getPublicData();
+        sourceMap.forEach((key, value) -> {
+            if (PbConstants.FieldName.Expand.equals(key)) {
+                if (value instanceof Map) {
+                    Map<String, Object> expand = (Map<String, Object>) value;
+                    expand.forEach((innerK, innerV) -> {
+                        if (innerV instanceof RecordModel r) {
+                            // 单关系
+                            sourceMap.put(innerK, flatRecordMap(r));
+                        } else if (innerV instanceof List l) {
+                            //list 结构 多关系
+                            sourceMap.put(innerK,
+                                    l.stream().map(item -> flatRecordMap((RecordModel) item)).collect(Collectors.toList())
+                            );
+                        }
+                    });
+                }
+            }
+        });
+        return sourceMap;
+    }
+
+    public <T> List<T> rQueryList(Class<T> tClass, QueryParam queryParam, MappingOptions options) {
+        queryParam = queryParam == null ? QueryParam.create() : queryParam;
+        queryParam.setSkipTotal(true);
+        Page<T> tPage = rQueryPage(tClass, queryParam, options);
+        return tPage.getItems();
+    }
+
+    public <T> List<T> rQueryList(Class<T> tClass, QueryParam queryParam, String... includeFields) {
+        queryParam = queryParam == null ? QueryParam.create() : queryParam;
+        queryParam.setSkipTotal(true);
+        Page<T> tPage = rQueryPage(tClass, queryParam, includeFields);
+        return tPage.getItems();
+    }
+
+    public <T> List<T> rQueryList(Class<T> tClass, String queryParam, String... includeFields) {
+        return rQueryList(tClass, QueryParam.of(queryParam).setSkipTotal(true), includeFields);
+    }
+
+    public <T> List<T> rQueryList(Class<T> tClass, String queryParam, MappingOptions options) {
+        Page<T> tPage = rQueryPage(tClass, QueryParam.of(queryParam).setSkipTotal(true), options);
+        return tPage.getItems();
+    }
+
+
+    public <T> Page<T> rQueryPage(Class<T> tClass, String queryParam, MappingOptions options) {
+        return rQueryPage(tClass, QueryParam.of(queryParam), options);
+    }
+
+    public <T> Page<T> rQueryPage(Class<T> tClass, String queryParam, String... includeFields) {
+        return rQueryPage(tClass, queryParam, MappingOptions.create(ArrayUtil.isEmpty(includeFields)));
+    }
+
+    public <T> Page<T> rQueryPage(Class<T> tClass, QueryParam queryParam, String... includeFields) {
+        Editor<String> keyEditor = null;
+        if (ArrayUtil.isNotEmpty(includeFields)) {
+            final Set<String> propertiesSet = CollUtil.set(false, includeFields);
+            keyEditor = property -> propertiesSet.contains(property) ? property : null;
+        }
+        return rQueryPage(tClass, queryParam == null ? null : queryParam.toQueryStr(), MappingOptions.create(ArrayUtil.isEmpty(includeFields)).setFieldNameEditor(keyEditor));
+    }
+
+    public <T> Page<T> rQueryPage(Class<T> tClass, QueryParam qp, MappingOptions options) {
+        Assert.notNull(tClass, "tClass cannot be null");
+
+        String queryParams = qp.toQueryStr();
+        CollectionModel collection = getCollection(tClass, qp);
+
+        RequestInfo requestInfo = createRequestInfo();
+
+        // forbid users and guests to query special filter/sort fields
+        checkForAdminOnlyRuleFields(requestInfo);
+
+        if (requestInfo.getAdmin() == null && collection.getListRule() == null) {
+            // only admins can access if the rule is nil
+            throw new ForbiddenException("Only admins can perform this action.");
         }
 
+        var fieldsResolver = new RecordFieldResolver(
+                collection,
+                requestInfo,
+                // hidden fields are searchable only by admins
+                requestInfo.getAdmin() != null
+        );
+
+
+        var searchProvider = new PbProvider(fieldsResolver).query(recordMapper.recordQuery(collection));
+
+        if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getListRule())) {
+            searchProvider.addFilter(new SearchFilter(collection.getListRule()));
+        }
+        Page<RecordModel> result;
+
+        if (StrUtil.isEmpty(queryParams)) {
+            //从request 中获取 queryParams
+            result = searchProvider.parseAndExec(collection);
+        } else {
+            //从入参中获取 queryParams
+            result = searchProvider.parseAndExec(queryParams, collection);
+        }
+
+
+        PbUtil.post(new RecordsListEvent(collection, result));
+
+        Error error = enrichRecords(result.getItems(), getSplitExpands(qp));
+        if (error != null) {
+            PbManager.getLog().error("Failed to expand: {}", error.getMessage());
+        }
+
+        if (tClass == RecordModel.class) {
+            return (Page<T>) result;
+        }
+
+        return convertToModelPage(result, tClass, options);
+
+    }
+
+    /**
+     * 优先从 queryParams 中获取 collection， 不存在则尝试从tClass中的注解中获取，仍不存在则从tClass中的类名获取
+     *
+     * @param tClass
+     * @param queryParam
+     * @param <T>
+     * @return
+     */
+    private <T> CollectionModel getCollection(Class<T> tClass, QueryParam queryParam) {
+
+        String collNameOrId;
+
+        if (!queryParam.isEmpty() && StrUtil.isNotEmpty(queryParam.getCollectionIdOrName())) {
+            collNameOrId = queryParam.getCollectionIdOrName();
+        } else {
+            PbCollection annotation = AnnotationUtil.getAnnotation(tClass, PbCollection.class);
+
+            if (annotation == null || annotation.value().isEmpty()) {
+                //尝试通过 className 获取Collection
+                log.warn("Collection annotation not found in class {}", tClass.getName());
+                collNameOrId = tClass.getSimpleName();
+            } else {
+                collNameOrId = annotation.value();
+            }
+        }
         CollectionModel collection = collectionMapper.findCollectionByNameOrId(collNameOrId);
         if (collection == null) {
             throw new PbException("Collection not found: " + collNameOrId);
         }
+        return collection;
+    }
 
+    private String[] getSplitExpands(QueryParam queryParams) {
+        return queryParams.getExpand() == null ? new String[0] : queryParams.getExpand().split(",", -1);
+    }
 
-        RequestInfo requestInfo = newRequestInfo();
-
-
-        return null;
+    /**
+     * 转换为 Model 类型的 page
+     *
+     * @param page
+     * @param clazz
+     * @param options
+     * @param <T>     具体的Model类型
+     * @return
+     */
+    private <T> Page<T> convertToModelPage(Page<RecordModel> page, Class<T> clazz, MappingOptions options) {
+        return new Page<>(page.getPage(), page.getPerPage(), page.getTotalItems(), page.getTotalPages(),
+                page.getItems().stream().map(i -> convertRecordToModel(i, clazz, options)).collect(Collectors.toList()));
     }
 
 
+    private <T> T convertRecordToModel(RecordModel record, Class<T> clazz, MappingOptions options) {
+        Map<String, Object> sourceMap = flatRecordMap(record);
+        return BeanUtil.toBean(sourceMap, clazz, options == null ? null : options.toCopyOptions());
+    }
+
+    public <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, String... includeFields) {
+        Editor<String> keyEditor = null;
+        if (ArrayUtil.isNotEmpty(includeFields)) {
+            final Set<String> propertiesSet = CollUtil.set(false, includeFields);
+            keyEditor = property -> propertiesSet.contains(property) ? property : null;
+        }
+        return rFindOne(recordId, tClass, queryParams, MappingOptions.create().setFieldNameEditor(keyEditor));
+    }
+
+    public <T> T rFindOne(String recordId, Class<T> tClass, QueryParam queryParams, String... includeFields) {
+        return rFindOne(recordId, tClass, queryParams.toQueryStr(), includeFields);
+    }
+
+    public <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, MappingOptions options) {
+        return rFindOne(recordId, tClass, QueryParam.of(queryParams), options);
+    }
+
+    public <T> T rFindOne(String recordId, Class<T> tClass, QueryParam queryParams, MappingOptions options) {
+        Assert.notNull(recordId, "recordId cannot be null");
+        Assert.notNull(tClass, "tClass cannot be null");
+
+        CollectionModel collection = getCollection(tClass, queryParams);
+
+        RequestInfo requestInfo = createRequestInfo();
+        if (requestInfo.getAdmin() == null && collection.getViewRule() == null) {
+            // only admins can access if the rule is nil
+            throw new ForbiddenException("Only admins can perform this action.");
+        }
+
+        Consumer<SelectQuery> ruleFunc = selectQuery -> {
+            if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getViewRule())) {
+                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collection, requestInfo, true);
+                Expression expression = new SearchFilter(collection.getViewRule()).buildExpr(recordFieldResolver);
+                recordFieldResolver.updateQuery(selectQuery);
+                selectQuery.andWhere(expression);
+            }
+        };
+
+        Optional<RecordModel> optionalRecordModel = recordMapper.findRecordById(collection.getId(), recordId, ruleFunc);
+        if (optionalRecordModel.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        PbUtil.post(new RecordViewEvent(collection, optionalRecordModel.get()));
+
+        Error error = enrichRecord(optionalRecordModel.get(), getSplitExpands(queryParams));
+        if (error != null) {
+            log.error("Failed to enrichRecord ,collection: {}, recordId: {},error: {}", collection, recordId, error.getMessage());
+        }
+        if (tClass == RecordModel.class) {
+            return (T) optionalRecordModel.get();
+        }
+
+        return convertRecordToModel(optionalRecordModel.get(), tClass, options);
+    }
+
+    public void rSave(Object data, String... includeFields) {
+        //TODO
+    }
+
+    public void rSave(Object data, MappingOptions options) {
+        //TODO
+    }
 }
+

@@ -1,7 +1,6 @@
 package com.picobase.persistence.mapper;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.picobase.PbUtil;
@@ -38,12 +37,12 @@ public abstract class AbstractMapper<T> implements PbMapper {
             final Set<String> propertiesSet = CollUtil.set(false, includeFields);
             keyEditor = property -> propertiesSet.contains(property) ? property : null;
         }
-        return insertQuery(data, UpsertOptions.create(ArrayUtil.isEmpty(includeFields)).setFieldNameEditor(keyEditor));
+        return insertQuery(data, MappingOptions.create(ArrayUtil.isEmpty(includeFields)).setFieldNameEditor(keyEditor));
     }
 
     @Override
-    public Query insertQuery(Object data, UpsertOptions options) {
-        return PbUtil.getPbDbxBuilder().insert(getTableName(), BeanUtil.beanToMap(data, new LinkedHashMap<>(), toCopyOptions(options)));
+    public Query insertQuery(Object data, MappingOptions options) {
+        return PbUtil.getPbDbxBuilder().insert(getTableName(), BeanUtil.beanToMap(data, new LinkedHashMap<>(), options.toCopyOptions()));
     }
 
     @Override
@@ -59,29 +58,12 @@ public abstract class AbstractMapper<T> implements PbMapper {
             final Set<String> propertiesSet = CollUtil.set(false, includeFields);
             keyEditor = property -> propertiesSet.contains(property) ? property : null;
         }
-        return updateQuery(data, where, UpsertOptions.create(ArrayUtil.isEmpty(includeFields)).setFieldNameEditor(keyEditor));
+        return updateQuery(data, where, MappingOptions.create(ArrayUtil.isEmpty(includeFields)).setFieldNameEditor(keyEditor));
     }
 
     @Override
-    public Query updateQuery(Object data, Expression where, UpsertOptions options) {
-        return PbUtil.getPbDbxBuilder().update(getTableName(), BeanUtil.beanToMap(data, new LinkedHashMap<>(), toCopyOptions(options)), where);
-    }
-
-    /**
-     * 转化为 hutool beanToMap 配置项
-     *
-     * @param options
-     * @return
-     */
-    private CopyOptions toCopyOptions(UpsertOptions options) {
-        CopyOptions copyOptions = new CopyOptions();
-        copyOptions.setIgnoreNullValue(options.ignoreNullValue);
-        if (options.fieldNameEditor != null) {
-            copyOptions.setFieldNameEditor(string -> options.fieldNameEditor.edit(string));
-        }
-        copyOptions.setFieldValueEditor(options.fieldValueEditor);
-        copyOptions.setIgnoreProperties(options.ignoreFields);
-        return copyOptions;
+    public Query updateQuery(Object data, Expression where, MappingOptions options) {
+        return PbUtil.getPbDbxBuilder().update(getTableName(), BeanUtil.beanToMap(data, new LinkedHashMap<>(), options.toCopyOptions()), where);
     }
 
 

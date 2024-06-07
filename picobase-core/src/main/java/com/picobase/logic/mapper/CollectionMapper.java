@@ -19,7 +19,7 @@ import com.picobase.persistence.dbx.Query;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.AbstractMapper;
-import com.picobase.persistence.mapper.UpsertOptions;
+import com.picobase.persistence.mapper.MappingOptions;
 import com.picobase.persistence.model.Index;
 import com.picobase.persistence.repository.StorageContextHolder;
 import com.picobase.util.PbConstants;
@@ -48,7 +48,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     public String getTableName() {
         return PbConstants.TableName.COLLECTION;
     }
-    
+
 
     public SelectQuery modelQuery() {
         return PbUtil.getPbDbxBuilder().select("*").from(getTableName());
@@ -587,7 +587,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
                 // add
                 addColumn(newTableName, tempName, field.colDefinition());
-            } else if (StrUtil.equals(oldField.getName(), field.getName())) {
+            } else if (!StrUtil.equals(oldField.getName(), field.getName())) {
                 var tempName = field.getName() + RandomUtil.randomString(5);
                 toRename.put(tempName, field.getName());
 
@@ -875,7 +875,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
      * @return
      */
     @Override
-    public Query insertQuery(Object data, UpsertOptions options) {
+    public Query insertQuery(Object data, MappingOptions options) {
         if (data instanceof CollectionModel) {
 
             options.setFieldValueEditor(((fieldName, fieldValue) -> {
@@ -891,8 +891,8 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     }
 
     @Override
-    public Query updateQuery(Object data, Expression where, UpsertOptions options) {
-        if (data instanceof CollectionModel collection) {
+    public Query updateQuery(Object data, Expression where, MappingOptions options) {
+        if (data instanceof CollectionModel) {
             options.setFieldValueEditor(((fieldName, fieldValue) -> {
                 if (ArrayUtil.contains(ToJsonStrFieldNames, fieldName)) {
                     return PbManager.getPbJsonTemplate().toJsonString(fieldValue);

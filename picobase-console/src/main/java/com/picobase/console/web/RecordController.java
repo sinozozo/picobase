@@ -3,7 +3,6 @@ package com.picobase.console.web;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
-import com.picobase.console.event.*;
 import com.picobase.console.web.interceptor.LoadCollection;
 import com.picobase.console.web.interceptor.LoadCollectionInterceptor;
 import com.picobase.exception.BadRequestException;
@@ -13,16 +12,15 @@ import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
-import com.picobase.model.CollectionModel;
-import com.picobase.model.RecordModel;
-import com.picobase.model.RecordUpsert;
-import com.picobase.model.RequestInfo;
+import com.picobase.model.*;
+import com.picobase.model.event.RecordCreateEvent;
+import com.picobase.model.event.RecordDeleteEvent;
+import com.picobase.model.event.RecordUpdateEvent;
+import com.picobase.model.event.TimePosition;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
-import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.RecordFieldResolver;
-import com.picobase.search.PbProvider;
 import com.picobase.search.SearchFilter;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,61 +36,25 @@ import static com.picobase.util.PbConstants.CollectionType.Base;
 @RequestMapping("/api/collections/{" + LoadCollectionInterceptor.VARIABLES_ATTRIBUTE_COLLECTION_NAME_OR_ID + "}/records")
 public class RecordController {
 
+    private static final PbLog log = PbManager.getLog();
     private CollectionMapper collectionMapper;
     private RecordMapper recordMapper;
-    private static final PbLog log = PbManager.getLog();
 
     public RecordController(CollectionMapper collectionMapper, RecordMapper recordMapper) {
         this.collectionMapper = collectionMapper;
         this.recordMapper = recordMapper;
     }
 
-    @LoadCollection
+    //@LoadCollection
     @GetMapping
-    public Page<RecordModel> list() {
-
-        //获取当前请求中的Collection，只能在标注了@LoadCollection的方法中有（基于拦截器获取）
-        CollectionModel collection = PbUtil.getCurrentCollection();
-
-        RequestInfo requestInfo = newRequestInfo();
-
-        // forbid users and guests to query special filter/sort fields
-        checkForAdminOnlyRuleFields(requestInfo);
-
-        if (requestInfo.getAdmin() == null && collection.getListRule() == null) {
-            // only admins can access if the rule is nil
-            throw new ForbiddenException("Only admins can perform this action.");
-        }
-
-        var fieldsResolver = new RecordFieldResolver(
-                collection,
-                requestInfo,
-                // hidden fields are searchable only by admins
-                requestInfo.getAdmin() != null
-        );
-
-
-        var searchProvider = new PbProvider(fieldsResolver).query(recordMapper.recordQuery(collection));
-
-        if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getListRule())) {
-            searchProvider.addFilter(new SearchFilter(collection.getListRule()));
-        }
-        Page<RecordModel> result = searchProvider.parseAndExec(collection);
-
-        PbUtil.post(new RecordsListEvent(collection, result));
-
-        Error error = enrichRecords(result.getItems());
-        if (error != null) {
-            PbManager.getLog().error("Failed to expand: {}", error.getMessage());
-        }
-
-        return result;
+    public Page<RecordModel> list(@PathVariable String collectionIdOrName) {
+        return PbUtil.rQueryPage(RecordModel.class, QueryParam.create().setCollectionIdOrName(collectionIdOrName));
     }
 
 
-    @LoadCollection
+    //@LoadCollection
     @GetMapping("/{recordId}")
-    public RecordModel view(@PathVariable String recordId) {
+    public RecordModel view(@PathVariable String recordId, @PathVariable String collectionIdOrName) {
         //获取当前请求中的Collection，只能在标注了@LoadCollection的方法中有（基于拦截器获取）
         CollectionModel collection = PbUtil.getCurrentCollection();
 
@@ -100,33 +62,7 @@ public class RecordController {
             throw new BadRequestException("");
         }
 
-        RequestInfo requestInfo = newRequestInfo();
-        if (requestInfo.getAdmin() == null && collection.getViewRule() == null) {
-            // only admins can access if the rule is nil
-            throw new ForbiddenException("Only admins can perform this action.");
-        }
-
-        Consumer<SelectQuery> ruleFunc = selectQuery -> {
-            if (requestInfo.getAdmin() == null && StrUtil.isNotEmpty(collection.getViewRule())) {
-                RecordFieldResolver recordFieldResolver = new RecordFieldResolver(collection, requestInfo, true);
-                Expression expression = new SearchFilter(collection.getViewRule()).buildExpr(recordFieldResolver);
-                recordFieldResolver.updateQuery(selectQuery);
-                selectQuery.andWhere(expression);
-            }
-        };
-
-        Optional<RecordModel> optionalRecordModel = recordMapper.findRecordById(collection.getId(), recordId, ruleFunc);
-        if (optionalRecordModel.isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        PbUtil.post(new RecordViewEvent(collection, optionalRecordModel.get()));
-
-        Error error = enrichRecord(optionalRecordModel.get());
-        if (error != null) {
-            log.error("Failed to enrichRecord ,collecion: {}, recordId: {},error: {}", collection, recordId, error.getMessage());
-        }
-        return optionalRecordModel.get();
+        return PbUtil.rFindOne(recordId, RecordModel.class, QueryParam.create().setCollectionIdOrName(collectionIdOrName));
     }
 
 
@@ -134,7 +70,7 @@ public class RecordController {
     @PostMapping
     public Object create() {
         CollectionModel collection = PbUtil.getCurrentCollection();
-        RequestInfo requestInfo = newRequestInfo();
+        RequestInfo requestInfo = createRequestInfo();
 
         if (requestInfo.getAdmin() == null && collection.getListRule() == null) { //TODO 补充到文档中  Rule值 null 空字符 的不同是有差异的
             // only admins can access if the rule is nil
@@ -214,7 +150,7 @@ public class RecordController {
     @PatchMapping("/{id}")
     public Object update(@PathVariable String id) {
         CollectionModel collection = PbUtil.getCurrentCollection();
-        RequestInfo requestInfo = newRequestInfo();
+        RequestInfo requestInfo = createRequestInfo();
 
         if (requestInfo.getAdmin() == null && collection.getUpdated() == null) {
             // only admins can access if the rule is nil
@@ -279,7 +215,7 @@ public class RecordController {
     @DeleteMapping(value = "/{recordId}")
     public void delete(@PathVariable String recordId) {
         CollectionModel collection = PbUtil.getCurrentCollection();
-        RequestInfo requestInfo = newRequestInfo();
+        RequestInfo requestInfo = createRequestInfo();
 
         if (requestInfo.getAdmin() == null && collection.getDeleteRule() == null) {
             // only admins can access if the rule is nil

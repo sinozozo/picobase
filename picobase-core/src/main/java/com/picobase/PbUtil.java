@@ -12,11 +12,12 @@ import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.CollectionModel;
+import com.picobase.model.QueryParam;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
+import com.picobase.persistence.mapper.MappingOptions;
 import com.picobase.persistence.mapper.PbMapper;
-import com.picobase.persistence.mapper.UpsertOptions;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import com.picobase.search.PbProvider;
@@ -409,7 +410,7 @@ public final class PbUtil {
     }
 
     public static <T> List<T> query(Class<T> model) {
-        return query(PbUtil.findMapper(model), model);
+        return query(((PbMapper) PbUtil.findMapper(model)).modelQuery(), model);
     }
 
     public static <T> List<T> query(SelectQuery query, Class<T> model) {
@@ -422,7 +423,7 @@ public final class PbUtil {
         return mapper.updateQuery(data, where, includeFields).execute();
     }
 
-    public static int update(Object data, Expression where, UpsertOptions options) {
+    public static int update(Object data, Expression where, MappingOptions options) {
         PbMapper mapper = findMapper(data.getClass());
         return mapper.updateQuery(data, where, options).execute();
     }
@@ -446,7 +447,7 @@ public final class PbUtil {
         return mapper.insertQuery(data, includeFields).execute();
     }
 
-    public static int save(Object data, UpsertOptions options) {
+    public static int save(Object data, MappingOptions options) {
         PbMapper mapper = findMapper(data.getClass());
         return mapper.insertQuery(data, options).execute();
     }
@@ -486,6 +487,55 @@ public final class PbUtil {
     }
 
 
-    //public static Page
+    // 高级查询 ----------------------------
+
+    public static <T> List<T> rQueryList(Class<T> tClass, QueryParam queryParam, MappingOptions options) {
+        return pbRecordLogic.rQueryList(tClass, queryParam, options);
+    }
+
+    public static <T> List<T> rQueryList(Class<T> tClass, QueryParam queryParam, String... includeFields) {
+        return pbRecordLogic.rQueryList(tClass, queryParam, includeFields);
+    }
+
+    public static <T> List<T> rQueryList(Class<T> tClass, String queryParam, String... includeFields) {
+        return pbRecordLogic.rQueryList(tClass, queryParam, includeFields);
+    }
+
+    public static <T> List<T> rQueryList(Class<T> tClass, String queryParam, MappingOptions options) {
+        return pbRecordLogic.rQueryList(tClass, queryParam, options);
+    }
+
+    public static <T> Page<T> rQueryPage(Class<T> tClass, QueryParam queryParam, MappingOptions options) {
+        return pbRecordLogic.rQueryPage(tClass, queryParam, options);
+    }
+
+    public static <T> Page<T> rQueryPage(Class<T> tClass, String queryParam, String... includeFields) {
+        return pbRecordLogic.rQueryPage(tClass, queryParam, includeFields);
+    }
+
+    public static <T> Page<T> rQueryPage(Class<T> tClass, QueryParam queryParam, String... includeFields) {
+        return pbRecordLogic.rQueryPage(tClass, queryParam, includeFields);
+    }
+
+    public static <T> Page<T> rQueryPage(Class<T> tClass, String queryParams, MappingOptions options) {
+        return pbRecordLogic.rQueryPage(tClass, queryParams, options);
+    }
+
+    public static <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, String... includeFields) {
+        return pbRecordLogic.rFindOne(recordId, tClass, queryParams, includeFields);
+    }
+
+    public static <T> T rFindOne(String recordId, Class<T> tClass, QueryParam queryParams, String... includeFields) {
+        return pbRecordLogic.rFindOne(recordId, tClass, queryParams, includeFields);
+    }
+
+    public static <T> T rFindOne(String recordId, Class<T> tClass, QueryParam queryParams, MappingOptions options) {
+        return pbRecordLogic.rFindOne(recordId, tClass, queryParams, options);
+    }
+
+    public static <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, MappingOptions options) {
+        return pbRecordLogic.rFindOne(recordId, tClass, queryParams, options);
+    }
+
 
 }

@@ -2,23 +2,17 @@ package com.picobase.console.web;
 
 
 import com.picobase.PbUtil;
-import com.picobase.console.event.*;
 import com.picobase.exception.BadRequestException;
 import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.CollectionUpsert;
-import com.picobase.persistence.mapper.PbMapper;
-import com.picobase.persistence.mapper.PbMapperManager;
+import com.picobase.model.event.*;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/collections")
@@ -28,6 +22,7 @@ public class CollectionController {
     private static final Logger log = LoggerFactory.getLogger(CollectionController.class);
 
     private CollectionMapper mapper;
+
     public CollectionController(CollectionMapper mapper) {
         this.mapper = mapper;
     }

@@ -35,11 +35,11 @@ public interface PbMapper {
 
     Query insertQuery(Object data, String... includeFields);
 
-    Query insertQuery(Object data, UpsertOptions options);
+    Query insertQuery(Object data, MappingOptions options);
 
     Query delete(Expression where);
 
     Query updateQuery(Object data, Expression where, String... includeFields);
 
-    Query updateQuery(Object data, Expression where, UpsertOptions options);
+    Query updateQuery(Object data, Expression where, MappingOptions options);
 }
