@@ -409,11 +409,11 @@ public final class PbUtil {
         return queryPage(resolver, query, model);
     }
 
-    public static <T> List<T> query(Class<T> model) {
-        return query(((PbMapper) PbUtil.findMapper(model)).modelQuery(), model);
+    public static <T> List<T> queryList(Class<T> model) {
+        return queryList(((PbMapper) PbUtil.findMapper(model)).modelQuery(), model);
     }
 
-    public static <T> List<T> query(SelectQuery query, Class<T> model) {
+    public static <T> List<T> queryList(SelectQuery query, Class<T> model) {
         return new PbProvider(FieldResolver.newSimpleFieldResolver("*")).skipTotal(true).query(query).parseAndExec(model).getItems();
     }
 

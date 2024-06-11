@@ -1,5 +1,4 @@
 import {defineConfig} from 'vitepress'
-import {search as zhSearch} from './zh'
 
 
 export const shared = defineConfig({
@@ -46,7 +45,7 @@ export const shared = defineConfig({
         logo: {src: '/pico-base-mini-logo.png', width: 24, height: 24},
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/jincieryi/picobase'}
+            {icon: 'github', link: 'https://github.com/sinozozo/picobase'}
         ],
 
         /*search: {

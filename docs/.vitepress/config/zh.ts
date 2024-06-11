@@ -21,9 +21,13 @@ export const zh = defineConfig({
             text: '在 GitHub 上编辑此页面'
         },
 
-        footer: {
+        /*footer: {
             message: '基于 MIT 许可发布',
             copyright: `版权所有 © 2019-${new Date().getFullYear()} zozo`
+        },*/
+        footer: {
+            message: '',
+            copyright: ` © 2019-${new Date().getFullYear()} zozo`
         },
 
         docFooter: {
@@ -103,7 +107,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: 'Collection', link: 'collection'},
                 {text: 'API访问规则和过滤', link: 'api-rules-and-filters'},
-                {text: '认证授权', link: 'authentication'},
+                {text: '用户认证', link: 'authentication'},
                 {text: '实体关系', link: 'model-relation'},
                 {text: '文件上传和处理', link: 'file-upload'}
             ]
