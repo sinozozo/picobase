@@ -5,6 +5,8 @@ import com.picobase.exception.PbException;
 import com.picobase.servlet.error.PbServletErrorCode;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * 对 SaResponse 包装类的实现（Servlet 版）
@@ -63,6 +65,15 @@ public class PbResponseForServlet implements PbResponse {
         return this;
     }
 
+    public void setContentType(String type) {
+        response.setContentType(type);
+    }
+
+    public void setDateHeader(String name, long date) {
+        response.setDateHeader(name, date);
+    }
+
+
     /**
      * 重定向
      */
@@ -77,4 +88,8 @@ public class PbResponseForServlet implements PbResponse {
     }
 
 
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        return response.getOutputStream();
+    }
 }

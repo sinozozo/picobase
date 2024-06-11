@@ -25,7 +25,7 @@ public abstract class AbstractFieldsFilterProcessor<T> extends JsonSerializer<T>
         Map<String, Object> exportedData = convertBeanToExportedMap(t);
 
         PbRequest request = PbHolder.getRequest();
-        String fields = request.getParam(FIELDS);
+        String fields = request.getParameter(FIELDS);
 
         if (!StrUtil.isEmpty(fields)) {
             //根据fields 清洗待导出的Map

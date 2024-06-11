@@ -48,7 +48,7 @@ public class PbRequestForServlet extends PbRequestWithContentCache implements Pb
      * 在 [请求体] 里获取一个值
      */
     @Override
-    public String getParam(String name) {
+    public String getParameter(String name) {
         return request.getParameter(name);
     }
 

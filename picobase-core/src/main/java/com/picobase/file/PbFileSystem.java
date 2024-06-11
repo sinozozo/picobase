@@ -48,4 +48,8 @@ public interface PbFileSystem {
 
     PbFile getFile(String fileKey) throws Exception;
 
+    void createThumb(String originalKey, String thumbKey, String thumbSize) throws Exception;
+
+    void serve(String servedPath, String servedName) throws Exception;
+
 }

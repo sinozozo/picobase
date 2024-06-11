@@ -3,6 +3,9 @@ package com.picobase.console.filesystem;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import com.picobase.context.PbHolder;
+import com.picobase.context.model.PbRequest;
+import com.picobase.context.model.PbResponse;
 import com.picobase.exception.BadRequestException;
 import com.picobase.file.PbFile;
 import com.picobase.file.PbFileSystem;
@@ -10,8 +13,6 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,7 @@ public abstract class AbstractFileSystem implements PbFileSystem {
     // - WxHt (eg. 300x100t) - resize and crop to WxH viewbox (from top)
     // - WxHb (eg. 300x100b) - resize and crop to WxH viewbox (from bottom)
     // - WxHf (eg. 300x100f) - fit inside a WxH viewbox (without cropping)
-    protected void createThumb(String originalKey, String thumbKey, String thumbSize) throws Exception {
+    public void createThumb(String originalKey, String thumbKey, String thumbSize) throws Exception {
         Matcher matcher = THUMB_SIZE_REGEX.matcher(thumbSize);
         if (!matcher.find() || matcher.groupCount() != 3) {
             throw new BadRequestException("Thumb size must be in WxH, WxHt, WxHb or WxHf format.");
@@ -101,7 +102,9 @@ public abstract class AbstractFileSystem implements PbFileSystem {
     //
     // If the `download` query parameter is used the file will be always served for
     // download no matter of its type (aka. with "Content-Disposition: attachment").
-    protected void serve(HttpServletResponse response, HttpServletRequest request, String servedPath, String servedName) throws Exception {
+    public void serve(String servedPath, String servedName) throws Exception {
+        PbRequest request = PbHolder.getRequest();
+        PbResponse response = PbHolder.getResponse();
         PbFile file = this.getFile(servedPath);
 
         boolean forceAttachment = false;

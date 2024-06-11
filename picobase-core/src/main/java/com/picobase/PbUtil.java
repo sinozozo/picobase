@@ -537,5 +537,9 @@ public final class PbUtil {
         return pbRecordLogic.rFindOne(recordId, tClass, queryParams, options);
     }
 
+    public static void download(String collectionNameOrId, String recordId, String filename) {
+        pbRecordLogic.download(collectionNameOrId, recordId, filename);
+    }
+
 
 }

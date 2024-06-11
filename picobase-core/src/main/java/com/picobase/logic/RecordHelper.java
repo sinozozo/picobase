@@ -155,7 +155,7 @@ public class RecordHelper {
 
         var expands = defaultExpands;
 
-        var param = PbHolder.getRequest().getParam(EXPAND);
+        var param = PbHolder.getRequest().getParameter(EXPAND);
         if (StrUtil.isNotEmpty(param)) {
             expands = ArrayUtil.append(expands, param.split(",", -1));
         }

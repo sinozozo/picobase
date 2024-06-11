@@ -42,6 +42,7 @@ public class PbAuthZLogic {
      * 账号类型标识，多账号体系时（一个系统多套用户表）用此值区分具体要校验的是哪套用户，比如：login、user、admin
      */
     public String loginType;
+    private PbConfig config;
 
     /**
      * 初始化 PbAuthZLogic, 并指定账号类型
@@ -83,7 +84,14 @@ public class PbAuthZLogic {
         return this;
     }
 
-    private PbConfig config;
+    /**
+     * 返回当前 PbAuthZLogic 使用的配置对象，如果当前 PbAuthZLogic 没有配置，则返回 null
+     *
+     * @return /
+     */
+    public PbConfig getConfig() {
+        return config;
+    }
 
     /**
      * 写入当前 PbAuthZLogic 单独使用的配置对象
@@ -94,15 +102,6 @@ public class PbAuthZLogic {
     public PbAuthZLogic setConfig(PbConfig config) {
         this.config = config;
         return this;
-    }
-
-    /**
-     * 返回当前 PbAuthZLogic 使用的配置对象，如果当前 PbAuthZLogic 没有配置，则返回 null
-     *
-     * @return /
-     */
-    public PbConfig getConfig() {
-        return config;
     }
 
     /**
@@ -141,15 +140,6 @@ public class PbAuthZLogic {
      */
     public String createTokenValue(Object loginId, String device, long timeout, Map<String, Object> extraData) {
         return PbStrategy.instance.createToken.apply(loginId, loginType);
-    }
-
-    /**
-     * 在当前会话写入指定 token 值
-     *
-     * @param tokenValue token 值
-     */
-    public void setTokenValue(String tokenValue) {
-        setTokenValue(tokenValue, new PbLoginModel().setTimeout(getConfigOrGlobal().getTimeout()));
     }
 
     /**
@@ -257,6 +247,15 @@ public class PbAuthZLogic {
     }
 
     /**
+     * 在当前会话写入指定 token 值
+     *
+     * @param tokenValue token 值
+     */
+    public void setTokenValue(String tokenValue) {
+        setTokenValue(tokenValue, new PbLoginModel().setTimeout(getConfigOrGlobal().getTimeout()));
+    }
+
+    /**
      * 获取当前请求的 token 值
      *
      * @param noPrefixThrowException 如果提交的 token 不带有指定的前缀，是否抛出异常
@@ -315,7 +314,7 @@ public class PbAuthZLogic {
         }
         // 2. 再尝试从 请求体 里面读取
         if (CommonHelper.isEmpty(tokenValue) && config.getIsReadBody()) {
-            tokenValue = request.getParam(keyTokenName);
+            tokenValue = request.getParameter(keyTokenName);
         }
         // 3. 再尝试从 header 头里读取
         if (CommonHelper.isEmpty(tokenValue) && config.getIsReadHeader()) {

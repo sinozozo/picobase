@@ -9,9 +9,13 @@ import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.annotation.PbCollection;
+import com.picobase.context.PbHolder;
+import com.picobase.exception.BadRequestException;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.exception.NotFoundException;
 import com.picobase.exception.PbException;
+import com.picobase.file.PbFile;
+import com.picobase.file.PbFileSystem;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
@@ -21,29 +25,42 @@ import com.picobase.model.RecordModel;
 import com.picobase.model.RequestInfo;
 import com.picobase.model.event.RecordViewEvent;
 import com.picobase.model.event.RecordsListEvent;
+import com.picobase.model.schema.SchemaField;
+import com.picobase.model.schema.fieldoptions.FileOptions;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
 import com.picobase.persistence.mapper.Editor;
 import com.picobase.persistence.mapper.MappingOptions;
 import com.picobase.persistence.repository.Page;
+import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.persistence.resolver.RecordFieldResolver;
 import com.picobase.search.PbProvider;
 import com.picobase.search.SearchFilter;
 import com.picobase.util.PbConstants;
 
+import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static com.picobase.file.PbFileSystem.THUMB_PREFIX;
 import static com.picobase.logic.RecordHelper.*;
 
 public class PbRecordLogic {
     private static final PbLog log = PbManager.getLog();
+    private static final String[] IMAGE_CONTENT_TYPES = new String[]{"image/png", "image/jpg", "image/jpeg", "image/gif"};
+    private static final String[] DEFAULT_THUMB_SIZES = new String[]{"100x100"};
     private final CollectionMapper collectionMapper = PbUtil.findMapper(CollectionModel.class);
     private final RecordMapper recordMapper = PbUtil.findMapper(RecordModel.class);
+    private final ConcurrentHashMap<String, CompletableFuture<Void>> thumbGenPending = new ConcurrentHashMap<>();
+    private final Semaphore thumbGenSem = new Semaphore(Runtime.getRuntime().availableProcessors() + 2);
+    private final Duration thumbGenMaxWait = Duration.ofSeconds(60);
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
 
     /**
      * 取出expand值内容，填充到Map中，将 Record 转换成平铺形式的Map 结构
@@ -99,7 +116,6 @@ public class PbRecordLogic {
         Page<T> tPage = rQueryPage(tClass, QueryParam.of(queryParam).setSkipTotal(true), options);
         return tPage.getItems();
     }
-
 
     public <T> Page<T> rQueryPage(Class<T> tClass, String queryParam, MappingOptions options) {
         return rQueryPage(tClass, QueryParam.of(queryParam), options);
@@ -223,7 +239,6 @@ public class PbRecordLogic {
                 page.getItems().stream().map(i -> convertRecordToModel(i, clazz, options)).collect(Collectors.toList()));
     }
 
-
     private <T> T convertRecordToModel(RecordModel record, Class<T> clazz, MappingOptions options) {
         Map<String, Object> sourceMap = flatRecordMap(record);
         return BeanUtil.toBean(sourceMap, clazz, options == null ? null : options.toCopyOptions());
@@ -291,6 +306,126 @@ public class PbRecordLogic {
 
     public void rSave(Object data, MappingOptions options) {
         //TODO
+    }
+
+    public void download(String collectionNameOrId, String recordId, String filename) {
+        Assert.notNull(collectionNameOrId, "collectionNameOrId cannot be null");
+        Assert.notNull(recordId, "recordId cannot be null");
+        Assert.notNull(filename, "filename cannot be null");
+
+        CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId);
+        if (collection == null) {
+            throw new NotFoundException();
+        }
+
+        Optional<RecordModel> recordOptional = recordMapper.findRecordById(collection.getId(), recordId);
+        if (recordOptional.isEmpty()) {
+            throw new NotFoundException("No record found with the given ID: " + recordId);
+        }
+
+        RecordModel record = recordOptional.get();
+        SchemaField fileField = record.findFileFieldByFile(filename);
+        if (fileField == null) {
+            throw new NotFoundException("No file found with the given name: " + filename);
+        }
+
+        if (!(fileField.getOptions() instanceof FileOptions options)) {
+            throw new BadRequestException("Failed to load file options.");
+        }
+
+        // check whether the request is authorized to view the protected file
+        if (options.getProtected()) {
+            //TODO not implemented
+            throw new PbException("not implemented");
+        }
+
+        String baseFilesPath = record.baseFilesPath();
+
+        // fetch the original view file field related record
+        if (collection.isView()) {
+            // TODO
+        }
+
+        PbFileSystem fileSystem = PbManager.getPbFileSystem();
+
+        var originalPath = Paths.get(baseFilesPath, filename);
+        var servedPath = originalPath;
+        var servedName = filename;
+        var thumb = PbHolder.getRequest().getParameter("thumb");
+
+        if (StrUtil.isNotEmpty(thumb) && (ListUtil.existInArray(thumb, DEFAULT_THUMB_SIZES) || ListUtil.existInArray(thumb, options.getThumbs().toArray(new String[0])))) {
+            // extract the original file meta attributes and check it existence
+            PbFile file;
+            try {
+                file = fileSystem.getFile(originalPath.toString());
+            } catch (Exception e) {
+                throw new BadRequestException("File not found.");
+            }
+            // check if it is an image
+            if (ListUtil.existInArray(file.getContentType(), IMAGE_CONTENT_TYPES)) {
+                // add thumb size as file suffix
+                servedName = thumb + "_" + filename;
+                servedPath = Paths.get(baseFilesPath, THUMB_PREFIX + filename, servedName);
+
+                if (!fileSystem.exists(servedPath.toString())) {
+                    try {
+                        this.createThumb(fileSystem, originalPath.toString(), servedPath.toString(), thumb);
+                    } catch (Exception e) {
+                        log.error("Fallback to original - failed to create thumb {} due to error. Original: {}, Thumb: {}",
+                                servedName,
+                                originalPath,
+                                servedPath,
+                                e);
+                        // fallback to the original
+                        servedName = filename;
+                        servedPath = originalPath;
+                    }
+
+                }
+            }
+        }
+
+        // clickjacking shouldn't be a concern when serving uploaded files,
+        // so it safe to unset the global X-Frame-Options to allow files embedding
+        // (note: it is out of the hook to allow users to customize the behavior)
+        PbHolder.getResponse().setHeader("X-Frame-Options", null);
+
+        try {
+            fileSystem.serve(servedPath.toString(), servedName);
+        } catch (Exception e) {
+            throw new BadRequestException("File serve failed.");
+        }
+
+
+    }
+
+    private void createThumb(PbFileSystem fileSystem, String originalPath, String thumbPath, String thumbSize) throws Exception {
+        CompletableFuture<Void> future = thumbGenPending.computeIfAbsent(thumbPath, path -> CompletableFuture.supplyAsync(() -> {
+            try {
+                if (!thumbGenSem.tryAcquire(thumbGenMaxWait.toSeconds(), TimeUnit.SECONDS)) {
+                    throw new RuntimeException("Timeout acquiring semaphore.");
+                }
+            } catch (Exception e) {
+                throw new BadRequestException("acquiring semaphore failed.");
+            }
+
+            try {
+                fileSystem.createThumb(originalPath, thumbPath, thumbSize);
+            } catch (Exception e) {
+                throw new BadRequestException("create thumb file failed.");
+            } finally {
+                thumbGenSem.release();
+            }
+
+            return null;
+        }, executor));
+
+        future.whenComplete((result, ex) -> {
+            thumbGenPending.remove(thumbPath); // 完成后从pending列表中移除
+            if (ex != null) {
+                throw new RuntimeException(ex);
+            }
+        }).get(thumbGenMaxWait.toSeconds(), TimeUnit.SECONDS); // 等待生成完成，超时则抛出异常
     }
 }
 

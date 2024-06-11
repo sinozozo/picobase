@@ -23,7 +23,7 @@ import static com.picobase.file.PbFile.ORIGINAL_FILENAME;
  * @description S3FileSystem
  * @date 2024/3/4 15:18
  **/
-public class S3FileSystem implements PbFileSystem {
+public class S3FileSystem extends AbstractFileSystem {
 
     private final Object lock = new Object();
 

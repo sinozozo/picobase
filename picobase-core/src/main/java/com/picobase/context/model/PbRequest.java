@@ -28,7 +28,7 @@ public interface PbRequest {
      * @param name 键
      * @return 值
      */
-    String getParam(String name);
+    String getParameter(String name);
 
     /**
      * 在 [ 请求体 ] 里获取一个参数值，值为空时返回默认值
@@ -37,8 +37,8 @@ public interface PbRequest {
      * @param defaultValue 值为空时的默认值
      * @return 值
      */
-    default String getParam(String name, String defaultValue) {
-        String value = getParam(name);
+    default String getParameter(String name, String defaultValue) {
+        String value = getParameter(name);
         if (CommonHelper.isEmpty(value)) {
             return defaultValue;
         }
@@ -53,7 +53,7 @@ public interface PbRequest {
      * @return 是否相等
      */
     default boolean isParam(String name, String value) {
-        String paramValue = getParam(name);
+        String paramValue = getParameter(name);
         return CommonHelper.isNotEmpty(paramValue) && paramValue.equals(value);
     }
 
@@ -64,7 +64,7 @@ public interface PbRequest {
      * @return 是否提供
      */
     default boolean hasParam(String name) {
-        return CommonHelper.isNotEmpty(getParam(name));
+        return CommonHelper.isNotEmpty(getParameter(name));
     }
 
     /**
@@ -74,7 +74,7 @@ public interface PbRequest {
      * @return 参数值
      */
     default String getParamNotNull(String name) {
-        String paramValue = getParam(name);
+        String paramValue = getParameter(name);
         if (CommonHelper.isEmpty(paramValue)) {
             throw new PbException("缺少参数：" + name).setCode(PbErrorCode.CODE_12001);
         }

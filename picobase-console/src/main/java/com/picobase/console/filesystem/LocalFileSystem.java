@@ -1,8 +1,6 @@
 package com.picobase.console.filesystem;
 
 import cn.hutool.core.io.FileUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picobase.console.config.PbConsoleConfig;
 import com.picobase.file.PbFile;
 import com.picobase.file.PbFileSystem;
@@ -20,13 +18,12 @@ import java.nio.file.Paths;
  **/
 public class LocalFileSystem extends AbstractFileSystem {
 
+
     private static final String ATTRS_SUFFIX = ".attrs";
 
     private final Object lock = new Object();
-
-    private PbConsoleConfig config;
-
     private final PbJsonTemplate jsonTemplate;
+    private PbConsoleConfig config;
 
     public LocalFileSystem(PbConsoleConfig config, PbJsonTemplate jsonTemplate) {
         this.config = config;
@@ -85,7 +82,7 @@ public class LocalFileSystem extends AbstractFileSystem {
         Path filePath = this.getFullFilePath(fileKey);
         Path attrsFilePath = this.getFullAttrsFilePath(fileKey);
 
-        PbFile pbFile = this.toPFile(Files.readString(attrsFilePath));
+        PbFile pbFile = this.toPbFile(Files.readString(attrsFilePath));
         pbFile.setContent(Files.newInputStream(filePath));
         return pbFile;
     }
@@ -106,13 +103,8 @@ public class LocalFileSystem extends AbstractFileSystem {
         return jsonTemplate.toJsonString(pbFile);
     }
 
-    private PbFile toPFile(String attrs) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(attrs, PbFile.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    private PbFile toPbFile(String attrs) {
+        return jsonTemplate.parseJsonToObject(attrs, PbFile.class);
     }
 
 

@@ -1,6 +1,6 @@
 package com.picobase.console.web;
 
-import com.picobase.console.web.interceptor.LoadCollection;
+import com.picobase.PbUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,16 +16,13 @@ public class FileController {
         return null;
     }
 
-    @LoadCollection
     @GetMapping("/{collectionIdOrName}/{recordId}/{filename}")
-    public Object download(
+    public void download(
+            @PathVariable("collectionIdOrName") String collectionIdOrName,
             @PathVariable("recordId") String recordId,
-            @PathVariable("filename") String filename,
-            @RequestParam("token") String token,
-            @RequestParam(value = "thumb", required = false) String thumb,
-            @RequestParam(value = "download", required = false) String download) {
+            @PathVariable("filename") String filename) {
 
-        return null;
+        PbUtil.download(collectionIdOrName, recordId, filename);
     }
 
 }

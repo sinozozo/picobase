@@ -1,5 +1,8 @@
 package com.picobase.context.model;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * Response 响应对象 包装类
  */
@@ -102,5 +105,11 @@ public interface PbResponse {
      * @return 任意值
      */
     Object redirect(String url);
+
+    void setContentType(String type);
+
+    void setDateHeader(String name, long date);
+
+    OutputStream getOutputStream() throws IOException;
 
 }

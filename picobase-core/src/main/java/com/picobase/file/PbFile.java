@@ -44,6 +44,10 @@ public class PbFile {
         this.lastModifiedTime = lastModifiedTime;
     }
 
+    public PbFile() {
+        
+    }
+
     private static String normalizeName(String originalName) {
         String originalFilename = Optional.ofNullable(originalName).orElse("");
         // extension
