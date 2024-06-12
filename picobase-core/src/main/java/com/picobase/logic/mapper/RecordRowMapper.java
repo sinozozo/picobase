@@ -54,7 +54,8 @@ public class RecordRowMapper implements PbRowMapper<RecordModel> {
             try {
                 resultMap.put(name, rs.getObject(name));
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
+                resultMap.put(name, null);
             }
         }
 
@@ -76,4 +77,6 @@ public class RecordRowMapper implements PbRowMapper<RecordModel> {
         //record.publicExport(); //公共字段和结果导出 ,最终还会被Controller后置AOP拦截器修改 根据 request 中 fields param 修改publicData
         return record;
     }
+
+
 }

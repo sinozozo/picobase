@@ -1,15 +1,14 @@
 package com.picobase.logic.mapper;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.exception.BadRequestException;
-import com.picobase.model.CollectionModel;
-import com.picobase.model.ExternalAuthModel;
-import com.picobase.model.RecordModel;
-import com.picobase.model.RecordUpsert;
+import com.picobase.exception.PbException;
+import com.picobase.model.*;
 import com.picobase.model.schema.MultiValuer;
 import com.picobase.model.schema.SchemaField;
 import com.picobase.model.schema.fieldoptions.RelationOptions;
@@ -626,6 +625,50 @@ public class RecordMapper extends AbstractMapper<RecordModel> {
     @Override
     public String getTableName() {
         return PbUtil.getCurrentCollection().getName();
+    }
+
+    /**
+     * // FindRecordByViewFile returns the original models.Record of the
+     * // provided view collection file.
+     */
+    public RecordModel findRecordByViewFile(CollectionModel view, String fileFieldName, String filename) {
+        Assert.notNull(view);
+        Assert.isTrue(view.isView(), "not a view collection");
+        QueryField qf = findFirstNonViewQueryFileField(1, view, fileFieldName);
+
+        String cleanFieldName = columnify(qf.getOriginal().getName());
+
+        SelectQuery query = this.recordQuery(qf.getCollection()).limit(1);
+
+        if (!(qf.getOriginal().getOptions() instanceof MultiValuer options) || !options.isMultiple()) {
+            query.andWhere(newHashExpr(Map.of(cleanFieldName, filename)));
+        } else {
+            //TODO
+            throw new RuntimeException("not implemented");
+        }
+
+        return query.one(new RecordRowMapper(qf.getCollection()));
+    }
+
+    private QueryField findFirstNonViewQueryFileField(int level, CollectionModel view, String fileFieldName) {
+        // check the level depth to prevent infinite circular recursion
+        // (the limit is arbitrary and may change in the future)
+        Assert.isTrue(level <= 5, "reached the max recursion level of view collection file field queries");
+
+        Map<String, QueryField> queryFields = collectionMapper.parseQueryToFields(view.viewOptions().getQuery());
+
+        for (Map.Entry<String, QueryField> stringQueryFieldEntry : queryFields.entrySet()) {
+            var v = stringQueryFieldEntry.getValue();
+            if (v.getCollection() == null || v.getOriginal() == null || !v.getField().getName().equals(fileFieldName)) {
+                continue;
+            }
+            if (v.getCollection().isView()) {
+                return findFirstNonViewQueryFileField(level + 1, v.getCollection(), v.getOriginal().getName());
+            }
+            return v;
+        }
+
+        throw new PbException("no query file field found");
     }
 
 

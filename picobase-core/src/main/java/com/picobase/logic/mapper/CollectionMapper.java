@@ -231,7 +231,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
     }
 
-    private Map<String, QueryField> parseQueryToFields(String selectQuery) {
+    public Map<String, QueryField> parseQueryToFields(String selectQuery) {
         IdentifiersParser p = Identifier.parse(selectQuery);
 
         Map<String, CollectionModel> collections = findCollectionsByIdentifiers(p.getTables());

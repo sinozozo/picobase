@@ -343,7 +343,15 @@ public class PbRecordLogic {
 
         // fetch the original view file field related record
         if (collection.isView()) {
-            // TODO
+            try {
+                var fileRecord = recordMapper.findRecordByViewFile(collection, fileField.getName(), filename);
+                if (fileRecord != null) {
+                    baseFilesPath = fileRecord.baseFilesPath();
+                }
+            } catch (Exception e) {
+                throw new BadRequestException("Failed to fetch view file field record. detail error: " + e.getMessage());
+            }
+
         }
 
         PbFileSystem fileSystem = PbManager.getPbFileSystem();
