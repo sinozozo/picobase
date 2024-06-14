@@ -136,9 +136,17 @@ public class PbRecordLogic {
 
     public <T> Page<T> rQueryPage(Class<T> tClass, QueryParam qp, MappingOptions options) {
         Assert.notNull(tClass, "tClass cannot be null");
+        CollectionModel collection = getClazzCollection(tClass);
+        var result = this.rQueryPage(collection, qp, options);
+        if (tClass == RecordModel.class) {
+            return (Page<T>) result;
+        }
 
-        String queryParams = qp.toQueryStr();
-        CollectionModel collection = getCollection(tClass, qp);
+        return convertToModelPage(result, tClass, options);
+    }
+
+    public Page<RecordModel> rQueryPage(CollectionModel collection, QueryParam qp, MappingOptions options) {
+
 
         RequestInfo requestInfo = createRequestInfo();
 
@@ -165,12 +173,12 @@ public class PbRecordLogic {
         }
         Page<RecordModel> result;
 
-        if (StrUtil.isEmpty(queryParams)) {
+        if (qp == null || qp.isEmpty()) {
             //从request 中获取 queryParams
             result = searchProvider.parseAndExec(collection);
         } else {
             //从入参中获取 queryParams
-            result = searchProvider.parseAndExec(queryParams, collection);
+            result = searchProvider.parseAndExec(qp.toQueryStr(), collection);
         }
 
 
@@ -181,39 +189,24 @@ public class PbRecordLogic {
             PbManager.getLog().error("Failed to expand: {}", error.getMessage());
         }
 
-        if (tClass == RecordModel.class) {
-            return (Page<T>) result;
-        }
+        return result;
 
-        return convertToModelPage(result, tClass, options);
 
     }
 
-    /**
-     * 优先从 queryParams 中获取 collection， 不存在则尝试从tClass中的注解中获取，仍不存在则从tClass中的类名获取
-     *
-     * @param tClass
-     * @param queryParam
-     * @param <T>
-     * @return
-     */
-    private <T> CollectionModel getCollection(Class<T> tClass, QueryParam queryParam) {
-
+    private <T> CollectionModel getClazzCollection(Class<T> tClass) {
         String collNameOrId;
 
-        if (!queryParam.isEmpty() && StrUtil.isNotEmpty(queryParam.getCollectionIdOrName())) {
-            collNameOrId = queryParam.getCollectionIdOrName();
-        } else {
-            PbCollection annotation = AnnotationUtil.getAnnotation(tClass, PbCollection.class);
+        PbCollection annotation = AnnotationUtil.getAnnotation(tClass, PbCollection.class);
 
-            if (annotation == null || annotation.value().isEmpty()) {
-                //尝试通过 className 获取Collection
-                log.warn("Collection annotation not found in class {}", tClass.getName());
-                collNameOrId = tClass.getSimpleName();
-            } else {
-                collNameOrId = annotation.value();
-            }
+        if (annotation == null || annotation.value().isEmpty()) {
+            //尝试通过 className 获取Collection
+            log.warn("Collection annotation not found in class {}", tClass.getName());
+            collNameOrId = tClass.getSimpleName();
+        } else {
+            collNameOrId = annotation.value();
         }
+
         CollectionModel collection = collectionMapper.findCollectionByNameOrId(collNameOrId);
         if (collection == null) {
             throw new PbException("Collection not found: " + collNameOrId);
@@ -222,6 +215,9 @@ public class PbRecordLogic {
     }
 
     private String[] getSplitExpands(QueryParam queryParams) {
+        if (queryParams == null || queryParams.isEmpty()) {
+            return new String[0];
+        }
         return queryParams.getExpand() == null ? new String[0] : queryParams.getExpand().split(",", -1);
     }
 
@@ -262,10 +258,22 @@ public class PbRecordLogic {
     }
 
     public <T> T rFindOne(String recordId, Class<T> tClass, QueryParam queryParams, MappingOptions options) {
-        Assert.notNull(recordId, "recordId cannot be null");
         Assert.notNull(tClass, "tClass cannot be null");
 
-        CollectionModel collection = getCollection(tClass, queryParams);
+        CollectionModel collection = getClazzCollection(tClass);
+
+        var result = this.rFindOne(recordId, collection, queryParams, options);
+        if (tClass == RecordModel.class) {
+            return (T) result;
+        }
+
+        return convertRecordToModel(result, tClass, options);
+
+    }
+
+    public RecordModel rFindOne(String recordId, CollectionModel collection, QueryParam queryParams, MappingOptions options) {
+        Assert.notNull(recordId, "recordId cannot be null");
+
 
         RequestInfo requestInfo = createRequestInfo();
         if (requestInfo.getAdmin() == null && collection.getViewRule() == null) {
@@ -293,11 +301,8 @@ public class PbRecordLogic {
         if (error != null) {
             log.error("Failed to enrichRecord ,collection: {}, recordId: {},error: {}", collection, recordId, error.getMessage());
         }
-        if (tClass == RecordModel.class) {
-            return (T) optionalRecordModel.get();
-        }
+        return optionalRecordModel.get();
 
-        return convertRecordToModel(optionalRecordModel.get(), tClass, options);
     }
 
     public void rSave(Object data, String... includeFields) {

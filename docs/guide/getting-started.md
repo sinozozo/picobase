@@ -1,87 +1,29 @@
 # 快速开始 {#getting-started}
 
-## 在线尝试 {#try-it-online}
 
-可以直接在 [StackBlitz](https://vitepress.new) 上进行在线尝试。
 
 ## 安装 {#installation}
 
 ### 前置准备 {#prerequisites}
 
-- [Node.js](https://nodejs.org/) 18 及以上版本。
-- 通过命令行界面 (CLI) 访问 VitePress 的终端。
-- 支持 [Markdown](https://en.wikipedia.org/wiki/Markdown) 语法的编辑器。
-    - 推荐 [VSCode](https://code.visualstudio.com/)
-      及其[官方 Vue 扩展](https://marketplace.visualstudio.com/items?itemName=Vue.volar)。
+- 项目需采用 Spring Boot 2.x 作为基础
 
-VitePress 可以单独使用，也可以安装到现有项目中。在这两种情况下，都可以使用以下方式安装它：
+Spring Boot 3.x 版本，适配中 ...
 
-::: code-group
-
-```sh [npm]
-$ npm add -D vitepress
-```
-
-```sh [pnpm]
-$ pnpm add -D vitepress
-```
-
-```sh [yarn]
-$ yarn add -D vitepress
-```
-
-```sh [bun]
-$ bun add -D vitepress
-```
-
-:::
-
-::: details 遇到了 missing peer deps 警告？
-如果使用 PNPM，会注意到对 `@docsearch/js` 的 missing peer deps 警告。这不会影响 VitePress
-运行。如果希望禁止显示此警告，请将以下内容添加到 `package.json`：
-
-```json
-"pnpm": {
-"peerDependencyRules": {
-"ignoreMissing": [
-"@algolia/client-search",
-"search-insights"
-]
-}
-}
-```
-
-:::
-
-::: tip 注意
-
-VitePress 是仅 ESM 的软件包。不要使用 `require()` 导入它，并确保最新的 `package.json` 包含 `"type": "module"`
-，或者更改相关文件的文件扩展名，例如 `.vitepress/config.js` 到 `.mjs`/`.mts`
-。更多详情请参考 [Vite 故障排除指南](http://vitejs.dev/guide/troubleshooting.html#this-package-is-esm-only)。此外，在异步
-CJS 上下文中，可以使用 `await import('vitepress')` 代替。
-
-:::
 
 ### 安装向导 {#setup-wizard}
 
-VitePress 附带一个命令行设置向导，可以帮助你构建一个基本项目。安装后，通过运行以下命令启动向导：
+用户可以使用 [Spring Initializr](https://start.spring.io/) 快速构建 Spring Boot 项目,然后引入 PicoBase 的 Maven 或 Gradle 依赖。
+
+
 
 ::: code-group
 
-```sh [npm]
-$ npx vitepress init
+```xml [Maven]
+//TODO 待补充, 请先自行clone代码构建并引入
 ```
-
-```sh [pnpm]
-$ pnpm vitepress init
-```
-
-```sh [yarn]
-$ yarn vitepress init
-```
-
-```sh [bun]
-$ bun vitepress init
+```xml [Gradle]
+//TODO 待补充, 请先自行clone代码构建并引入
 ```
 
 :::

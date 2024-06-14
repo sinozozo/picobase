@@ -12,7 +12,10 @@ import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
-import com.picobase.model.*;
+import com.picobase.model.CollectionModel;
+import com.picobase.model.RecordModel;
+import com.picobase.model.RecordUpsert;
+import com.picobase.model.RequestInfo;
 import com.picobase.model.event.RecordCreateEvent;
 import com.picobase.model.event.RecordDeleteEvent;
 import com.picobase.model.event.RecordUpdateEvent;
@@ -45,16 +48,18 @@ public class RecordController {
         this.recordMapper = recordMapper;
     }
 
-    //@LoadCollection
+    @LoadCollection
     @GetMapping
     public Page<RecordModel> list(@PathVariable String collectionIdOrName) {
-        return PbUtil.rQueryPage(RecordModel.class, QueryParam.create().setCollectionIdOrName(collectionIdOrName));
+        //获取当前请求中的Collection，只能在标注了@LoadCollection的方法中有（基于拦截器获取）
+        CollectionModel collection = PbUtil.getCurrentCollection();
+        return PbUtil.rQueryPage(collection, null, null);
     }
 
 
-    //@LoadCollection
+    @LoadCollection
     @GetMapping("/{recordId}")
-    public RecordModel view(@PathVariable String recordId, @PathVariable String collectionIdOrName) {
+    public RecordModel view(@PathVariable String recordId) {
         //获取当前请求中的Collection，只能在标注了@LoadCollection的方法中有（基于拦截器获取）
         CollectionModel collection = PbUtil.getCurrentCollection();
 
@@ -62,7 +67,7 @@ public class RecordController {
             throw new BadRequestException("");
         }
 
-        return PbUtil.rFindOne(recordId, RecordModel.class, QueryParam.create().setCollectionIdOrName(collectionIdOrName));
+        return PbUtil.rFindOne(recordId, collection, null, null);
     }
 
 

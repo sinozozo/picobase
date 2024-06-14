@@ -61,7 +61,7 @@ PicoBase 旨在为开发者提供出色和高效的开发体验。
     PicoBase 将开发者关心的组件和能力以静态的方式暴露出来，以 spring boot 融合为例，用户无需关注底层实现，甚至不用理会依赖注入，所有组件开箱即用。
   </div>
 
-![An image](/pbmanager.png)
+![pbmanager.png](..%2Fpublic%2Fpbmanager.png)
 
 ::: details 点我查看代码
 

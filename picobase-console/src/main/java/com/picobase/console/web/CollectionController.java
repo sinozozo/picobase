@@ -91,6 +91,9 @@ public class CollectionController {
     }
 
 
+    /**
+     * TODO 【bug】当存在一个普通 Collection  A, 和一个依赖 A 的 View Collection B， 直接删除 A时会报错。
+     */
     @DeleteMapping(value = "{collectionIdOrName}")
     public void delete(@PathVariable String collectionIdOrName) {
         CollectionModel collection = mapper.findCollectionByNameOrId(collectionIdOrName);

@@ -140,6 +140,8 @@ public class PbBeanRegister {
             PbManager.getPbEventRegisterProcessor().postProcessAfterInitialization(bean);
         }
 
+        //TODO 启动后检查 PB 数据库，不存在PB 核心表则创建
+
     }
 
     @EventListener(ContextClosedEvent.class)

@@ -17,7 +17,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/vuejs/vitepress
+      link: https://github.com/sinozozo/picobase
   image:
     src: /pico-base-large.png
     alt: PicoBase

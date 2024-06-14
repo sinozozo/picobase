@@ -24,7 +24,6 @@ public class QueryParam {
     private String filter;
     private String expand;
     private Boolean skipTotal;
-    private String collectionIdOrName;
 
 
     public static QueryParam create() {
@@ -44,12 +43,11 @@ public class QueryParam {
         queryParam.setFilter(Convert.toStr(urlQuery.get(FILTER)));
         queryParam.setExpand(Convert.toStr(urlQuery.get(EXPAND)));
         queryParam.setSkipTotal(Convert.toBool(urlQuery.get(SKIP_TOTAL)));
-        queryParam.setCollectionIdOrName(Convert.toStr(urlQuery.get(CollectionParamKey)));
         return queryParam;
     }
 
     public boolean isEmpty() {
-        return StrUtil.isAllEmpty(sort, filter, expand, collectionIdOrName) && page == null && perPage == null && skipTotal == null;
+        return StrUtil.isAllEmpty(sort, filter, expand) && page == null && perPage == null && skipTotal == null;
     }
 
     public Integer getPage() {
@@ -106,14 +104,6 @@ public class QueryParam {
         return this;
     }
 
-    public String getCollectionIdOrName() {
-        return collectionIdOrName;
-    }
-
-    public QueryParam setCollectionIdOrName(String collectionIdOrName) {
-        this.collectionIdOrName = collectionIdOrName;
-        return this;
-    }
 
     public String toQueryStr() {
 
@@ -140,11 +130,7 @@ public class QueryParam {
         if (!params.isEmpty()) {
             return UrlQuery.of(params).build(StandardCharsets.UTF_8);
         }
-        if (this.collectionIdOrName != null) {
-            params.put(CollectionParamKey, this.collectionIdOrName);
-            return UrlQuery.of(params).build(StandardCharsets.UTF_8);
-        }
-        return null;
+        return "";
     }
 
 }

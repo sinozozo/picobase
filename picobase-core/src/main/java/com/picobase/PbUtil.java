@@ -13,6 +13,7 @@ import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.QueryParam;
+import com.picobase.model.RecordModel;
 import com.picobase.persistence.dbx.PbDbxBuilder;
 import com.picobase.persistence.dbx.SelectQuery;
 import com.picobase.persistence.dbx.expression.Expression;
@@ -521,6 +522,10 @@ public final class PbUtil {
         return pbRecordLogic.rQueryPage(tClass, queryParams, options);
     }
 
+    public static Page<RecordModel> rQueryPage(CollectionModel collection, QueryParam qp, MappingOptions options) {
+        return pbRecordLogic.rQueryPage(collection, qp, options);
+    }
+
     public static <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, String... includeFields) {
         return pbRecordLogic.rFindOne(recordId, tClass, queryParams, includeFields);
     }
@@ -535,6 +540,10 @@ public final class PbUtil {
 
     public static <T> T rFindOne(String recordId, Class<T> tClass, String queryParams, MappingOptions options) {
         return pbRecordLogic.rFindOne(recordId, tClass, queryParams, options);
+    }
+
+    public static RecordModel rFindOne(String recordId, CollectionModel collection, QueryParam queryParams, MappingOptions options) {
+        return pbRecordLogic.rFindOne(recordId, collection, queryParams, options);
     }
 
     public static void download(String collectionNameOrId, String recordId, String filename) {

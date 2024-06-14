@@ -4,10 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.picobase.model.RecordModel;
 import com.picobase.util.Tokenizer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FieldsFilterProcessor {
@@ -94,8 +91,9 @@ public class FieldsFilterProcessor {
                 data.remove(k);
                 continue DataLoop;
             }
+            
             // remove the current key from the matching fields path
-            for (String f : matchingFields.keySet()) {
+            for (String f : new HashSet<String>(matchingFields.keySet())) {
                 var m = matchingFields.get(f);
                 var remains = StrUtil.removeSuffix(StrUtil.removePrefix(f + ".", k + "."), ".");
                 // final key
