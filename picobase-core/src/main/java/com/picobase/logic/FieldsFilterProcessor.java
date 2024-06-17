@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FieldsFilterProcessor {
 
 
-    public static void pickFields(Map<String, Object> data, String rawFields) {
+    public static void pickFields(Object data, String rawFields) {
         var parsedFields = parseFields(rawFields);
 
         pickParsedFields(data, parsedFields);
@@ -24,7 +24,8 @@ public class FieldsFilterProcessor {
                 } else if (item instanceof RecordModel record) {
                     pickParsedFields(convertRecordToExportedMap(record), parsedFields);
                 } else {
-                    throw new IllegalArgumentException("不应存在的类型");
+                    // for now ignore non-map values
+                    //throw new IllegalArgumentException("不应存在的类型");
                 }
 
                 //pickMapFields(item, parsedFields);
@@ -78,7 +79,7 @@ public class FieldsFilterProcessor {
 
 
         DataLoop:
-        for (String k : data.keySet()) {
+        for (String k : new HashSet<>(data.keySet())) {
             var matchingFields = new ConcurrentHashMap<String, FieldModifier>(fields.size());
             fields.entrySet().forEach(e -> {
                 var f = e.getKey();
@@ -91,7 +92,7 @@ public class FieldsFilterProcessor {
                 data.remove(k);
                 continue DataLoop;
             }
-            
+
             // remove the current key from the matching fields path
             for (String f : new HashSet<String>(matchingFields.keySet())) {
                 var m = matchingFields.get(f);
