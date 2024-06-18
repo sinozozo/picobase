@@ -1,7 +1,6 @@
 package com.picobase.logic;
 
 import cn.hutool.core.util.StrUtil;
-import com.picobase.model.RecordModel;
 import com.picobase.util.Tokenizer;
 
 import java.util.*;
@@ -21,33 +20,15 @@ public class FieldsFilterProcessor {
             list.forEach(item -> {
                 if (item instanceof Map m) {
                     pickMapFields(m, parsedFields);
-                } else if (item instanceof RecordModel record) {
-                    pickParsedFields(convertRecordToExportedMap(record), parsedFields);
                 } else {
                     // for now ignore non-map values
-                    //throw new IllegalArgumentException("不应存在的类型");
                 }
-
-                //pickMapFields(item, parsedFields);
             });
         } else if (data instanceof Map map) {
             pickMapFields(map, parsedFields);
-        } else if (data instanceof RecordModel record) { //当 record 中包含 expand 数据时
-            pickParsedFields(convertRecordToExportedMap(record), parsedFields);
         }
-
     }
 
-    public static Map<String, Object> convertRecordToExportedMap(RecordModel record) {
-        // record 未被导出过
-        if (!record.isAlreadyExported()) {
-            //执行 map 构建 ，导出数据
-            record.publicExport();
-        }
-        // 获取要导出的数据
-        Map<String, Object> exportedData = record.getPublicData();
-        return exportedData;
-    }
 
     /*
      * 根据 parsedFields 更新 data 结构
@@ -131,7 +112,7 @@ public class FieldsFilterProcessor {
 
     private static FieldModifier initModifer(String rawModifier) {
         var t = Tokenizer.newFromString(rawModifier);
-        t.setSeparators(new char[]{'(', ')', ',', ' '});
+        t.setSeparators('(', ')', ',', ' ');
         t.setIgnoreParenthesis(true);
         var parts = t.scanAll();
         if (parts == null || parts.isEmpty()) {

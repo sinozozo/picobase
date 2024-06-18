@@ -1,5 +1,6 @@
 package com.picobase.console;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.picobase.console.json.LocalDateTimeDeserializer;
@@ -8,18 +9,30 @@ import com.picobase.console.json.RecordSerializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
 import com.picobase.console.web.interceptor.LoadCollectionInterceptor;
+import com.picobase.context.PbHolder;
+import com.picobase.context.model.PbRequest;
+import com.picobase.logic.FieldsFilterProcessor;
 import com.picobase.model.AdminModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.schema.Schema;
 import com.picobase.persistence.mapper.PbMapperManager;
+import com.picobase.persistence.repository.Page;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
+import static com.picobase.util.PbConstants.QueryParam.FIELDS;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -44,7 +57,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        MappingJackson2HttpMessageConverter converter = new JsonSerializeHttpMessageConverterForFieldsFilter();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -81,4 +94,44 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/collections/*/auth-with-password") // TODO 这里会导致未认证的请求查询数据库，考虑增加Collection缓存
                 .addPathPatterns("/api/files/**");
     }
+}
+
+class JsonSerializeHttpMessageConverterForFieldsFilter extends MappingJackson2HttpMessageConverter {
+
+    /**
+     * Write the given object to the given message.
+     * MappingJackson2HttpMessageConverter 看源代码 ， 要重写带有 Type 参数的 方法， 否则不会被执行
+     *
+     * @param object        the object to write to the output message
+     * @param type          the type of object to write (may be {@code null})
+     * @param outputMessage the HTTP output message to write to
+     * @throws IOException
+     * @throws HttpMessageNotWritableException
+     */
+    @Override
+    protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+
+        PbRequest request = PbHolder.getRequest();
+        String fields = request.getParameter(FIELDS);
+        if (StrUtil.isEmpty(fields)) { //无需 fields 过滤 ,直接 response
+            super.writeInternal(object, null, outputMessage); //super 的调用 必须是 三个参数的 writeInternal ， 否则会递归死循环
+            return;
+        }
+
+        // 存在 fields 过滤
+        ObjectMapper mapper = super.getObjectMapper();
+        String encoded = mapper.writeValueAsString(object);
+        Map decoded = mapper.readValue(encoded, Map.class);
+
+        if (object instanceof Page) {
+            Object list = decoded.get("items");
+            FieldsFilterProcessor.pickFields(list, fields);
+        } else {
+            FieldsFilterProcessor.pickFields(decoded, fields);
+
+        }
+        super.writeInternal(decoded, null, outputMessage); //super 的调用 必须是 三个参数的 writeInternal ， 否则会递归死循环
+
+    }
+
 }

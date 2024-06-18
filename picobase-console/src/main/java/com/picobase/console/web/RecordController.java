@@ -9,8 +9,6 @@ import com.picobase.exception.BadRequestException;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.exception.NotFoundException;
 import com.picobase.interceptor.InterceptorFunc;
-import com.picobase.log.PbLog;
-import com.picobase.logic.mapper.CollectionMapper;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
 import com.picobase.model.RecordModel;
@@ -39,12 +37,9 @@ import static com.picobase.util.PbConstants.CollectionType.Base;
 @RequestMapping("/api/collections/{" + LoadCollectionInterceptor.VARIABLES_ATTRIBUTE_COLLECTION_NAME_OR_ID + "}/records")
 public class RecordController {
 
-    private static final PbLog log = PbManager.getLog();
-    private CollectionMapper collectionMapper;
     private RecordMapper recordMapper;
 
-    public RecordController(CollectionMapper collectionMapper, RecordMapper recordMapper) {
-        this.collectionMapper = collectionMapper;
+    public RecordController(RecordMapper recordMapper) {
         this.recordMapper = recordMapper;
     }
 
@@ -77,7 +72,7 @@ public class RecordController {
         CollectionModel collection = PbUtil.getCurrentCollection();
         RequestInfo requestInfo = createRequestInfo();
 
-        if (requestInfo.getAdmin() == null && collection.getListRule() == null) { //TODO 补充到文档中  Rule值 null 空字符 的不同是有差异的
+        if (requestInfo.getAdmin() == null && collection.getListRule() == null) {
             // only admins can access if the rule is nil
             throw new ForbiddenException("Only admins can perform this action.");
         }
