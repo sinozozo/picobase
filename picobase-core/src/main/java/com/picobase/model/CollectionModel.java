@@ -9,9 +9,7 @@ import com.picobase.model.schema.fieldoptions.CollectionBaseOptions;
 import com.picobase.model.schema.fieldoptions.CollectionViewOptions;
 import com.picobase.util.PbConstants;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.picobase.util.PbConstants.CollectionType.*;
 
@@ -34,6 +32,27 @@ public class CollectionModel extends BaseModel implements Model {
     private String deleteRule;
 
     private Map<String, Object> options;
+
+    public CollectionModel() {
+
+    }
+
+    public CollectionModel(CollectionModel source) {
+        super.setId(source.getId());
+        super.setCreated(source.getCreated());
+        super.setUpdated(source.getUpdated());
+        this.name = source.name;
+        this.type = source.type;
+        this.system = source.system;
+        this.schema = Schema.newSchema(source.schema.getFields());
+        this.indexes = new ArrayList<>(source.indexes);
+        this.listRule = source.listRule;
+        this.viewRule = source.viewRule;
+        this.createRule = source.createRule;
+        this.updateRule = source.updateRule;
+        this.deleteRule = source.deleteRule;
+        this.options = new HashMap<>(source.options);
+    }
 
     @Override
     public String tableName() {

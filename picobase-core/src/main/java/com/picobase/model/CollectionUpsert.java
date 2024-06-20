@@ -564,7 +564,7 @@ public class CollectionUpsert {
         collection.setOptions(this.getOptions());
 
 
-        return Interceptors.run(this.getCollection(), saveCollectionNextFunc(isCreate), postEventFunc);
+        return Interceptors.run(this.collection, saveCollectionNextFunc(isCreate), postEventFunc);
     }
 
     private InterceptorNextFunc<CollectionModel, CollectionModel> saveCollectionNextFunc(boolean isCreate) {

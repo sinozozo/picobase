@@ -65,10 +65,10 @@ public class CollectionController {
     @PatchMapping("{collectionIdOrName}")
     public CollectionModel update(@PathVariable String collectionIdOrName) {
         //待保存
-        CollectionModel collection = mapper.findCollectionByNameOrId(collectionIdOrName);
+
+        CollectionModel collection = new CollectionModel(mapper.findCollectionByNameOrId(collectionIdOrName)); // findCollectionByNameOrId 返回的是缓存对象， 复制一份新的 Collection ，防止绑定参数时修改了缓存对象。
 
         CollectionUpsert form = new CollectionUpsert(collection);
-
 
         // load request
         PbUtil.bindRequestTo(form);
