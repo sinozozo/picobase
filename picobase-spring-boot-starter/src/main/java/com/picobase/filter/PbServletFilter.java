@@ -34,13 +34,32 @@ public class PbServletFilter implements PbFilter, Filter {
      * 放行路由
      */
     public List<String> excludeList = new ArrayList<>();
-
+    /**
+     * 认证函数：每次请求执行
+     */
+    public PbFilterAuthStrategy auth = r -> {
+    };
+    /**
+     * 异常处理函数：每次[认证函数]发生异常时执行此函数
+     */
+    public PbFilterErrorStrategy error = e -> {
+        throw new PbException(e).setCode(PbSpringBootErrorCode.CODE_20105);
+    };
+    /**
+     * 前置函数：在每次[认证函数]之前执行
+     * <b>注意点：前置认证函数将不受 includeList 与 excludeList 的限制，所有路由的请求都会进入 beforeAuth</b>
+     */
+    public PbFilterAuthStrategy beforeAuth = r -> {
+    };
 
     @Override
     public PbServletFilter addInclude(String... paths) {
         includeList.addAll(Arrays.asList(paths));
         return this;
     }
+
+
+    // ------------------------ 钩子函数
 
     @Override
     public PbServletFilter addExclude(String... paths) {
@@ -59,29 +78,6 @@ public class PbServletFilter implements PbFilter, Filter {
         excludeList = pathList;
         return this;
     }
-
-
-    // ------------------------ 钩子函数
-
-    /**
-     * 认证函数：每次请求执行
-     */
-    public PbFilterAuthStrategy auth = r -> {
-    };
-
-    /**
-     * 异常处理函数：每次[认证函数]发生异常时执行此函数
-     */
-    public PbFilterErrorStrategy error = e -> {
-        throw new PbException(e).setCode(PbSpringBootErrorCode.CODE_20105);
-    };
-
-    /**
-     * 前置函数：在每次[认证函数]之前执行
-     * <b>注意点：前置认证函数将不受 includeList 与 excludeList 的限制，所有路由的请求都会进入 beforeAuth</b>
-     */
-    public PbFilterAuthStrategy beforeAuth = r -> {
-    };
 
     @Override
     public PbServletFilter setAuth(PbFilterAuthStrategy auth) {

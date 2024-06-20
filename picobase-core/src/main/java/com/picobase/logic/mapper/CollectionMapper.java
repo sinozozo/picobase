@@ -7,6 +7,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
+import com.picobase.cache.LazyCache;
 import com.picobase.exception.BadRequestException;
 import com.picobase.exception.PbException;
 import com.picobase.model.*;
@@ -43,6 +44,15 @@ import static com.picobase.util.PbConstants.baseModelFieldNames;
 public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
     public static final String[] ToJsonStrFieldNames = new String[]{"schema", "indexes", "options"};
+    private static final long EXPIRED_ACCESS_DURATION = 60 * 60 * 1000; //  60分钟 ,数据过期时间
+    private static final long EXPIRE_CHECK_INTERVAL_MILLIS = 5 * 60 * 1000;// 5分钟 , 数据过期检测执行时间
+    private static final int MAX_CACHE_SIZE = 10_0000;
+
+    /**
+     * Collection 缓存  nameOrId --> CollectionModel
+     */
+    private LazyCache<String, CollectionModel> cache = new LazyCache<>(MAX_CACHE_SIZE, EXPIRED_ACCESS_DURATION, EXPIRE_CHECK_INTERVAL_MILLIS, null);
+
 
     @Override
     public String getTableName() {
@@ -71,10 +81,12 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
         if (StrUtil.isEmpty(nameOrId)) {
             return null;
         }
-        return modelQuery()
+
+        return cache.get(nameOrId, () -> modelQuery()
                 .andWhere(newExpr("`id` = :id OR LOWER(`name`)=:name"
                         , Map.of("id", nameOrId, "name", nameOrId.toLowerCase())))
-                .limit(1).one(CollectionModel.class);
+                .limit(1).one(CollectionModel.class));
+
     }
 
 
@@ -118,6 +130,8 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
             if (!hasId) {
                 throw new BadRequestException("Missing required id column (you can use `(ROW_NUMBER() OVER()) as id` if you don't have one");
             }
+        } catch (Exception e) {
+            throw e; // re-throw  tableInfo查询时异常继续上浮
         } finally {
             deleteView(tempView);
         }
@@ -150,11 +164,15 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
         // fetch the view table info to ensure that the view was created
         // because missing tables or columns won't return an error
-        if (tableInfo(name) == null) {
+        try {
+            tableInfo(name);
+        } catch (Exception e) {
             // manually cleanup previously created view in case the func
             // is called in a nested transaction and the error is discarded
             deleteView(name);
+            throw e;
         }
+
     }
 
     /**
@@ -206,6 +224,10 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
         return exec("ALTER TABLE " + oldName + " RENAME TO " + newName);
     }
 
+    private boolean renameView(String oldName, String newName) {
+        return exec("ALTER VIEW " + oldName + " RENAME TO " + newName);
+    }
+
     private boolean dropColumn(String tableName, String column) {
         return exec("ALTER TABLE " + tableName + " DROP COLUMN " + column);
     }
@@ -221,13 +243,18 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     private List<TableInfoRow> tableInfo(String tableName) {
         String query = "DESCRIBE " + tableName;
 
-        return PbUtil.getPbDbxBuilder().newQuery(query).all((rs, rowNum) -> new TableInfoRow(
-                rs.getInt("Key"),
-                rs.getString("Field"),
-                rs.getString("Type"),
-                rs.getBoolean("Null"),
-                rs.getString("Default")
-        ));
+        try {
+            return PbUtil.getPbDbxBuilder().newQuery(query).all((rs, rowNum) -> new TableInfoRow(
+                    rs.getInt("Key"),
+                    rs.getString("Field"),
+                    rs.getString("Type"),
+                    rs.getBoolean("Null"),
+                    rs.getString("Default")
+            ));
+        } catch (Exception e) {
+            throw new PbException("empty table info probably due to invalid or missing table {}", tableName);
+        }
+
 
     }
 
@@ -427,7 +454,6 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     //   - updates newCollection.Schema based on the generated view table info and query
     //   - saves the newCollection
     //
-    // This method returns an error if newCollection is not a "view".
     public void saveViewCollection(CollectionModel newCollection, CollectionModel oldCollection) {
         if (!newCollection.isView()) {
             throw new BadRequestException("not a view collection");
@@ -787,15 +813,33 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
             throw new BadRequestException(String.format("the collection %s has external relation field references (%s).", collection.getName(), String.join(", ", names)));
         }
 
-        // Delete the related view or records table
+        //rename 实体表名
+        String tempName = collection.getName() + "_temp_" + RandomUtil.randomString(5);
+
         if (collection.isView()) {
-            deleteView(collection.getName());
+            renameView(collection.getName(), tempName);
         } else {
-            deleteTable(collection.getName());
+            renameTable(collection.getName(), tempName);
         }
 
+
         // trigger views resave to check for dependencies
-        resaveViewsWithChangedSchema(collection.getId());
+        try {
+            resaveViewsWithChangedSchema(collection.getId());
+        } catch (Exception e) {
+            renameTable(tempName, collection.getName());
+            throw new PbException("the collection has a view dependency - {}", e.getMessage());
+        }
+
+
+        // Delete the related view or records table
+        if (collection.isView()) {
+            deleteView(tempName);
+        } else {
+            deleteTable(tempName);
+        }
+
+
         PbUtil.deleteById(collection.getId(), CollectionModel.class);
     }
 
@@ -811,7 +855,8 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
             }
 
             // clone the existing schema so that it is safe for temp modifications
-            Schema oldSchema = collection.getSchema();
+            Schema oldSchema = collection.getSchema().clone();
+
 
             // generate a new schema from the query
             Schema newSchema = createViewSchema(collection.viewOptions().getQuery());
@@ -820,9 +865,8 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
             oldSchema.getFields().forEach(f -> f.setId(""));
             newSchema.getFields().forEach(f -> f.setId(""));
 
-            String encodedNewSchema = newSchema.toJson();
-            String encodedOldSchema = oldSchema.toJson();
-            if (encodedNewSchema.equalsIgnoreCase(encodedOldSchema)) {
+
+            if (oldSchema.equals(newSchema)) {
                 continue; // no changes
             }
 
@@ -907,5 +951,9 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
     public List<CollectionModel> findCollectionsByType(String collectionType) {
         return modelQuery().andWhere(Expression.newHashExpr(Map.of("type", collectionType))).orderBy("created ASC").all(CollectionModel.class);
+    }
+
+    public void removeCache(String nameOrId) {
+        cache.remove(nameOrId);
     }
 }

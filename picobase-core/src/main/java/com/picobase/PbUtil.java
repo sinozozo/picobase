@@ -314,9 +314,6 @@ public final class PbUtil {
      */
     public static <T> Optional<T> createObjFromRequest(Class<T> dto) {
         Optional<T> result = PbManager.getPbContext().createObjFromRequest(dto);
-        if (result.isPresent()) {
-            log.debug("createObjFromRequest: {}", result.get());
-        }
         return result;
     }
 

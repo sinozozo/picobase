@@ -103,7 +103,11 @@ public class CollectionController {
         PbUtil.post(new CollectionDeleteEvent(collection, TimePosition.BEFORE));
 
 
-        mapper.deleteCollection(collection);
+        try {
+            mapper.deleteCollection(collection);
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to delete collection due to existing dependency.");
+        }
         PbUtil.post(new CollectionDeleteEvent(collection, TimePosition.AFTER));
 
     }

@@ -112,12 +112,13 @@ public class PbBeanRegister {
     }
 
     @Bean
-    public PbDatabaseOperate getPbDatabaseOperate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate, PbMapperManager mapperManager) {
-        return new MysqlDatabaseOperateImpl(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate, mapperManager);
+    @ConditionalOnMissingClass("com.picobase.console.repository.PbDatabaseOperateWithLogProxy")
+    public PbDatabaseOperate getPbDatabaseOperate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate) {
+        return new MysqlDatabaseOperateImpl(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate);
     }
 
     @Bean
-    @ConditionalOnMissingClass("com.picobase.console.mapper.MapperManagerWithProxy")
+    //@ConditionalOnMissingClass("com.picobase.console.mapper.MapperManagerWithProxy")
     public PbMapperManager getMapperManager(PbConfig pbConfig) {
         return PbManager.getPbMapperManager();
     }

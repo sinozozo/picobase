@@ -39,6 +39,15 @@ public class Schema implements Validatable {
         return schema;
     }
 
+    public static List<String> fieldValueModifiers() {
+        return List.of(FIELD_VALUE_MODIFIER_ADD, FIELD_VALUE_MODIFIER_SUBTRACT);
+    }
+
+    public Schema clone() {
+        var schema = new Schema();
+        schema.fields.addAll(this.fields);
+        return schema;
+    }
 
     public void addField(SchemaField newField) {
         if (StrUtil.isEmpty(newField.getId())) {
@@ -59,7 +68,6 @@ public class Schema implements Validatable {
         fields.add(newField);
     }
 
-
     // GetFieldById returns a single field by its id.
     public SchemaField getFieldById(String id) {
         return fields.stream().filter(field -> field.getId().equals(id)).findFirst().orElse(null);
@@ -73,13 +81,8 @@ public class Schema implements Validatable {
         return fields.stream().collect(Collectors.toMap(SchemaField::getName, field -> field));
     }
 
-
     public String toJson() {
         return PbManager.getPbJsonTemplate().toJsonString(this);
-    }
-
-    public static List<String> fieldValueModifiers() {
-        return List.of(FIELD_VALUE_MODIFIER_ADD, FIELD_VALUE_MODIFIER_SUBTRACT);
     }
 
     public List<SchemaField> getFields() {
@@ -139,6 +142,28 @@ public class Schema implements Validatable {
 
             return null;
         }));
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Schema schema = (Schema) obj;
+        return fields.size() == schema.fields.size() && areFieldsEqual(schema);
+    }
+
+    private boolean areFieldsEqual(Schema schema) {
+        // Sort the fields lists
+        List<SchemaField> thisSortedFields = fields.stream().sorted().collect(Collectors.toList());
+        List<SchemaField> otherSortedFields = schema.fields.stream().sorted().collect(Collectors.toList());
+
+        return thisSortedFields.equals(otherSortedFields);
+
     }
 
 

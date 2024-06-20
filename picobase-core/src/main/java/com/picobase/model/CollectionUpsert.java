@@ -36,6 +36,7 @@ import static com.picobase.validator.Validation.*;
 
 public class CollectionUpsert {
 
+    private final CollectionMapper mapper = PbUtil.findMapper(CollectionModel.class);
     private String id;
     private String name;
     private String type;
@@ -48,10 +49,8 @@ public class CollectionUpsert {
     private String updateRule;
     private String deleteRule;
     private Map<String, Object> options;
-
     private CollectionModel collection;
-
-    private final CollectionMapper mapper = PbUtil.findMapper(CollectionModel.class);;
+    ;
     private PbJsonTemplate jsonTemplate;
 
     public CollectionUpsert() {
@@ -584,6 +583,16 @@ public class CollectionUpsert {
 
                 }
             }
+
+            // trigger an update for all views with changed schema as a result of the current collection save
+            // (ignoring view errors to allow users to update the query from the UI)
+            try {
+                mapper.resaveViewsWithChangedSchema(col.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                //ignore
+            }
+
             return col;
         };
     }

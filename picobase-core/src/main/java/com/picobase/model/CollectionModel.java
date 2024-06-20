@@ -182,4 +182,12 @@ public class CollectionModel extends BaseModel implements Model {
         this.options = options;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "CollectionModel{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

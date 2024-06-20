@@ -90,7 +90,6 @@ public class PbMapperManager {
      * @return mapper.
      */
     public <R extends PbMapper, T> R findMapper(String dataSource, Class<T> clazz) {
-        LOGGER.debug("[PbMapperManager] findMapper dataSource: {}, ModelClass: {}", dataSource, clazz);
         if (StrUtil.isBlank(dataSource) || clazz == null) {
             throw new PbException("dataSource or ModelClass is null");
         }

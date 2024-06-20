@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 
 public class PbEventBus {
@@ -25,15 +23,18 @@ public class PbEventBus {
      * EN: The size of the thread pool. Event's thread pool is often used to do time-consuming operations, so set it a little bigger
      * CN: 线程池的大小. event的线程池经常用来做一些耗时的操作，所以要设置大一点
      */
-    private  final int EXECUTORS_SIZE = Math.max(Runtime.getRuntime().availableProcessors(), 4) * 2 + 1;
+    private final int EXECUTORS_SIZE = Math.max(Runtime.getRuntime().availableProcessors(), 4) * 2 + 1;
 
-    private  final ExecutorService[] executors = new ExecutorService[EXECUTORS_SIZE];
-
+    private final ExecutorService[] executors = new ExecutorService[EXECUTORS_SIZE];
+    /**
+     * eventhandler mapping
+     */
+    private final Map<Class<? extends PbEvent>, List<IEventReceiver>> receiverMap = new HashMap<>();
 
     /**
      * eventbus 初始化线程池
      */
-    public void init(){
+    public void init() {
         for (int i = 0; i < executors.length; i++) {
             var namedThreadFactory = new EventThreadFactory(i);
             var executor = Executors.newSingleThreadExecutor(namedThreadFactory);
@@ -41,11 +42,10 @@ public class PbEventBus {
         }
     }
 
-
     /**
      * 优雅停机
      */
-    public void destroy(){
+    public void destroy() {
         try {
             for (var executor : executors) {
                 shutdown(executor);
@@ -56,7 +56,7 @@ public class PbEventBus {
         log.info("Pb Event shutdown gracefully.");
     }
 
-    private  void shutdown(ExecutorService executor) {
+    private void shutdown(ExecutorService executor) {
         try {
             if (!executor.isTerminated()) {
 
@@ -73,12 +73,7 @@ public class PbEventBus {
     }
 
     /**
-     * event mapping
-     */
-    private final Map<Class<? extends PbEvent>, List<IEventReceiver>> receiverMap = new HashMap<>();
-
-    /**
-     * Publish the event
+     * Publish the eventhandler
      *
      * @param event Event object
      */
@@ -103,7 +98,7 @@ public class PbEventBus {
     }
 
     private void doReceiver(IEventReceiver receiver, PbEvent event) {
-        log.debug("eventBus invoke, isAsync: {} event: {} receiver: {}", receiver.isAsync(), event.getClass().getSimpleName(), receiver.getClass().getSimpleName());
+        log.debug("eventBus invoke, isAsync: {} eventhandler: {} receiver: {}", receiver.isAsync(), event.getClass().getSimpleName(), receiver.getClass().getSimpleName());
         try {
             receiver.invoke(event);
         } catch (Throwable t) {
@@ -116,7 +111,7 @@ public class PbEventBus {
     }
 
     /**
-     * Use the event thread specified by the hashcode to execute the task
+     * Use the eventhandler thread specified by the hashcode to execute the task
      */
     public void asyncExecute(int executorHash, Runnable runnable) {
         executors[Math.abs(executorHash % EXECUTORS_SIZE)].execute(() -> {
@@ -129,11 +124,11 @@ public class PbEventBus {
     }
 
     /**
-     * Register the event and its counterpart observer
+     * Register the eventhandler and its counterpart observer
      */
     public void registerEventReceiver(Class<? extends PbEvent> eventType, IEventReceiver receiver) {
         receiverMap.computeIfAbsent(eventType, it -> new ArrayList<>(1)).add(receiver);
-        log.info("[PbEventBus] register event: ({}) receiver: ({})", eventType.getSimpleName(), receiver.getClass().getSimpleName());
+        log.info("[PbEventBus] register eventhandler: ({}) receiver: ({})", eventType.getSimpleName(), receiver.getClass().getSimpleName());
     }
 
 }

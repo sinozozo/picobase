@@ -373,12 +373,7 @@ public class RecordMapper extends AbstractMapper<RecordModel> {
      * FindCollectionByNameOrId finds a single collection by its name (case insensitive) or id.
      */
     public Optional<CollectionModel> findCollectionByNameOrId(String nameOrId) {
-        var collection = new CollectionModel();
-        var tableName = collection.tableName();
-        return Optional.of(PbUtil.getPbDbxBuilder().select(tableName + ".*").from(tableName)
-                .andWhere(newExpr("`id` = :id OR LOWER(`name`)=:name"
-                        , Map.of("id", nameOrId, "name", nameOrId.toLowerCase())))
-                .limit(1).one(CollectionModel.class));
+        return Optional.of(collectionMapper.findCollectionByNameOrId(nameOrId));
     }
 
     /**

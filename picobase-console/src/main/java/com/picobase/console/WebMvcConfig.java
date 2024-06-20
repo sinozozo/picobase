@@ -57,7 +57,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter = new JsonSerializeHttpMessageConverterForFieldsFilter();
+        MappingJackson2HttpMessageConverter converter = new FieldsFilterHttpMessageConverter();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -96,11 +96,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 }
 
-class JsonSerializeHttpMessageConverterForFieldsFilter extends MappingJackson2HttpMessageConverter {
+class FieldsFilterHttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
     /**
      * Write the given object to the given message.
-     * MappingJackson2HttpMessageConverter 看源代码 ， 要重写带有 Type 参数的 方法， 否则不会被执行
+     * MappingJackson2HttpMessageConverter 看源代码，存在两个writeInternal方法 ， 要重写带有 Type 参数的 方法， 否则不会被执行
      *
      * @param object        the object to write to the output message
      * @param type          the type of object to write (may be {@code null})

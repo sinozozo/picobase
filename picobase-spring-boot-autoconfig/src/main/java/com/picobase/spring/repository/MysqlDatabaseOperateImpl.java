@@ -1,7 +1,6 @@
 package com.picobase.spring.repository;
 
 import cn.hutool.core.util.ClassUtil;
-import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.ModifyRequest;
 import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.PbRowMapperRegistry;
@@ -27,13 +26,11 @@ public class MysqlDatabaseOperateImpl implements BaseDatabaseOperate {
 
     private TransactionTemplate transactionTemplate;
 
-    private PbMapperManager mapperManager;
 
-    public MysqlDatabaseOperateImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate, PbMapperManager mapperManager) {
+    public MysqlDatabaseOperateImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
         this.transactionTemplate = transactionTemplate;
-        this.mapperManager = mapperManager;
     }
 
     @Override
