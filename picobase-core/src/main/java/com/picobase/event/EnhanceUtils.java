@@ -1,7 +1,5 @@
-
 package com.picobase.event;
 
-import cn.hutool.core.util.StrUtil;
 import com.picobase.util.StrFormatter;
 import javassist.*;
 
@@ -11,8 +9,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static cn.hutool.core.text.CharSequenceUtil.upperFirst;
+
 public abstract class EnhanceUtils {
     private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);
+
     static {
         // 适配Tomcat，因为Tomcat不是用的默认的类加载器，而Javassist用的是默认的加载器
         var classArray = new Class<?>[]{
@@ -30,21 +31,6 @@ public abstract class EnhanceUtils {
         }
     }
 
-    /**
-     * 首字母大写
-     * @param str
-     * @return
-     */
-    private static String capitalize(String str) {
-        if (StrUtil.isEmpty(str)) {
-            return str;
-        }
-        StringBuilder sb = new StringBuilder(str.length());
-        sb.append(Character.toUpperCase(str.charAt(0)));
-
-        sb.append(str.substring(1));
-        return sb.toString();
-    }
 
     public static IEventReceiver createEventReceiver(EventReceiverDefaultImpl definition) throws NotFoundException, CannotCompileException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         var classPool = ClassPool.getDefault();
@@ -53,7 +39,7 @@ public abstract class EnhanceUtils {
         Method method = definition.getMethod();
         Class<?> clazz = definition.getEventClazz();
         // 定义类名称
-        CtClass enhanceClazz = classPool.makeClass(EnhanceUtils.class.getName() + "$"+capitalize(bean.getClass().getSimpleName()) + ATOMIC_INTEGER.incrementAndGet());
+        CtClass enhanceClazz = classPool.makeClass(EnhanceUtils.class.getName() + "$" + upperFirst(bean.getClass().getSimpleName()) + ATOMIC_INTEGER.incrementAndGet());
         enhanceClazz.addInterface(classPool.get(IEventReceiver.class.getName()));
 
         // 定义类中的一个成员bean

@@ -7,8 +7,8 @@ import com.picobase.exception.RequestPathInvalidException;
 import com.picobase.fun.strategy.*;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.session.PbSession;
-import com.picobase.util.PbConstants;
 import com.picobase.util.CommonHelper;
+import com.picobase.util.PbConstants;
 
 import java.util.UUID;
 
@@ -237,7 +237,7 @@ public final class PbStrategy {
     /**
      * 事件接受者处理事件时异常处理函数
      */
-    public PbEventReceiverInvokeExceptionFunction eventReceiverInvokeExceptionFunction = (receiver, event,exception) -> {
+    public PbEventReceiverInvokeExceptionFunction eventReceiverInvokeExceptionFunction = (receiver, event, exception) -> {
         log.error("接收者 {} 处理事件 {} 时出现异常：{}", receiver.getClass().getSimpleName(), event.getClass().getSimpleName(), exception);
         throw new PbException(exception);
     };
@@ -247,6 +247,15 @@ public final class PbStrategy {
         return this;
     }
 
+
+    public PbNextTimestampByCronExpressionFunction nextTimestampByCronExpressionFunction = (cron, timestamp) -> {
+        throw new PbException("开发者使用scheduler模块时需自行实现Cron表达式解析");
+    };
+
+    public PbStrategy setNextTimestampByCronExpressionFunction(PbNextTimestampByCronExpressionFunction nextTimestampByCronExpressionFunction) {
+        this.nextTimestampByCronExpressionFunction = nextTimestampByCronExpressionFunction;
+        return this;
+    }
 
 
 }

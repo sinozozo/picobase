@@ -13,10 +13,12 @@ import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.persistence.repository.PbRowMapper;
 import com.picobase.persistence.repository.PbRowMapperFactory;
+import com.picobase.scheduler.PbSchedulerBus;
 import com.picobase.spring.context.path.ApplicationContextPathLoading;
 import com.picobase.spring.json.PbJsonTemplateForJackson;
 import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
 import com.picobase.spring.repository.MysqlDatabaseOperateImpl;
+import com.picobase.strategy.PbStrategy;
 import javassist.ClassPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -31,8 +33,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.scheduling.support.CronExpression;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
@@ -128,11 +133,14 @@ public class PbBeanRegister {
         return new MysqlPbDbxBuilder(operate);
     }
 
+
     @EventListener(ContextRefreshedEvent.class)
     public void onContextRefreshedEvent(ApplicationContextEvent event) {
+
         if (PbManager.getPbEventRegisterProcessor() == null) {
             return;
         }
+        // 处理 eventbus 组件
         // 获取所有 bean 的名称
         String[] beanNames = event.getApplicationContext().getBeanDefinitionNames();
         // 遍历所有 bean
@@ -140,6 +148,17 @@ public class PbBeanRegister {
             Object bean = event.getApplicationContext().getBean(beanName);
             PbManager.getPbEventRegisterProcessor().postProcessAfterInitialization(bean);
         }
+
+
+        // 处理 scheduler 组件
+
+        //配置系统默认 CronExpress 解析测量
+        PbStrategy.instance.setNextTimestampByCronExpressionFunction((cron, time) -> CronExpression.parse(cron).next(time).toInstant().toEpochMilli());
+
+        
+        Map<String, Object> beansWithAnnotation = event.getApplicationContext().getBeansWithAnnotation(Component.class);
+        beansWithAnnotation.forEach((k, v) -> PbSchedulerBus.inject(v));
+
 
         //TODO 启动后检查 PB 数据库，不存在PB 核心表则创建
 
@@ -150,6 +169,8 @@ public class PbBeanRegister {
         if (PbManager.getPbEventBus() != null) {
             //优雅停机
             PbManager.getPbEventBus().destroy();
+
+            PbSchedulerBus.shutdown();
             //spring 应用一般会自动关掉ForkJoinPool线程池
             shutdownForkJoinPool();
         }

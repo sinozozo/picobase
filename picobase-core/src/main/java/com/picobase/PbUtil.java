@@ -21,6 +21,7 @@ import com.picobase.persistence.mapper.MappingOptions;
 import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.repository.Page;
 import com.picobase.persistence.resolver.FieldResolver;
+import com.picobase.scheduler.PbSchedulerBus;
 import com.picobase.search.PbProvider;
 import com.picobase.session.PbSession;
 import com.picobase.validator.Errors;
@@ -30,6 +31,8 @@ import com.picobase.validator.Validation;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import static com.picobase.util.PbConstants.STORAGE_KEY_COLLECTION;
 
@@ -547,5 +550,27 @@ public final class PbUtil {
         pbRecordLogic.download(collectionNameOrId, recordId, filename);
     }
 
+    /**
+     * 不断执行的周期循环任务
+     * nb: 单个线程执行任务，不要执行阻塞耗时任务
+     */
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, long period, TimeUnit unit) {
+        return PbSchedulerBus.scheduleAtFixedRate(runnable, period, unit);
+    }
 
+    /**
+     * cron表达式执行的任务
+     * nb: 单个线程执行任务，不要执行阻塞耗时任务
+     */
+    public static ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
+        return PbSchedulerBus.schedule(runnable, delay, unit);
+    }
+
+    /**
+     * cron表达式执行的任务
+     * nb: 单个线程执行任务，不要执行阻塞耗时任务
+     */
+    public static void scheduleCron(Runnable runnable, String cron) {
+        PbSchedulerBus.scheduleCron(runnable, cron);
+    }
 }

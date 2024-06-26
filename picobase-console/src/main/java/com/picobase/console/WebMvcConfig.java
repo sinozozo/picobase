@@ -80,7 +80,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 增加 LoadCollectionInterceptor 拦截器， 会根据controller handler 注解 LoadCollection条件，向当前Reuqest中注入Collection对象
+     * 增加 LoadCollectionInterceptor 拦截器， 会根据controller handler 注解 LoadCollection条件，向当前Request中注入Collection对象
      *
      * @param registry
      */
@@ -91,7 +91,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoadCollectionInterceptor(mapperManager))
                 .addPathPatterns("/api/collections/*/records")
                 .addPathPatterns("/api/collections/*/records/*")
-                .addPathPatterns("/api/collections/*/auth-with-password") // TODO 这里会导致未认证的请求查询数据库，考虑增加Collection缓存
+                .addPathPatterns("/api/collections/*/auth-with-password")
                 .addPathPatterns("/api/files/**");
     }
 }
