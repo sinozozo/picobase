@@ -352,7 +352,7 @@ public class CollectionUpsert {
 
     private RuleFunc ensureNoSystemNameChange(boolean isNew) {
         return value -> {
-            if (!isNew && this.collection.isSystem() && Objects.equals(value, this.collection.getName())) {
+            if (!isNew && this.collection.isSystem() && !Objects.equals(value, this.collection.getName())) {
                 return newError("validation_collection_system_name_change", "System collections cannot be renamed.");
             }
             return null;
