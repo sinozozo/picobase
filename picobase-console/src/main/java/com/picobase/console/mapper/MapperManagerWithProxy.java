@@ -18,7 +18,7 @@ public class MapperManagerWithProxy extends PbMapperManager {
      * @return
      */
     public <R extends PbMapper, T> R findMapper(String dataSource, Class<T> clazz) {
-        if (PbConsoleManager.getConfig().isSqlLogEnable()) {
+        if (PbConsoleManager.getConfig().isDev()) {
             return ProxyMapper.createSingleProxy(super.findMapper(dataSource, clazz));
         }
         return super.findMapper(dataSource, clazz);

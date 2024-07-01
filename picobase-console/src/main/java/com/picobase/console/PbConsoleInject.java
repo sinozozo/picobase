@@ -15,7 +15,6 @@ import com.picobase.console.json.SchemaDeserializer;
 import com.picobase.console.json.mixin.AdminModelMixIn;
 import com.picobase.console.json.mixin.PbFileMixIn;
 import com.picobase.console.json.mixin.SchemaMixIn;
-import com.picobase.console.repository.PbDatabaseOperateWithLogProxy;
 import com.picobase.console.web.*;
 import com.picobase.exception.PbException;
 import com.picobase.file.PbFile;
@@ -26,17 +25,11 @@ import com.picobase.logic.PbAdminUtil;
 import com.picobase.model.AdminModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.schema.Schema;
-import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.spring.json.PbJsonTemplateForJackson;
 import com.picobase.spring.json.PbJsonTemplateForJacksonTurbo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -90,20 +83,6 @@ public class PbConsoleInject {
         MapperManagerWithProxy mapperManagerWithProxy = new MapperManagerWithProxy();
         return mapperManagerWithProxy;
     }*/
-
-
-    /**
-     * 具有代理能力的 PbDatabaseOperate ， 用于查看方法调用的sql日志输出
-     * <p>
-     * PbDatabaseOperate 已经在 autoconfig 模块注入过，这里会覆盖 autoconfig 模块中的注入
-     *
-     * @return
-     */
-    @Bean
-    @Primary
-    public PbDatabaseOperate getPbDatabaseOperate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate) {
-        return new PbDatabaseOperateWithLogProxy().create(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate);
-    }
 
 
     /**

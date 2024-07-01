@@ -2,26 +2,36 @@ package com.picobase.console.web;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.picobase.PbManager;
+import com.picobase.context.PbHolder;
 import com.picobase.exception.BadRequestException;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.exception.PbException;
 import com.picobase.model.FailureResult;
 import com.picobase.validator.Err;
 import com.picobase.validator.Errors;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.picobase.console.PbConsoleConstants.ErrorResponse;
 
 
 //@RequestMapping("/api") //todo 这里只拦截Pocket的请求，需要修改路径
 @Order(0)
 @RestControllerAdvice
-public class PbConsoleExceptionHandler {
+public class PbConsoleExceptionHandler implements ResponseBodyAdvice<Object> {
 
     /**
      * 处 理 form data 方 式 调 用 接 口 校 验 失 败 抛 出 的 异 常
@@ -105,6 +115,19 @@ public class PbConsoleExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity forbiddenException(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new FailureResult().setCode(HttpStatus.FORBIDDEN.value()).setMessage(e.getMessage()).setData(""));
+    }
+
+    @Override
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return true;
+    }
+
+    @Override
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        if (response instanceof ServletServerHttpResponse resp && resp.getServletResponse().getStatus() > 200) {
+            PbHolder.getStorage().set(ErrorResponse, body);
+        }
+        return body;
     }
 /*
 

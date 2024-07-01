@@ -295,17 +295,17 @@ public interface BaseDatabaseOperate extends PbDatabaseOperate {
                         errSql[0] = pair.getSql();
                         args[0] = pair.getArgs();
                         boolean rollBackOnUpdateFail = pair.isRollBackOnUpdateFail();
-                        LOGGER.debug("current sql : {}", errSql[0]);
-                        LOGGER.debug("current args : {}", args[0]);
+                        //LOGGER.debug("current sql : {}", errSql[0]);
+                        //LOGGER.debug("current args : {}", args[0]);
 
                         if (pair.getNamedArgs() != null) {
                             row.addAndGet(namedParameterJdbcTemplate.update(pair.getSql(), pair.getNamedArgs()));
                         } else {
                             row.addAndGet(jdbcTemplate.update(pair.getSql(), pair.getArgs()));
                         }
-                        LOGGER.debug("SQL update affected {} rows ", row);
+                        //LOGGER.debug("SQL update affected {} rows ", row);
                         if (rollBackOnUpdateFail && row.get() < 1) {
-                            LOGGER.debug("SQL update affected {} rows ", row);
+                            //LOGGER.debug("SQL update affected {} rows ", row);
                             throw new IllegalTransactionStateException("Illegal transaction");
                         }
                     });

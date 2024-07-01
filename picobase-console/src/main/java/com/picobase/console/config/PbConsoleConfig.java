@@ -37,7 +37,7 @@ public class PbConsoleConfig {
     /**
      * 是否打印执行sql
      */
-    private boolean sqlLogEnable = false;
+    private boolean isDev = false;
 
 
     private S3Config s3Config;
@@ -89,8 +89,8 @@ public class PbConsoleConfig {
     /**
      * @return 是否打印 mapper 构造的 sql
      */
-    public boolean isSqlLogEnable() {
-        return sqlLogEnable;
+    public boolean isDev() {
+        return isDev;
     }
 
     /**
@@ -99,8 +99,8 @@ public class PbConsoleConfig {
      * @param sqlLog true 打印 , false 不打印
      * @return 对象自身
      */
-    public PbConsoleConfig setSqlLogEnable(boolean sqlLog) {
-        this.sqlLogEnable = sqlLog;
+    public PbConsoleConfig setIsDev(boolean sqlLog) {
+        this.isDev = sqlLog;
         return this;
     }
 
@@ -122,8 +122,9 @@ public class PbConsoleConfig {
                 ", password='" + password + '\'' +
                 ", include='" + include + '\'' +
                 ", exclude='" + exclude + '\'' +
-                ", sqlLogEnable=" + sqlLogEnable +
+                ", isDev=" + isDev +
                 ", s3Config=" + s3Config +
+                ", dataDirPath='" + dataDirPath + '\'' +
                 '}';
     }
 

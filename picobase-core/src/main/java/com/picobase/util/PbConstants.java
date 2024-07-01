@@ -19,7 +19,7 @@ public final class PbConstants {
     public static final String ID_REGEX = "^[^\\@\\#\\$\\&\\|\\.\\,\\'\\\"\\\\\\/\\s]+$";
 
     public static final Pattern ID_REGEX_P = Pattern.compile(ID_REGEX);
-    public static final Pattern COLLECTION_NAME_P = Pattern.compile("^[a-zA-Z0-9][a-zA-Z0-9_]*$");
+    public static final Pattern COLLECTION_NAME_P = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
 
     /**
      * 切面、拦截器、过滤器等各种组件的注册优先级顺序

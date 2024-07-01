@@ -23,6 +23,7 @@ import javassist.ClassPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -117,7 +118,7 @@ public class PbBeanRegister {
     }
 
     @Bean
-    @ConditionalOnMissingClass("com.picobase.console.repository.PbDatabaseOperateWithLogProxy")
+    @ConditionalOnMissingBean(PbDatabaseOperate.class)
     public PbDatabaseOperate getPbDatabaseOperate(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate) {
         return new MysqlDatabaseOperateImpl(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate);
     }
@@ -155,7 +156,7 @@ public class PbBeanRegister {
         //配置系统默认 CronExpress 解析测量
         PbStrategy.instance.setNextTimestampByCronExpressionFunction((cron, time) -> CronExpression.parse(cron).next(time).toInstant().toEpochMilli());
 
-        
+
         Map<String, Object> beansWithAnnotation = event.getApplicationContext().getBeansWithAnnotation(Component.class);
         beansWithAnnotation.forEach((k, v) -> PbSchedulerBus.inject(v));
 

@@ -1,6 +1,7 @@
 package com.picobase.search;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.model.Store;
 import com.picobase.persistence.dbx.ConcatExpr;
@@ -43,6 +44,10 @@ public class SearchFilter {
      */
     public Expression buildExpr(FieldResolver fieldResolver, Map<String, Object>... placeholderReplacements) {
         String raw = filterData;
+        
+        if (StrUtil.isEmpty(raw)) {
+            return null;
+        }
 
         // replace the placeholder params in the raw string filter
         for (var p : placeholderReplacements) {

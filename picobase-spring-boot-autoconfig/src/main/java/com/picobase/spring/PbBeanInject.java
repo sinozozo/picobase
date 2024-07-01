@@ -12,14 +12,12 @@ import com.picobase.listener.PbListener;
 import com.picobase.log.PbLog;
 import com.picobase.logic.authz.PbAuthZLogic;
 import com.picobase.persistence.dbx.PbDbxBuilder;
-import com.picobase.persistence.mapper.PbMapper;
 import com.picobase.persistence.mapper.PbMapperManager;
 import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.persistence.repository.PbRowMapperFactory;
 import com.picobase.spring.pathmatch.PbPathMatcherHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.util.PathMatcher;
 
 import java.util.List;
@@ -54,7 +52,7 @@ public class PbBeanInject {
      * @param listenerList 侦听器集合
      */
     @Autowired(required = false)
-    public void setSaTokenListener(List<PbListener> listenerList) {
+    public void setPbListener(List<PbListener> listenerList) {
         PbEventCenter.registerListenerList(listenerList);
     }
 
@@ -64,7 +62,7 @@ public class PbBeanInject {
      * @param pbJsonTemplate JSON 转换器
      */
     @Autowired(required = false)
-    public void setSaJsonTemplate(PbJsonTemplate pbJsonTemplate) {
+    public void setPbJsonTemplate(PbJsonTemplate pbJsonTemplate) {
         PbManager.setSaJsonTemplate(pbJsonTemplate);
     }
 

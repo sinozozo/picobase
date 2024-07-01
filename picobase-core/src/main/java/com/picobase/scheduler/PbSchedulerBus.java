@@ -137,9 +137,9 @@ public abstract class PbSchedulerBus {
                 try {
                     scheduler.getScheduler().invoke();
                 } catch (Exception e) {
-                    logger.error("scheduler invoke exception", e);
+                    logger.error("scheduler invoke exception,{}", e.getMessage());
                 } catch (Throwable t) {
-                    logger.error("scheduler invoke error", t);
+                    logger.error("scheduler invoke error,{}", t.getMessage());
                 }
                 // 重新设置下一次的触发时间戳
                 triggerTimestamp = PbStrategy.instance.nextTimestampByCronExpressionFunction.apply(scheduler.getCronExpression(), timestampZonedDataTime);
@@ -205,9 +205,9 @@ public abstract class PbSchedulerBus {
                 try {
                     runnable.run();
                 } catch (Exception e) {
-                    logger.error("unknown exception", e);
+                    logger.error("unknown exception,{}", e.getMessage());
                 } catch (Throwable t) {
-                    logger.error("unknown error", t);
+                    logger.error("unknown error,{}", t.getMessage());
                 }
             }
         };
@@ -226,7 +226,7 @@ public abstract class PbSchedulerBus {
             var executor = (ScheduledExecutorService) ReflectUtil.getStaticFieldValue(field);
             shutdown(executor);
         } catch (Throwable e) {
-            logger.error("Pb Scheduler thread pool failed shutdown.", e);
+            logger.error("Pb Scheduler thread pool failed shutdown. {}", e.getMessage());
             return;
         }
 

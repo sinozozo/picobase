@@ -51,8 +51,6 @@ public final class PbUtil {
     public static PbAuthZLogic pbAzLogic = new PbAuthZLogic(TYPE);
     public static PbRecordLogic pbRecordLogic = new PbRecordLogic();
 
-    private PbUtil() {
-    }
 
     /**
      * 安全的重置 PbAuthZLogic 对象

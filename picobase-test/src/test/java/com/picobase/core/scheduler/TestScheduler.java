@@ -3,9 +3,8 @@ package com.picobase.core.scheduler;
 import com.picobase.annotation.PbScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class TestScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(TestScheduler.class);

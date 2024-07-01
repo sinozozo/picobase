@@ -2,11 +2,21 @@ package com.picobase.persistence.mapper;
 
 
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.bean.copier.IJSONTypeConverter;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.convert.TypeConverter;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.lang.func.LambdaUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.TypeUtil;
+import com.picobase.PbManager;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * rQuery Insert Update 操作选项<br>
@@ -15,6 +25,9 @@ import java.util.function.BiFunction;
  * 2、忽略的属性列表，设置一个忽略的属性列表，（rQuery 该集合字段不做映射 ，upsert 操作不注入到sql语句中）<br>
  */
 public class MappingOptions {
+
+    private final Pattern jsonPattern = Pattern.compile("^(?:\\{|\\[).*?(?:\\}|\\])$");
+
     /**
      * 是否忽略空值，当源对象的值为null时，true: 忽略而不做处理（rQuery null字段不做映射 ，upsert 操作不注入到sql语句中） ，false: 同理取反<br>
      */
@@ -35,6 +48,39 @@ public class MappingOptions {
      * sql 忽略字段
      */
     protected String[] ignoreFields;
+
+    protected TypeConverter converter = (type, value) -> {
+        if (null == value) {
+            return null;
+        }
+
+        if (value instanceof IJSONTypeConverter) {
+            return ((IJSONTypeConverter) value).toBean(ObjectUtil.defaultIfNull(type, Object.class));
+        }
+
+        // type 为 map 或 集合类型 且 value 为json 字符串的情况
+        Class c = TypeUtil.getClass(type);
+        if (Collection.class.isAssignableFrom(c) || Map.class.isAssignableFrom(c)) {
+            if (value instanceof String json && maybeIsValidJsonString(json)) {
+                return PbManager.getPbJsonTemplate().parseJsonToObject(json, c);
+            }
+        }
+
+
+        return Convert.convertWithCheck(type, value, null, true);
+    };
+
+    public MappingOptions setConverter(TypeConverter converter) {
+        this.converter = converter;
+        return this;
+    }
+
+    private boolean maybeIsValidJsonString(String jsonString) {
+
+        Matcher matcher = jsonPattern.matcher(jsonString);
+
+        return matcher.matches();
+    }
 
     public MappingOptions() {
 
@@ -147,6 +193,7 @@ public class MappingOptions {
      */
     public CopyOptions toCopyOptions() {
         CopyOptions copyOptions = new CopyOptions();
+        copyOptions.setConverter(this.converter);
         copyOptions.setIgnoreNullValue(this.ignoreNullValue);
         if (this.fieldNameEditor != null) {
             copyOptions.setFieldNameEditor(string -> this.fieldNameEditor.edit(string));

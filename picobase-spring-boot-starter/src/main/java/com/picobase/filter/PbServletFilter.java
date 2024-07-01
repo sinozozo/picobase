@@ -1,14 +1,11 @@
 package com.picobase.filter;
 
-import com.picobase.PbManager;
 import com.picobase.error.PbSpringBootErrorCode;
 import com.picobase.exception.BackResultException;
 import com.picobase.exception.PbException;
 import com.picobase.exception.StopMatchException;
-import com.picobase.log.PbLog;
 import com.picobase.router.PbRouter;
 import com.picobase.util.PbConstants;
-import org.apache.catalina.connector.RequestFacade;
 import org.springframework.core.annotation.Order;
 
 import javax.servlet.*;
@@ -52,24 +49,6 @@ public class PbServletFilter implements PbFilter, Filter {
      */
     public PbFilterAuthStrategy beforeAuth = r -> {
     };
-    private PbLog log = PbManager.getLog();
-
-    /**
-     * 获得完整 request 请求Url
-     *
-     * @param request
-     * @return
-     */
-    private static String getFullRequestUrl(ServletRequest request) {
-        String requestUri = ((RequestFacade) request).getRequestURI();
-        String queryString = ((RequestFacade) request).getQueryString();
-
-        if (queryString != null) {
-            return requestUri + "?" + queryString;
-        } else {
-            return requestUri;
-        }
-    }
 
 
     // ------------------------ 钩子函数
@@ -120,7 +99,6 @@ public class PbServletFilter implements PbFilter, Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
 
-            log.info("{} {}", ((RequestFacade) request).getMethod(), getFullRequestUrl(request));
             // 执行全局过滤器
             beforeAuth.run(null);
             PbRouter.match(includeList).notMatch(excludeList).check(r -> {

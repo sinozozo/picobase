@@ -4,17 +4,25 @@ import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
 import com.picobase.console.filesystem.LocalFileSystem;
 import com.picobase.console.filesystem.S3FileSystem;
+import com.picobase.console.repository.PbDatabaseOperateWithLogProxy;
+import com.picobase.console.web.LogFilter;
 import com.picobase.context.PbHolder;
 import com.picobase.file.PbFileSystem;
 import com.picobase.filter.PbServletFilter;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.logic.PbAdminUtil;
+import com.picobase.persistence.repository.PbDatabaseOperate;
 import com.picobase.router.PbRouter;
 import com.picobase.util.PbConstants;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Admin 相关 Bean 注册
@@ -78,6 +86,18 @@ public class PbConsoleRegister {
                         setError(e -> e.getMessage());
     }
 
+
+    /**
+     * 用于记录日志的过滤器
+     *
+     * @return LogFilter
+     */
+    @Bean
+    @ConditionalOnProperty(CONFIG_PREFIX + ".isDev")
+    LogFilter getLogFilter() {
+        return new LogFilter();
+    }
+
     public static boolean isSomeOneLogin() {
         return PbUtil.isLogin() || PbAdminUtil.isLogin();
     }
@@ -104,6 +124,20 @@ public class PbConsoleRegister {
         } catch (ClassNotFoundException e) {
             return true;
         }
+    }
+
+    /**
+     * 具有代理能力的 PbDatabaseOperate ， 用于查看方法调用的sql日志输出
+     * <p>
+     * PbDatabaseOperate 已经在 autoconfig 模块注入过，这里会覆盖 autoconfig 模块中的注入
+     *
+     * @return
+     */
+    @Bean
+    @Primary
+    @ConditionalOnProperty(CONFIG_PREFIX + ".isDev")
+    public PbDatabaseOperate getPbDatabaseOperate(PbConsoleConfig config, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionTemplate transactionTemplate) {
+        return new PbDatabaseOperateWithLogProxy().create(jdbcTemplate, namedParameterJdbcTemplate, transactionTemplate);
     }
 
 

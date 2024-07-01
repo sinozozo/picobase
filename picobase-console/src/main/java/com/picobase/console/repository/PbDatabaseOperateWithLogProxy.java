@@ -40,7 +40,7 @@ public class PbDatabaseOperateWithLogProxy implements MethodInterceptor {
         }
 
         String methodName = method.getName();
-        LOGGER.debug("[{}ms] {}: {}", stopWatch.cost(), JSONUtil.toJsonStr(objects), prettyPrintResult(invoke));
+        LOGGER.debug("[{}ms] {}: {}", stopWatch.cost(), StrUtil.truncateUtf8(JSONUtil.toJsonStr(objects), 256), prettyPrintResult(invoke));
 
         return invoke;
     }
