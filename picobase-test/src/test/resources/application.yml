@@ -4,6 +4,7 @@ spring:
     username: root
     password: Bangbangdechelianwang
     url: jdbc:mysql://1.117.39.176:3306/pb_console
+    ##url: jdbc:mysql://1.117.39.176:3306/ttzz
 
 
 # 端口

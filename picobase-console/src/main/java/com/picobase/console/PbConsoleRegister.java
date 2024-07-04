@@ -141,4 +141,11 @@ public class PbConsoleRegister {
     }
 
 
+    /**
+     * 初始化Pb数据库系统表
+     */
+    @Bean
+    public DatabaseInitializer getDatabaseInitializer() {
+        return new DatabaseInitializer();
+    }
 }
