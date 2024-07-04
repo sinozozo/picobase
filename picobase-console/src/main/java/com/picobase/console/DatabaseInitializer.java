@@ -17,6 +17,15 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         PbManager.getLog().info("Initializing PB System Tables ...");
+        createPbTables();
+        initialTableData();
+    }
+
+
+    /**
+     * 创建 PB 依赖表
+     */
+    private static void createPbTables() {
         String adminTable = """
                 create table if not exists pb_admin
                 (
@@ -100,7 +109,12 @@ public class DatabaseInitializer implements CommandLineRunner {
         StorageContextHolder.addSqlContext(userTable);
 
         PbManager.getPbDatabaseOperate().blockUpdate(); //先创建表
+    }
 
+    /**
+     * 初始化 Collection 中数据（用户表、日志表）
+     */
+    private static void initialTableData() {
         if (PbUtil.findById(CollectionModel.class, "_pb_users_auth_") == null) {
             String insertUserCollection = """
                     INSERT INTO pb_collection (id, name, type, `system`, `schema`, indexes, listRule, viewRule, createRule, updateRule, deleteRule, options, created, updated) VALUES ('_pb_users_auth_', 'users', 'auth', false, '[{"id": "users_name", "name": "name", "type": "text", "system": false, "unique": false, "options": {"max": null, "min": null, "pattern": ""}, "required": false, "presentable": false}, {"id": "users_avatar", "name": "avatar", "type": "file", "system": false, "unique": false, "options": {"thumbs": [], "maxSize": 5242880, "maxSelect": 1, "mimeTypes": ["image/jpeg", "image/png", "image/svg+xml", "image/gif", "image/webp"], "protected": false}, "required": false, "presentable": false}]', '[]', 'id = @request.auth.id', 'id = @request.auth.id', '', 'id = @request.auth.id', 'id = @request.auth.id', '{"manageRule": null, "onlyVerified": false, "requireEmail": false, "allowEmailAuth": true, "allowOAuth2Auth": true, "onlyEmailDomains": null, "allowUsernameAuth": true, "minPasswordLength": 8, "exceptEmailDomains": null}', null, null);
