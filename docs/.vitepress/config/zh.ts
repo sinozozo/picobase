@@ -6,7 +6,7 @@ const pkg = require('vitepress/package.json')
 
 export const zh = defineConfig({
     lang: 'zh-Hans',
-    description: 'zzz由 Vite 和 Vue 驱动的静态站点生成器',
+    description: 'An open source low-code framework for building web applications.',
 
     themeConfig: {
         nav: nav(),
