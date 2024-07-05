@@ -1,39 +1,21 @@
-/*
- * Copyright 2020-2099 sa-token.cc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.picobase.basic;
 
 import com.picobase.PbManager;
 import com.picobase.context.PbHolder;
 import com.picobase.error.PbErrorCode;
 import com.picobase.exception.NotBasicAuthException;
-import com.picobase.secure.SaBase64Util;
+import com.picobase.secure.PbBase64Util;
 import com.picobase.util.CommonHelper;
 
 /**
- * Sa-Token Http Basic 认证模块
- *
- * @author click33
- * @since 1.26.0
+ * Http Basic 认证模块
  */
 public class PbBasicTemplate {
 
     /**
      * 默认的 Realm 领域名称
      */
-    public static final String DEFAULT_REALM = "Sa-Token";
+    public static final String DEFAULT_REALM = "Pb";
 
     /**
      * 在校验失败时，设置响应头，并抛出异常
@@ -61,7 +43,7 @@ public class PbBasicTemplate {
         }
 
         // 裁剪前缀并解码
-        return SaBase64Util.decode(authorization.substring(6));
+        return PbBase64Util.decode(authorization.substring(6));
     }
 
     /**

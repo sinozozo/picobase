@@ -18,11 +18,8 @@ package com.picobase.util;
 
 /**
  * 封装两个值的容器，方便取值、写值等操作，value1 和 value2 用逗号隔开，形如：123,abc
- *
- * @author click33
- * @since 1.35.0
  */
-public class SaValue2Box {
+public class PbValue2Box {
 
     /**
      * 第一个值
@@ -40,7 +37,7 @@ public class SaValue2Box {
      * @param value1 第一个值
      * @param value2 第二个值
      */
-    public SaValue2Box(Object value1, Object value2) {
+    public PbValue2Box(Object value1, Object value2) {
         this.value1 = value1;
         this.value2 = value2;
     }
@@ -50,7 +47,7 @@ public class SaValue2Box {
      *
      * @param valueString 形如：123,abc
      */
-    public SaValue2Box(String valueString) {
+    public PbValue2Box(String valueString) {
         if (valueString == null) {
             return;
         }
@@ -213,10 +210,10 @@ public class SaValue2Box {
      *
      * <br><br>
      * <pre>
-     *     System.out.println(new SaValue2Box(1, 2));     // 1,2
-     *     System.out.println(new SaValue2Box(null, null));   // null
-     *     System.out.println(new SaValue2Box(1, null));   // 1
-     *     System.out.println(new SaValue2Box(null, 2));  // ,2
+     *     System.out.println(new PbValue2Box(1, 2));     // 1,2
+     *     System.out.println(new PbValue2Box(null, null));   // null
+     *     System.out.println(new PbValue2Box(1, null));   // 1
+     *     System.out.println(new PbValue2Box(null, 2));  // ,2
      * </pre>
      *
      * @return /

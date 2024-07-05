@@ -35,9 +35,6 @@ package com.picobase.logic.authz;
  *     }
  *     </pre>
  * </p>
- *
- * @author click33
- * @since 1.10.0
  */
 public class PbTokenInfo {
 
@@ -256,7 +253,7 @@ public class PbTokenInfo {
      */
     @Override
     public String toString() {
-        return "SaTokenInfo [tokenName=" + tokenName + ", tokenValue=" + tokenValue + ", isLogin=" + isLogin
+        return "PbTokenInfo [tokenName=" + tokenName + ", tokenValue=" + tokenValue + ", isLogin=" + isLogin
                 + ", loginId=" + loginId + ", loginType=" + loginType + ", tokenTimeout=" + tokenTimeout
                 + ", sessionTimeout=" + sessionTimeout + ", tokenSessionTimeout=" + tokenSessionTimeout
                 + ", tokenActiveTimeout=" + tokenActiveTimeout + ", loginDevice=" + loginDevice + ", tag=" + tag

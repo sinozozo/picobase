@@ -20,7 +20,6 @@ import java.util.Objects;
  *
  * @param <K> 键类型
  * @param <V> 值类型
- * @author godotg
  */
 public class Pair<K, V> {
 

@@ -23,9 +23,6 @@ import java.util.function.Supplier;
  *
  * <p>  参数：元素名称, 最大尝试次数, 创建 token 函数, 检查 token 函数 </p>
  * <p>  返回：生成的token  </p>
- *
- * @author click33
- * @since 1.35.0
  */
 @FunctionalInterface
 public interface PbGenerateUniqueTokenFunction {

@@ -22,9 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * <br>
  * 注意：以上分类仅为框架设计层面的概念区分，实际上它们的数据存储格式都是一致的。
  * </p>
- *
- * @author click33
- * @since 1.10.0
  */
 public class PbSession implements PbSetValueInterface, Serializable {
 

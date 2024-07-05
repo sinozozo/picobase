@@ -166,7 +166,7 @@ public interface PbErrorCode {
     int CODE_11071 = 11071;
 
     /**
-     * 获取 SaSession 时提供的 SessionId 为空
+     * 获取 PbSession 时提供的 SessionId 为空
      */
     int CODE_11072 = 11072;
 

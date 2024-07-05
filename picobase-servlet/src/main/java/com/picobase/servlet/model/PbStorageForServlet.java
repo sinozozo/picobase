@@ -6,7 +6,7 @@ import com.picobase.context.model.PbStorage;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 对 SaStorage 包装类的实现（Servlet 版）
+ * 对 PbStorage 包装类的实现（Servlet 版）
  */
 public class PbStorageForServlet implements PbStorage {
 

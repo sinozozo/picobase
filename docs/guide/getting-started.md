@@ -28,18 +28,75 @@ Spring Boot 3.x 版本，适配中 ...
 
 :::
 
-将需要回答几个简单的问题：
+数据源配置：
 
-<<< @/snippets/init.ansi
+```yaml
 
-:::tip Vue 作为 peer dependency
-如果打算使用 Vue 组件或 API 进行自定义，还应该明确地将 `vue` 安装为 peer dependency。
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Bangbangdechelianwang
+    url: jdbc:mysql://...:3306/xxx # 请更换为自己的mysql链接地址
+
+```
+
+PicoBase 配置(可选)：
+
+```yaml
+
+# PicoBase 配置
+picobase:
+  # 是否打印日志
+  isLog: true
+  # 是否打印 banner
+  isPrint: true
+  # jwt 秘钥
+  jwtSecretKey: X8yXwWJE1k5zN7h+fP8g1U8QmW6i8LrQ4+QJyB2p6EU=
+
+pb-console:
+  auth: true
+  identity: admin@admin.com
+  password: admin@admin.com
+  # dev 模式，打印sql日志，存储http执行信息到数据库中， 开启后会影响执行性能
+  isDev: true
+
+```
+
+
+:::tip 关于 Mysql 账号权限
+PicoBase 在启动和配置 Collection 时需要执行 DDL 语句，所以分配的 mysql 账号需具备 DDL 权限。
 :::
 
-## 文件结构 {#file-structure}
+## 启动项目 {#start-project}
 
-如果正在构建一个独立的 VitePress 站点，可以在当前目录 (`./`) 中搭建站点。但是，如果在现有项目中与其他源代码一起安装
-VitePress，建议将站点搭建在嵌套目录 (例如 `./docs`) 中，以便它与项目的其余部分分开。
+完成以上配置即可启动项目（Spring boot 的启动 main 函数）。启动成功后
+
+```html
+
+┌─┐┬┌─┐┌─┐┌┐ ┌─┐┌─┐┌─┐
+├─┘││  │ │├┴┐├─┤└─┐├┤ 
+┴  ┴└─┘└─┘└─┘┴ ┴└─┘└─┘ v0.1
+
+ http://www.picobase.cn
+
+PB [INFO] -->: [thread-1] 全局配置 PbConfig{cookie=SaCookieConfig [domain=null, path=null, secure=false, httpOnly=false, sameSite=null], s3=S3Config{enable=true, endpoint='null', bucket='picobase', region='null', accessKey='null', secretKey='null', forcePathStyle=true}, tokenName='Authorization', timeout=2592000, activeTimeout=-1, isConcurrent=true, dynamicActiveTimeout=false, isShare=true, maxLoginCount=12, maxTryTimes=12, isReadBody=true, isReadHeader=true, isReadCookie=true, isWriteHeader=false, tokenStyle='uuid', autoRenew=true, tokenPrefix='null', tokenSessionCheckLogin=true, isPrint=true, isLog=true, isColorLog=true, logLevelInt=1, currDomain='null', dataRefreshPeriod=30, basic='', jwtSecretKey='X8yXwWJE1k5zN7h+fP8g1U8QmW6i8LrQ4+QJyB2p6EU='} 
+....
+2024-07-05 14:36:09.008  INFO 78016 --- [           main] com.picobase.StartUpApplication          : Started StartUpApplication in 2.814 seconds (JVM running for 3.678)
+PB [INFO] -->: [thread-1] Initializing PB System Tables ...
+2024-07-05 14:36:09.026  INFO 78016 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-07-05 14:36:09.408  INFO 78016 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+PB [DEBUG]-->: [thread-1] [501ms] [[{"executeNo":0,"sql":"create table if not exists pb_admin\n(\n    id              char(20)      not null\n        primary key,\n    avatar          int default 0 not null,\n    email           varchar(100)  not null,\n    tokenKey        varchar(100) ...: true
+PB [DEBUG]-->: [thread-1] [65ms] ["SELECT * FROM `pb_collection` WHERE id=:id",{"id":"_pb_users_auth_"},"com.picobase.model.CollectionModel"]: CollectionModel{name='users', type='auth'}
+PB [DEBUG]-->: [thread-1] [10ms] ["SELECT * FROM `pb_collection` WHERE id=:id",{"id":"_pb_log_"},"com.picobase.model.CollectionModel"]: CollectionModel{name='pb_log', type='base'}
+PB [DEBUG]-->: [thread-1] [20ms] [[]]: true
+
+启动成功：PicoBase配置如下：PbConsoleConfig{auth=true, identity='admin@admin.com', password='admin@admin.com', include='/**', exclude='', isDev=true, s3Config=null, dataDirPath='/Users/zouqiang/Documents/IdeaProjects/java-projects/pico/pb_data/storage'}
+2024-07-05 14:36:10.125  INFO 78016 --- [on(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-05 14:36:10.125  INFO 78016 --- [on(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-07-05 14:36:10.126  INFO 78016 --- [on(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+```
 
 假设选择在 `./docs` 中搭建 VitePress 项目，生成的文件结构应该是这样的：
 

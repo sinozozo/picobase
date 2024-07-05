@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 对 SaResponse 包装类的实现（Servlet 版）
+ * 对 PbResponse 包装类的实现（Servlet 版）
  */
 public class PbResponseForServlet implements PbResponse {
 

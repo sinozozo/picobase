@@ -19,22 +19,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sa-Token 整合 jwt -- Mixin 混入模式
- *
- * @author click33
- * @since 1.30.0
+ * 整合 jwt -- Mixin 混入模式
  */
 public class PbAuthZLogicJwtForMixin extends PbAuthZLogic {
 
     /**
-     * Sa-Token 整合 jwt -- Mixin 混入
+     * 整合 jwt -- Mixin 混入
      */
     public PbAuthZLogicJwtForMixin() {
         super(PbUtil.TYPE);
     }
 
     /**
-     * Sa-Token 整合 jwt -- Mixin 混入
+     * 整合 jwt -- Mixin 混入
      *
      * @param loginType 账号体系标识
      */
@@ -60,7 +57,7 @@ public class PbAuthZLogicJwtForMixin extends PbAuthZLogic {
     // ------------------- 获取token 相关 -------------------
 
     /**
-     * 获取指定 token 的 Token-Session，如果该 SaSession 尚未创建，isCreate代表是否新建并返回
+     * 获取指定 token 的 Token-Session，如果该 PbSession 尚未创建，isCreate代表是否新建并返回
      *
      * @param tokenValue token值
      * @param isCreate   是否新建
@@ -73,7 +70,7 @@ public class PbAuthZLogicJwtForMixin extends PbAuthZLogic {
         long timeout = getTokenTimeout(tokenValue);
         return getSessionBySessionId(splicingKeyTokenSession(tokenValue), isCreate, timeout, session -> {
             // 这里是该 Token-Session 首次创建时才会被执行的方法：
-            // 		设定这个 SaSession 的各种基础信息：类型、账号体系、Token 值
+            // 		设定这个 PbSession 的各种基础信息：类型、账号体系、Token 值
             session.setType(PbConstants.SESSION_TYPE__TOKEN);
             session.setLoginType(getLoginType());
             session.setToken(tokenValue);

@@ -20,9 +20,6 @@ import com.picobase.PbUtil;
 
 /**
  * 一个异常：代表会话未能通过角色认证校验
- *
- * @author click33
- * @since 1.10.0
  */
 public class NotRoleException extends PbException {
 

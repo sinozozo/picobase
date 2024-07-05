@@ -35,14 +35,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * Sa-Token 常见加密算法工具类
- *
- * @author click33
- * @since 1.14.0
+ * 常见加密算法工具类
  */
-public class SaSecureUtil {
+public class PbSecureUtil {
 
-    private SaSecureUtil() {
+    private PbSecureUtil() {
     }
 
     /**

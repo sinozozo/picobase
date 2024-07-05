@@ -134,20 +134,20 @@ public final class PbConstants {
     public static final String TOKEN_STYLE_TIK = "tik";
 
 
-    // ------------------ SaSession 的类型
+    // ------------------ PbSession 的类型
 
     /**
-     * SaSession 的类型: Account-Session
+     * PbSession 的类型: Account-Session
      */
     public static final String SESSION_TYPE__ACCOUNT = "Account-Session";
 
     /**
-     * SaSession 的类型: Token-Session
+     * PbSession 的类型: Token-Session
      */
     public static final String SESSION_TYPE__TOKEN = "Token-Session";
 
     /**
-     * SaSession 的类型: Custom-Session
+     * PbSession 的类型: Custom-Session
      */
     public static final String SESSION_TYPE__CUSTOM = "Custom-Session";
 

@@ -20,7 +20,7 @@ import com.picobase.session.TokenSign;
 import com.picobase.strategy.PbStrategy;
 import com.picobase.util.CommonHelper;
 import com.picobase.util.PbConstants;
-import com.picobase.util.SaValue2Box;
+import com.picobase.util.PbValue2Box;
 
 import java.util.Collections;
 import java.util.List;
@@ -1454,7 +1454,7 @@ public class PbAuthZLogic {
      */
     public void updateLastActiveToNow(String tokenValue) {
         String key = splicingKeyLastActiveTime(tokenValue);
-        String value = new SaValue2Box(System.currentTimeMillis(), getTokenUseActiveTimeout(tokenValue)).toString();
+        String value = new PbValue2Box(System.currentTimeMillis(), getTokenUseActiveTimeout(tokenValue)).toString();
         getPbCache().update(key, value);
     }
 
@@ -1531,7 +1531,7 @@ public class PbAuthZLogic {
         String value = getPbCache().get(key);
 
         // 解析，无值的情况下返回 null
-        SaValue2Box box = new SaValue2Box(value);
+        PbValue2Box box = new PbValue2Box(value);
         return box.getValue2AsLong(null);
     }
 
@@ -1571,7 +1571,7 @@ public class PbAuthZLogic {
         }
 
         // 4、根据逗号切割字符串
-        return new SaValue2Box(lastActiveTimeString).getValue1AsLong();
+        return new PbValue2Box(lastActiveTimeString).getValue1AsLong();
     }
 
     /**

@@ -98,7 +98,7 @@ public class PbManager {
      */
     private volatile static PbJsonTemplate pbJsonTemplate;
 
-    public static void setSaJsonTemplate(PbJsonTemplate pbJsonTemplate) {
+    public static void setPbJsonTemplate(PbJsonTemplate pbJsonTemplate) {
         PbManager.pbJsonTemplate = pbJsonTemplate;
         PbEventCenter.doRegisterComponent("PbJsonTemplate", pbJsonTemplate);
     }
@@ -301,12 +301,13 @@ public class PbManager {
 
     /**
      * 获取 PbMapperManager ， 该组件初始化优先级较高，可在spring组件中直接通过静态方式获取mapper
+     *
      * @return
      */
     public static PbMapperManager getPbMapperManager() {
-        if (pbMapperManager==null){
+        if (pbMapperManager == null) {
             synchronized (PbManager.class) {
-                if (pbMapperManager==null){
+                if (pbMapperManager == null) {
                     pbMapperManager = new PbMapperManager();
                     pbMapperManager.loadInitial();
                 }

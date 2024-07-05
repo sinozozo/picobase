@@ -32,22 +32,19 @@ import com.picobase.util.CommonHelper;
 import java.util.Map;
 
 /**
- * Sa-Token 整合 jwt -- Stateless 无状态模式
- *
- * @author click33
- * @since 1.30.0
+ * Sa整合 jwt -- Stateless 无状态模式
  */
 public class PbAuthZLogicJwtForStateless extends PbAuthZLogic {
 
     /**
-     * Sa-Token 整合 jwt -- Stateless 无状态
+     * 整合 jwt -- Stateless 无状态
      */
     public PbAuthZLogicJwtForStateless() {
         super(PbUtil.TYPE);
     }
 
     /**
-     * Sa-Token 整合 jwt -- Stateless 无状态
+     * 整合 jwt -- Stateless 无状态
      *
      * @param loginType 账号体系标识
      */

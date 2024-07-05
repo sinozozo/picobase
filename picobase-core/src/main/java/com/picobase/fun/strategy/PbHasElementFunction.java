@@ -23,9 +23,6 @@ import java.util.function.BiFunction;
  *
  * <p>  参数：集合、元素  </p>
  * <p>  返回：是否包含  </p>
- *
- * @author click33
- * @since 1.35.0
  */
 @FunctionalInterface
 public interface PbHasElementFunction extends BiFunction<List<String>, String, Boolean> {

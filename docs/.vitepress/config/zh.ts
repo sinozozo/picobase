@@ -63,11 +63,11 @@ function nav(): DefaultTheme.NavItem[] {
             link: '/guide/what-is-picobase',
             activeMatch: '/guide/'
         },
-        {
+        /*{
             text: '参考',
             link: '/reference/site-config',
             activeMatch: '/reference/'
-        },
+        },*/
         {
             text: '加入讨论群',
             link: '/join-discussion',
@@ -96,9 +96,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             collapsed: false,
             items: [
                 {text: '什么是 PicoBase？', link: 'what-is-picobase'},
-                {text: '快速开始', link: 'getting-started'},
-                {text: 'RealWorld', link: 'realworld'},
-                {text: '部署', link: 'deploy'}
+                {text: '快速开始', link: 'getting-started'}
             ]
         },
         {

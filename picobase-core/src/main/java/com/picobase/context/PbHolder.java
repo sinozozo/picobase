@@ -53,7 +53,7 @@ public class PbHolder {
     }
 
     /**
-     * 获取全局 SaApplication 对象
+     * 获取全局 PbApplication 对象
      *
      * @return /
      * @see PbApplication

@@ -32,7 +32,7 @@ public class CommonHelper {
                 ┌─┐┬┌─┐┌─┐┌┐ ┌─┐┌─┐┌─┐
                 ├─┘││  │ │├┴┐├─┤└─┐├┤\s
                 ┴  ┴└─┘└─┘└─┘┴ ┴└─┘└─┘ v0.1
-                \r\n 网站地址预留
+                \r\n http://www.picobase.cn
                 """);
     }
 
@@ -709,7 +709,6 @@ public class CommonHelper {
     public static boolean isNotBlank(final CharSequence cs) {
         return !isBlank(cs);
     }
-
 
 
     /**

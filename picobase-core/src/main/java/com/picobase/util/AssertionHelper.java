@@ -10,8 +10,6 @@ import java.util.Map;
  * Assertion utility class that assists in validating arguments.
  * This class is similar to JUnit's assertion library. If an argument value is
  * deemed invalid, an {@link IllegalArgumentException} is thrown (typically).
- *
- * @author godotg
  */
 public abstract class AssertionHelper {
 

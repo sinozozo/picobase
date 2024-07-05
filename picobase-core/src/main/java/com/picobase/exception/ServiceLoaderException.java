@@ -17,21 +17,19 @@
 package com.picobase.exception;
 
 /**
- * Nacos service loader exception.
- *
- * @author xiweng.yy
+ * service loader exception.
  */
 public class ServiceLoaderException extends PbException {
-    
+
     private static final long serialVersionUID = -4133484884875183141L;
-    
+
     private final Class<?> clazz;
-    
+
     public ServiceLoaderException(Class<?> clazz, Exception caused) {
         super(String.format("Can not load class `%s` by SPI ", clazz.getName()), caused);
         this.clazz = clazz;
     }
-    
+
     public Class<?> getClazz() {
         return clazz;
     }

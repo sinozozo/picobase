@@ -63,7 +63,7 @@ public class PbBeanInject {
      */
     @Autowired(required = false)
     public void setPbJsonTemplate(PbJsonTemplate pbJsonTemplate) {
-        PbManager.setSaJsonTemplate(pbJsonTemplate);
+        PbManager.setPbJsonTemplate(pbJsonTemplate);
     }
 
     /**

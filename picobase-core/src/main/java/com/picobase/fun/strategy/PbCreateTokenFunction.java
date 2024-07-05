@@ -22,9 +22,6 @@ import java.util.function.BiFunction;
  *
  * <p>  参数：账号 id、账号类型  </p>
  * <p>  返回：token 值  </p>
- *
- * @author click33
- * @since 1.35.0
  */
 @FunctionalInterface
 public interface PbCreateTokenFunction extends BiFunction<Object, String, String> {
