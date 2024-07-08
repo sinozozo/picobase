@@ -31,7 +31,7 @@ public class CommonHelper {
         System.out.println("""
                 ┌─┐┬┌─┐┌─┐┌┐ ┌─┐┌─┐┌─┐
                 ├─┘││  │ │├┴┐├─┤└─┐├┤\s
-                ┴  ┴└─┘└─┘└─┘┴ ┴└─┘└─┘ v0.1
+                ┴  ┴└─┘└─┘└─┘┴ ┴└─┘└─┘ v0.0.1
                 \r\n http://www.picobase.cn
                 """);
     }
