@@ -29,7 +29,7 @@ public class SearchFilter {
 
     // parsedFilterData holds a cache with previously parsed filter data expressions
     // (initialized with some preallocated empty data map)
-    Store<List<ExprGroup>> parsedFilterData = new Store<>();
+    private static final Store<List<ExprGroup>> parsedFilterData = new Store<>();
 
     // DefaultLikeEscape specifies the default special character escaping for LIKE expressions
     // The strings at 2i positions are the special characters to be escaped while those at 2i+1 positions
@@ -44,7 +44,7 @@ public class SearchFilter {
      */
     public Expression buildExpr(FieldResolver fieldResolver, Map<String, Object>... placeholderReplacements) {
         String raw = filterData;
-        
+
         if (StrUtil.isEmpty(raw)) {
             return null;
         }
