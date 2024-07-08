@@ -397,7 +397,7 @@ public class RecordUpsert implements Validatable {
                     // require old password only on update when:
                     // - form.manageAccess is not set
                     // - changing the existing password
-                    , when(!this.record.isNew() && !this.manageAccess && (StrUtil.isNotBlank(this.password) || StrUtil.isNotBlank(this.passwordConfirm))), required, by(checkOldPassword())));
+                    , when(!this.record.isNew() && !this.manageAccess && (StrUtil.isNotBlank(this.password) || StrUtil.isNotBlank(this.passwordConfirm)), required, by(checkOldPassword()))));
         }
 
         Errors err = validateObject(this, baseFieldsRules.toArray(new FieldRules[0]));
