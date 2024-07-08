@@ -554,8 +554,9 @@ public class ResolverRunner {
                 } else {
                     var jeAlias2 = this.multiMatchActiveTableAlias + "_" + cleanProp + "_je";
 
-                    this.resolver.registerJoin(String.format("(SELECT * FROM %s,%s %s)", newCollectionName, DbUtil.jsonEach(newCollectionName + "." + cleanBackFieldName), jeAlias2),
-                            newTableAlias2, newExpr(String.format("`%s`.`value` = `%s`.`id`", newTableAlias2, this.activeTableAlias)));
+
+                    this.multiMatch.getJoins().add(new Join(String.format("(SELECT * FROM %s,%s %s)", newCollectionName, DbUtil.jsonEach(newCollectionName + "." + cleanBackFieldName), jeAlias2),
+                            newTableAlias2, newExpr(String.format("`%s`.`value` = `%s`.`id`", newTableAlias2, this.multiMatchActiveTableAlias))));
                    /* this.multiMatch.getJoins().add(new Join(newCollectionName, newTableAlias2,
                             newExpr(String.format("%s.id IN (SELECT %s.value FROM %s `%s`)",
                                     this.multiMatchActiveTableAlias,
