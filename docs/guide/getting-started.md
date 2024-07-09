@@ -140,8 +140,8 @@ PicoBase 跟传统脚手架项目不同，其运行过程中并没有生成额�
 ## 执行日志->["SELECT DISTINCT `Todo`.* FROM `Todo` LEFT JOIN `users` `Todo_user` ON Todo_user.id = Todo.user WHERE (Todo_user.name LIKE :tl1xpJ AND Todo.isComplated = :t2O4Q6) LIMIT 1",{"tl1xpJ":"%三%","t2O4Q6":"已完成"},{}]: List<RecordModel> size:1 
 GET /api/collections/Todo/records?page=1&perPage=1&filter=user.name ~ '三' && isComplated = '已完成'&fields=id
 
-## 查询新建任务且为已完成的用户列表（反向查询）
-GET /api/collections/_pb_users_auth_/records?page=1&perPage=40&sort=-created&skipTotal=1&filter=Todo_via_user.isComplated = '已完成'&expand=&fields=
+## 查询今天存在Todo 未完成的用户Collection（反向查询）
+GET /api/collections/users/records?page=1&perPage=40&sort=-created&skipTotal=1&filter=Todo_via_user.isComplated ?= '未完成' && Todo_via_user.created < @todayEnd&expand=&fields=
 
 ```
 
