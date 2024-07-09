@@ -111,6 +111,17 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             ]
         },
         {
+            text: '作为框架使用',
+            collapsed: false,
+            items: [
+                {text: '总体介绍', link: 'frame-intro'},
+                {text: '用户认证', link: 'user-login'},
+                {text: 'EventBus', link: 'eventbus'},
+                {text: 'Scheduler', link: 'scheduler'},
+                {text: '数据库操作', link: 'db-operation'},
+            ]
+        },
+        {
             text: '写作',
             collapsed: false,
             items: [

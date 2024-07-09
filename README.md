@@ -98,10 +98,10 @@ PicoBase 灵感来源于 [PocketBase](http://pocketbase.io/)。PocketBase 是一
 Dashboard UI，以及简单的 REST-ish API。
 
 但 PocketBase 其内嵌 sqlite，作者并不愿意将其底层迁移到大型数据库，它追求小而美，并不适合做大型项目应用。
-同时国内并没有类似的产品或框架，很多开源项目也都是基于nodejs 或 python 开发，所以萌生了构造 PicoBase 的想法。
+同时国内并没有类似的产品或框架，很多开源项目也都是基于nodejs 或 python 和文档型数据库开发，所以萌生了构造 PicoBase 的想法。
 
 PicoBase 基于 java 和 Mysql 为实现企业级应用而生，同时最小化投入原则，其也复用了 PocketBase 的众多优秀设计和组件，完全兼容其
-API ，所以 PocketBase 的 Dashboard UI 和客户端 SDK 组件可直接复用，同时 PicoBase 也扩展了很多它所不具备的能力。随着后续
+API ，所以 PocketBase 的 Dashboard UI 和客户端 SDK 组件可直接复用，同时 PicoBase 也扩展了很多 PocketBase 所不具备的能力。随着后续
 PocketBase 的持续迭代，PicoBase也始终与其保持同步。
 
 ## 一些开源的 BaaS 平台 
