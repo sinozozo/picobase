@@ -5,9 +5,10 @@ PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [BaaS 应用](http
 
 
 只是想尝试一下？
+
 [在线 Demo](http://www.picobase.cn/demo/console/)
 
-[快速开始](http://www.picobase.cn/guide/getting-started)。
+[快速开始](http://www.picobase.cn/guide/getting-started)
 
 
 
