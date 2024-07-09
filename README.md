@@ -1,22 +1,17 @@
 # PicoBase 是什么？
 
 PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [BaaS 应用](https://cloud.tencent.com/developer/article/1045253) (
-后端即服务)
-，专为快速构建业务应用而设计，提供开发者在构建业务应用程序时的底层基础通用能力。
+后端即服务)，专为快速构建业务应用而设计，提供开发者在构建业务应用程序时的底层基础通用能力。
 
-<div class="tip custom-block" style="padding-top: 8px">
 
-只是想尝试一下？跳到[快速开始](http://www.picobase.cn/guide/getting-started)。
+只是想尝试一下？
+[在线 Demo](http://www.picobase.cn/demo/console/)
 
-</div>
+[快速开始](http://www.picobase.cn/guide/getting-started)。
 
-了解下 BaaS
-BaaS（Backend as a
-Service）应用是一种利用第三方提供的云服务平台来处理后端服务的应用程序。这种应用模型允许开发人员专注于构建前端用户界面和业务逻辑，而无需花费大量精力在后端基础设施的搭建和管理上。通过使用
-BaaS 服务，开发人员可以快速构建应用程序，减少开发时间和成本，并利用云服务提供商提供的弹性、可扩展的基础设施。
 
-BaaS 应用通常提供用户管理、数据存储、推送通知、文件存储、身份验证等功能，使开发人员能够快速集成这些功能到他们的应用程序中，而无需自行开发和维护相应的后端服务。常见的BaaS服务提供商包括
-Firebase、AWS Amplify、Parse 等。
+
+
 
 
 ## 为什么选择 PicoBase 
