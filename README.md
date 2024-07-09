@@ -59,7 +59,6 @@ PicoBase 旨在为开发者提供出色和高效的开发体验。
 
 ![An image](/docs/public/pbmanager.png)
 
-::: details 点我查看代码
 
   ```java
         // 方式一、一行代码实现数据绑定(无视Json、Form提交）
@@ -87,7 +86,6 @@ PicoBase 旨在为开发者提供出色和高效的开发体验。
         field(CollectionUpsert::getSchema,by(checkMinSchemaFields()),by(ensureNoSystemFieldsChange()),by(ensureNoFieldsTypeChange()),by(checkRelationFields()),when(isAuth,by(ensureNoAuthFieldName())));
   ```
 
-:::
 
 ## 性能 
 
