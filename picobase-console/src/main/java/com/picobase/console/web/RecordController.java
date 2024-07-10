@@ -96,6 +96,11 @@ public class RecordController {
 
             testForm.loadRequest();
 
+            // force unset the verified state to prevent ManageRule misuse
+            if (!hasFullManageAccess.get()) {
+                testForm.setVerified(false);
+            }
+
             Consumer<SelectQuery> createRuleFunc = selectQuery -> {
                 if (StrUtil.isEmpty(collection.getCreateRule())) {
                     return;
