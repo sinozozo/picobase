@@ -2,7 +2,8 @@
 
 PicoBase 是一个基于 java 语言和 Mysql 数据库的类 [BaaS 应用](https://cloud.tencent.com/developer/article/1045253) (
 后端即服务)
-，专为快速构建业务应用而设计，提供开发者在构建业务应用程序时的底层基础通用能力。
+，专为快速构建业务应用而设计，它为移动应用和Web应用提供了后端基础设施和功能,开发者可以通过PicoBase平台快速构建和部署应用程序的后端部分，而无需自行搭建和维护后端基础设施，同时也可基于 PicoBase 进行融合开发，实现业务的灵活扩展。
+
 
 <div class="tip custom-block" style="padding-top: 8px">
 
@@ -18,6 +19,20 @@ BaaS 服务，开发人员可以快速构建应用程序，减少开发时间和
 BaaS 应用通常提供用户管理、数据存储、推送通知、文件存储、身份验证等功能，使开发人员能够快速集成这些功能到他们的应用程序中，而无需自行开发和维护相应的后端服务。常见的BaaS服务提供商包括
 Firebase、AWS Amplify、Parse 等。
 :::
+
+## 开发模式 {#development-model}
+
+开发者可以将 PicoBase 作为SDK使用，用于扩展 PicoBase 满足不了的强业务类开发场景，PicoBase 作为后端基础服务，为开发者提供 Collection 管控，以及提供绝大部分开箱即用的 REST API ,满足基本的增删改查、数据校验、访问规则控制、实时数据事件等业务需求。
+
+![develope-model.png](..%2Fpublic%2Fwhat-is-picobase%2Fdevelope-model.png)
+
+用户引入PicoBase 依赖后，启动项目，PicoBase 会暴露 RestAPI 接口用于提供AdminUI的接入，以及可以用于业务应用的Record操作的接口。
+
+- F0 : 业务应用接口，由业务应用自行定义，在 Service 层可调用 PicoBase 能力。
+- F1 : 主要用于开发人员在开发阶段定义模型，对 Collection 进行维护，定义 HTTP 接口的访问规则。
+- F2 : 暴露开发人员定义的模型数据，用于业务应用直接访问和操纵这些模型中的 Record 数据。
+
+
 
 ## 为什么选择 PicoBase {#why-choose-picobase}
 
