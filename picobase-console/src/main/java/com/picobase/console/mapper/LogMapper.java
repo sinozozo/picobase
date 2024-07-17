@@ -32,7 +32,7 @@ public class LogMapper extends AbstractMapper<LogModel> {
     }
 
     public List<LogsStatsItem> stats(Expression expr) {
-        var query = modelQuery().select("count(id) as total", "DATE_FORMAT(created,'%Y-%m-%d %H:00:00') as date").groupBy("date");
+        var query = modelQuery().select("count(id) as total", "DATE_FORMAT(created,'%Y-%m-%d %H:00:00') as date").orderBy("date").groupBy("date");
         if (expr != null) {
             query.andWhere(expr);
         }
