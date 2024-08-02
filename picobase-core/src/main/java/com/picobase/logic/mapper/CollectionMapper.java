@@ -225,7 +225,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
     }
 
     private boolean renameView(String oldName, String newName) {
-        return exec("ALTER VIEW " + oldName + " RENAME TO " + newName);
+        return exec("RENAME TABLE " + oldName + " TO " + newName); // rename table book23 to book2;
     }
 
     private boolean dropColumn(String tableName, String column) {
@@ -564,7 +564,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
             if (newCollection.isAuth()) {
                 List<String> sqls = CollUtil.newArrayList();
                 sqls.add(String.format("CREATE UNIQUE INDEX _%s_username_idx ON %s (`username`);", newCollection.getId(), tableName));
-                sqls.add(String.format("CREATE UNIQUE INDEX _%s_email_idx ON %s (`email`);", newCollection.getId(), tableName));
+                sqls.add(String.format("CREATE  INDEX _%s_email_idx ON %s (`email`);", newCollection.getId(), tableName));
                 sqls.add(String.format("CREATE UNIQUE INDEX _%s_tokenKey_idx ON %s (`tokenKey`);", newCollection.getId(), tableName));
                 createIndex(sqls);
             }

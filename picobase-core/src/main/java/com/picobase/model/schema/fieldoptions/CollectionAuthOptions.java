@@ -1,6 +1,7 @@
 package com.picobase.model.schema.fieldoptions;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.picobase.validator.Errors;
 import com.picobase.validator.Is;
@@ -33,16 +34,16 @@ public class CollectionAuthOptions implements Validatable {
 
     @Override
     public Errors validate() {
-        Rule nullOrNotEmpty = value->{
-            if (value==null|| !StrUtil.isEmptyIfStr(value)) {
+        Rule nullOrNotEmpty = value -> {
+            if (value == null || !StrUtil.isEmptyIfStr(value)) {
                 return null;
             }
-           return  newError("validation_nil_or_not_empty_required", "cannot be blank");
+            return newError("validation_nil_or_not_empty_required", "cannot be blank");
         };
         return validateObject(this,
                 field(CollectionAuthOptions::getManageRule, nullOrNotEmpty),
-                field(CollectionAuthOptions::getExceptEmailDomains, when(null != onlyEmailDomains && onlyEmailDomains.size() > 0, Empty).else_(each(Is.Domain))),
-                field(CollectionAuthOptions::getOnlyEmailDomains, when(null != exceptEmailDomains && this.exceptEmailDomains.size() > 0, Empty).else_(each(Is.Domain))),
+                field(CollectionAuthOptions::getExceptEmailDomains, when(CollUtil.isEmpty(onlyEmailDomains), Empty).otherwise(each(Is.Domain))),
+                field(CollectionAuthOptions::getOnlyEmailDomains, when(CollUtil.isEmpty(exceptEmailDomains), Empty).otherwise(each(Is.Domain))),
                 field(CollectionAuthOptions::getMinPasswordLength, when(this.allowUsernameAuth || this.allowEmailAuth, required, min(5), max(72))));
     }
 

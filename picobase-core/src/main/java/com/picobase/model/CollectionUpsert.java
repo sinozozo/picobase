@@ -204,7 +204,7 @@ public class CollectionUpsert {
 
         return PbUtil.validate(this,
                 field(CollectionUpsert::getId, when(isNew, length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH), match(ID_REGEX_P), by(uniqueId(this.collection.tableName())))
-                        .else_(in(this.collection.getId()))),
+                        .otherwise(in(this.collection.getId()))),
                 field(CollectionUpsert::isSystem, by(ensureNoSystemFlagChange(isNew))),
                 field(CollectionUpsert::getType, required, in(Base, Auth, View), by(ensureNoTypeChange(isNew))),
                 field(CollectionUpsert::getName, required, length(1, 255), match(COLLECTION_NAME_P), by(ensureNoSystemNameChange(isNew)), by(checkUniqueName()), by(checkForVia())),

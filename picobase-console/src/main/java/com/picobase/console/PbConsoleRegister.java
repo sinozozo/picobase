@@ -63,6 +63,7 @@ public class PbConsoleRegister {
                 .addExclude("/favicon.ico", "/console/**")
                 //Admin 登录接口
                 .addExclude("/api/admins/auth-with-password")
+                .addExclude("/api/collections/*/auth-with-password")
 
                 // 认证函数: 每次请求执行
                 .setAuth(obj -> {

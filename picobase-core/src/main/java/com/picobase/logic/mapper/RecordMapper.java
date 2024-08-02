@@ -671,4 +671,25 @@ public class RecordMapper extends AbstractMapper<RecordModel> {
     public interface ExpandFetchFunc extends BiFunction<CollectionModel, List<String>, ResultCouple<List<RecordModel>>> {
 
     }
+
+
+    public RecordModel findAuthRecordByEmail(CollectionModel collection, String identity) {
+        if (!collection.isAuth()) {
+            throw new IllegalStateException(collection.getName() + " is not an auth collection");
+        }
+
+        SelectQuery recordQuery = this.recordQuery(collection);
+        SelectQuery query = recordQuery.andWhere(newHashExpr(Map.of(PbConstants.FieldName.Email, identity)));
+        return query.limit(1).one(new RecordRowMapper(collection));
+    }
+
+    public RecordModel findAuthRecordByUsername(CollectionModel collection, String identity) {
+        if (!collection.isAuth()) {
+            throw new IllegalStateException(collection.getName() + " is not an auth collection");
+        }
+
+        SelectQuery recordQuery = this.recordQuery(collection);
+        SelectQuery query = recordQuery.andWhere(newHashExpr(Map.of(PbConstants.FieldName.Username, identity)));
+        return query.limit(1).one(new RecordRowMapper(collection));
+    }
 }

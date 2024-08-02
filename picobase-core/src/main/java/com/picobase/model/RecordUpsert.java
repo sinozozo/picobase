@@ -371,7 +371,7 @@ public class RecordUpsert implements Validatable {
         // base form fields validator
         var baseFieldsRules = new ArrayList<>();
         baseFieldsRules.add(field(RecordUpsert::getId, when(this.record.isNew(), length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH), match(ID_REGEX_P), by(uniqueId(this.record.tableName())))
-                .else_(in(this.record.getId()))));
+                .otherwise(in(this.record.getId()))));
 
         // auth fields validators
         if (this.record.getCollection().isAuth()) {

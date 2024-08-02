@@ -635,6 +635,7 @@ public class RecordModel extends BaseModel implements ColumnValueMapper {
         }
         return BCrypt.checkpw(password, this.passwordHash());
     }
+    
 
     @Override
     public String toString() {

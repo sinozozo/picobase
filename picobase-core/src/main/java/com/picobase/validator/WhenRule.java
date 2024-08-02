@@ -27,7 +27,7 @@ public class WhenRule implements Rule {
     /**
      * returns a validation rule that executes the given list of rules when the condition is false.
      */
-    public WhenRule else_(Rule... rules) {
+    public WhenRule otherwise(Rule... rules) {
         this.elseRules = rules;
         return this;
     }

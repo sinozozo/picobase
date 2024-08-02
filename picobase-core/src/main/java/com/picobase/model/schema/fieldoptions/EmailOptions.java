@@ -17,8 +17,8 @@ public class EmailOptions implements FieldOptions {
     @Override
     public Errors validate() {
         return validateObject(this,
-                field(EmailOptions::getExceptDomains, when(null != onlyDomains && onlyDomains.size() > 0, Empty).else_(each(Is.Domain))),
-                field(EmailOptions::getOnlyDomains, when(null != exceptDomains && exceptDomains.size() > 0, Empty).else_(each(Is.Domain))));
+                field(EmailOptions::getExceptDomains, when(null != onlyDomains && onlyDomains.size() > 0, Empty).otherwise(each(Is.Domain))),
+                field(EmailOptions::getOnlyDomains, when(null != exceptDomains && exceptDomains.size() > 0, Empty).otherwise(each(Is.Domain))));
     }
 
     public List<String> getExceptDomains() {

@@ -99,7 +99,7 @@ public class PbConsoleExceptionHandler implements ResponseBodyAdvice<Object> {
                 result.put(fieldName, buildResponseStruct(v));
             } else {
                 // ErrorObject
-                result.put(fieldName, value);
+                result.put(fieldName, value.error());
             }
         });
         return result;

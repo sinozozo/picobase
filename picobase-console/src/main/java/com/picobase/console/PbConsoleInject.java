@@ -43,6 +43,7 @@ import static com.picobase.util.PbConstants.LOGIN_TYPE_ADMIN;
         CollectionController.class,
         RecordController.class,
         SettingsController.class,
+        RecordAuthCollection.class,
         PbConsoleRegister.class,
         PbConsoleExceptionHandler.class,
         WebMvcConfig.class

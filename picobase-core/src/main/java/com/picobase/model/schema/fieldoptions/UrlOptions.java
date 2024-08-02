@@ -17,8 +17,8 @@ public class UrlOptions implements FieldOptions {
     @Override
     public Errors validate() {
         return validateObject(this,
-                field(UrlOptions::getExceptDomains, when(null != onlyDomains && onlyDomains.size() > 0, Empty).else_(each(Is.Domain))),
-                field(UrlOptions::getOnlyDomains, when(null != exceptDomains && exceptDomains.size() > 0, Empty).else_(each(Is.Domain)))
+                field(UrlOptions::getExceptDomains, when(null != onlyDomains && onlyDomains.size() > 0, Empty).otherwise(each(Is.Domain))),
+                field(UrlOptions::getOnlyDomains, when(null != exceptDomains && exceptDomains.size() > 0, Empty).otherwise(each(Is.Domain)))
         );
     }
 
