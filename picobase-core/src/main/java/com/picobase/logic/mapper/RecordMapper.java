@@ -44,7 +44,7 @@ public class RecordMapper extends AbstractMapper<RecordModel> {
     CollectionMapper collectionMapper = new CollectionMapper();
 
     public Optional<RecordModel> findRecordById(String collectionNameOrId, String recordId, Consumer<SelectQuery>... optFilters) {
-        CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId); // TODO 这里collection 都查过一遍了
+        CollectionModel collection = collectionMapper.findCollectionByNameOrId(collectionNameOrId);
         if (collection == null) {
             throw new RuntimeException(String.format("Collection %s not found", collectionNameOrId));
         }

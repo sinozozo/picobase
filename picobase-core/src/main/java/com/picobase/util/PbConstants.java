@@ -305,4 +305,9 @@ public final class PbConstants {
         public static final String FIELDS = "fields";
         public static final String EXPAND = "expand";
     }
+
+    /**
+     * jwt 中扩展字段 collectionId
+     */
+    public static final String JwtExtraFieldCollectionId = "collectionId";
 }

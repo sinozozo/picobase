@@ -7,7 +7,6 @@ import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.context.PbHolder;
 import com.picobase.exception.ForbiddenException;
-import com.picobase.exception.PbException;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.AdminModel;
@@ -25,6 +24,7 @@ import java.util.function.Consumer;
 
 import static com.picobase.persistence.dbx.DbxUtil.quoteSimpleColumnName;
 import static com.picobase.persistence.dbx.DbxUtil.snakeCase;
+import static com.picobase.util.PbConstants.JwtExtraFieldCollectionId;
 import static com.picobase.util.PbConstants.QueryParam.*;
 import static com.picobase.util.PbConstants.REQUEST_INFO_KEY;
 
@@ -91,11 +91,16 @@ public class RecordHelper {
 
     private static void setAuthInfo(RequestInfo requestInfo) {
         //从自定义session中获取对应session
-        String userId = (String) PbUtil.getLoginIdDefaultNull();
-        if (StrUtil.isNotEmpty(userId)) {
-            //requestInfo.setAuthRecord((RecordModel) PbSessionCustomUtil.getSessionById(userId).get(userId));
-            throw new PbException("not implemented");// TODO
+        String authRecordId = (String) PbUtil.getLoginIdDefaultNull();
+        if (StrUtil.isNotEmpty(authRecordId)) { // 增加authRecordId检查， 防止getExtra 时，loginType检查异常
+            String collectionId = (String) PbUtil.getExtra(JwtExtraFieldCollectionId);
+            if (StrUtil.isNotEmpty(authRecordId)) {
+                RecordModel authRecord = recordMapper.findRecordById(collectionId, authRecordId).get();
+                requestInfo.setAuthRecord(authRecord);
+            }
+            return;
         }
+
 
         String adminId = (String) PbAdminUtil.getLoginIdDefaultNull();
         if (StrUtil.isNotEmpty(adminId)) {

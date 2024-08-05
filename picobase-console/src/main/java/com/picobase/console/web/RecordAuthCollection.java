@@ -7,6 +7,7 @@ import com.picobase.console.web.interceptor.LoadCollection;
 import com.picobase.exception.BadRequestException;
 import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.interceptor.Interceptors;
+import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
@@ -19,6 +20,8 @@ import com.picobase.validator.Is;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.picobase.util.PbConstants.JwtExtraFieldCollectionId;
 
 
 @RestController
@@ -72,7 +75,7 @@ public class RecordAuthCollection {
                 throw new BadRequestException("Failed to authenticate.");
             }
             //执行登录
-            PbUtil.login(record.getId());
+            PbUtil.login(record.getId(), new PbLoginModel().setExtra(JwtExtraFieldCollectionId, collection.getId())); // authRecord 登录，token结构中要包含 Collection信息
             PbTokenInfo tokenInfo = PbUtil.getTokenInfo();
 
             return new RecordAuthResponse(tokenInfo.getTokenValue(), record, null);

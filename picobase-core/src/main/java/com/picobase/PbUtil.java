@@ -43,7 +43,7 @@ public final class PbUtil {
     /**
      * 多账号体系下的类型标识
      */
-    public static final String TYPE = "user";
+    public static final String TYPE = "authRecord";
     private static final PbLog log = PbManager.getLog();
     /**
      * 底层使用的 PbAuthZLogic 对象
