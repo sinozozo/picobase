@@ -46,7 +46,9 @@ import static com.picobase.util.PbConstants.LOGIN_TYPE_ADMIN;
         RecordAuthCollection.class,
         PbConsoleRegister.class,
         PbConsoleExceptionHandler.class,
-        WebMvcConfig.class
+        WebMvcConfig.class,
+        LogController.class,
+        FileController.class
 })
 public class PbConsoleInject {
 

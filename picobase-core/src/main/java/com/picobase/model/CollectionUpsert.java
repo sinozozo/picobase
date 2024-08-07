@@ -499,6 +499,7 @@ public class CollectionUpsert {
              *
              */
             CollectionModel dummy = new CollectionModel();
+            dummy.setId(this.collection.getId());
             dummy.setName(this.collection.getName()); //复制
 
             dummy.setType(this.type);
