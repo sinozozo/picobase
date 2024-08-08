@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.context.PbHolder;
+import com.picobase.exception.BadRequestException;
 import com.picobase.exception.ForbiddenException;
 import com.picobase.log.PbLog;
 import com.picobase.logic.mapper.RecordMapper;
@@ -95,7 +96,7 @@ public class RecordHelper {
         if (StrUtil.isNotEmpty(authRecordId)) { // 增加authRecordId检查， 防止getExtra 时，loginType检查异常
             String collectionId = (String) PbUtil.getExtra(JwtExtraFieldCollectionId);
             if (StrUtil.isNotEmpty(authRecordId)) {
-                RecordModel authRecord = recordMapper.findRecordById(collectionId, authRecordId).get();
+                RecordModel authRecord = recordMapper.findRecordById(collectionId, authRecordId).orElseThrow(() -> new BadRequestException("not found record ：" + authRecordId));
                 requestInfo.setAuthRecord(authRecord);
             }
             return;
