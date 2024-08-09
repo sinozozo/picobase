@@ -100,7 +100,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 对所有路径应用跨域配置
                 .allowedOriginPatterns("*")// 允许任何域进行跨域访问
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // 允许的请求方法
+                .allowedMethods("*") // 允许的请求方法
                 .allowedHeaders("*") // 允许的请求头
                 .allowCredentials(true); // 是否允许发送凭据
     }
