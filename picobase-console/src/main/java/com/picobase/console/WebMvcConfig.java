@@ -23,7 +23,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.lang.Nullable;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -95,15 +94,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/collections/*/auth-with-password")
                 .addPathPatterns("/api/files/**");
     }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // 对所有路径应用跨域配置
-                .allowedOriginPatterns("*")// 允许任何域进行跨域访问
-                .allowedMethods("*") // 允许的请求方法
-                .allowedHeaders("*") // 允许的请求头
-                .allowCredentials(true); // 是否允许发送凭据
-    }
+    
 }
 
 class FieldsFilterHttpMessageConverter extends MappingJackson2HttpMessageConverter {

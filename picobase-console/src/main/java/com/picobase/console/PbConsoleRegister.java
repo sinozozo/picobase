@@ -12,6 +12,7 @@ import com.picobase.filter.PbServletFilter;
 import com.picobase.json.PbJsonTemplate;
 import com.picobase.logic.PbAdminUtil;
 import com.picobase.persistence.repository.PbDatabaseOperate;
+import com.picobase.router.PbHttpMethod;
 import com.picobase.router.PbRouter;
 import com.picobase.util.PbConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -64,6 +65,27 @@ public class PbConsoleRegister {
                 //Admin 登录接口
                 .addExclude("/api/admins/auth-with-password")
                 .addExclude("/api/collections/*/auth-with-password")
+                // 前置函数：在每次认证函数之前执行
+                .setBeforeAuth(obj -> {
+                    PbHolder.getResponse()
+
+                            // ---------- 设置跨域响应头 ----------
+                            // 允许指定域访问跨域资源
+                            .setHeader("Access-Control-Allow-Origin", "*")
+                            // 允许所有请求方式
+                            .setHeader("Access-Control-Allow-Methods", "*")
+                            // 允许的header参数
+                            .setHeader("Access-Control-Allow-Headers", "*")
+                            // 有效时间
+                            .setHeader("Access-Control-Max-Age", "3600")
+                    ;
+
+                    // 如果是预检请求，则立即返回到前端
+                    PbRouter.match(PbHttpMethod.OPTIONS)
+                            .free(r -> System.out.println("--------OPTIONS预检请求，不做处理"))
+                            .back();
+                })
+
 
                 // 认证函数: 每次请求执行
                 .setAuth(obj -> {
