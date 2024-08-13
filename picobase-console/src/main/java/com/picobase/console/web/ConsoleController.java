@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 public class ConsoleController {
 
-    @GetMapping("/console")
+    @GetMapping("/pbLogin")
     public String toLogin() {
-        return "forward:/console/index.html";
+        return "redirect:/console/index.html";
     }
 }

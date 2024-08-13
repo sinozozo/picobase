@@ -61,7 +61,7 @@ public class PbConsoleRegister {
                 .addInclude("/**")
 
                 // 排除掉登录相关接口，不需要鉴权的
-                .addExclude("/favicon.ico", "/console/**")
+                .addExclude("/favicon.ico", "/console/**", "/pbLogin")
                 //Admin 登录接口
                 .addExclude("/api/admins/auth-with-password")
                 .addExclude("/api/collections/*/auth-with-password")
@@ -97,8 +97,8 @@ public class PbConsoleRegister {
                                 if (PbConsoleManager.getConfig().getAuth() // 配置文件中配置需要鉴权
                                         && !isSomeOneLogin()
                                 ) {
-                                    // PbHolder.getRequest().forward("/console/login");
-                                    PbHolder.getResponse().redirect("/console/");
+                                    PbHolder.getRequest().forward("/pbLogin");
+                                    //PbHolder.getResponse().redirect("/console/");
                                     PbRouter.back();
                                 }
 

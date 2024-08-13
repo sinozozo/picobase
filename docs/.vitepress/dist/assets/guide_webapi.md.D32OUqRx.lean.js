@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./chunks/framework.CiERAXBW.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/webapi.md","filePath":"guide/webapi.md","lastUpdated":1717071800000}'),r={name:"guide/webapi.md"};function i(o,s,p,c,d,n){return a(),t("div")}const f=e(r,[["render",i]]);export{m as __pageData,f as default};
