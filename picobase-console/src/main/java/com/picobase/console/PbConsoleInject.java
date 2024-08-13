@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.picobase.PbManager;
 import com.picobase.PbUtil;
 import com.picobase.console.config.PbConsoleConfig;
+import com.picobase.console.eventhandler.CollectionEventHandler;
+import com.picobase.console.eventhandler.LogHandler;
 import com.picobase.console.json.LocalDateTimeDeserializer;
 import com.picobase.console.json.LocalDateTimeSerializer;
 import com.picobase.console.json.RecordSerializer;
@@ -48,7 +50,10 @@ import static com.picobase.util.PbConstants.LOGIN_TYPE_ADMIN;
         PbConsoleExceptionHandler.class,
         WebMvcConfig.class,
         LogController.class,
-        FileController.class
+        FileController.class,
+        LogHandler.class,
+        CollectionEventHandler.class
+
 })
 public class PbConsoleInject {
 
