@@ -43,3 +43,4 @@ build/
 /docs/node_modules/
 /docs/.vitepress/
 /pb_data/
+/picobase-console/src/main/resources/static/console/

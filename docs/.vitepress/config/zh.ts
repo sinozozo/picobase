@@ -122,10 +122,10 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
             ]
         },
         {
-            text: '写作',
+            text: '附录',
             collapsed: false,
             items: [
-                {text: 'Markdown 扩展', link: 'markdown'},
+                {text: '常见问题', link: 'faqs'},
                 {text: '资源处理', link: 'asset-handling'},
                 {text: 'frontmatter', link: 'frontmatter'},
                 {text: '在 Markdown 使用 Vue', link: 'using-vue'},
