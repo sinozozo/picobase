@@ -1,5 +1,6 @@
 package com.picobase.console.web;
 
+import cn.hutool.core.util.StrUtil;
 import com.picobase.PbUtil;
 import com.picobase.console.model.RecordAuthResponse;
 import com.picobase.console.model.RecordPasswordLogin;
@@ -9,17 +10,19 @@ import com.picobase.interceptor.InterceptorFunc;
 import com.picobase.interceptor.Interceptors;
 import com.picobase.logic.authz.PbLoginModel;
 import com.picobase.logic.authz.PbTokenInfo;
+import com.picobase.logic.mapper.ExternalAuthMapper;
 import com.picobase.logic.mapper.RecordMapper;
 import com.picobase.model.CollectionModel;
+import com.picobase.model.ExternalAuthModel;
 import com.picobase.model.RecordModel;
 import com.picobase.model.event.RecordAuthWithPasswordEvent;
 import com.picobase.model.event.TimePosition;
 import com.picobase.util.PbConstants;
 import com.picobase.validator.Errors;
 import com.picobase.validator.Is;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.picobase.util.PbConstants.JwtExtraFieldCollectionId;
 
@@ -29,9 +32,11 @@ import static com.picobase.util.PbConstants.JwtExtraFieldCollectionId;
 public class RecordAuthCollection {
 
     private RecordMapper recordMapper;
+    private ExternalAuthMapper externalAuthMapper;
 
-    public RecordAuthCollection(RecordMapper recordMapper) {
+    public RecordAuthCollection(RecordMapper recordMapper, ExternalAuthMapper externalAuthMapper) {
         this.recordMapper = recordMapper;
+        this.externalAuthMapper = externalAuthMapper;
     }
 
     @LoadCollection(optCollectionTypes = {PbConstants.CollectionType.Auth})
@@ -84,4 +89,19 @@ public class RecordAuthCollection {
 
     }
 
+
+    @GetMapping("/records/{id}/external-auths")
+    @LoadCollection(optCollectionTypes = {PbConstants.CollectionType.Auth})
+    public List<ExternalAuthModel> list(@PathVariable String id) {
+
+        if (StrUtil.isEmpty(id)) {
+            throw new BadRequestException("");
+        }
+        CollectionModel collection = PbUtil.getCurrentCollection();
+        RecordModel record = recordMapper.findRecordById(collection.getId(), id).orElseThrow(() -> new BadRequestException(""));
+
+        List<ExternalAuthModel> allExternalAuthsByRecord = externalAuthMapper.findAllExternalAuthsByRecord(record);
+
+        return allExternalAuthsByRecord;
+    }
 }

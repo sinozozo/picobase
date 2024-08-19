@@ -90,11 +90,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // LoadCollection Interceptor finds the collection with related
         registry.addInterceptor(new LoadCollectionInterceptor(mapperManager))
                 .addPathPatterns("/api/collections/*/records")
-                .addPathPatterns("/api/collections/*/records/*")
+                .addPathPatterns("/api/collections/*/records/**") //  -> /records/{id}/external-auths
                 .addPathPatterns("/api/collections/*/auth-with-password")
                 .addPathPatterns("/api/files/**");
     }
-    
+
 }
 
 class FieldsFilterHttpMessageConverter extends MappingJackson2HttpMessageConverter {
