@@ -1,6 +1,8 @@
 package com.picobase.validator;
 
 
+import cn.hutool.core.util.StrUtil;
+
 import java.util.function.Function;
 
 import static com.picobase.validator.Err.newError;
@@ -36,7 +38,7 @@ public class StringRule implements Rule {
 
     @Override
     public Err validate(Object value) {
-        if (value == null) {
+        if (StrUtil.isEmptyIfStr(value)) {
             return null;
         }
         if (value instanceof String str) {

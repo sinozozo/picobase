@@ -382,7 +382,7 @@ public class RecordUpsert implements Validatable {
             baseFieldsRules.add(field(RecordUpsert::getEmail, when(this.record.getCollection().authOptions().isRequireEmail(), required)
                     // don't allow direct email change (or unset) if the form doesn't have manage access permissions
                     // (aka. allow only admin or authorized auth models to directly update the field)
-                    , when(!this.record.isNew() && this.manageAccess, in(this.record.email())), length(1, 255), Is.EmailFormat, by(checkEmailDomain()), by(checkUniqueEmail())));
+                    , when(!this.record.isNew() && !this.manageAccess, in(this.record.email())), length(1, 255), Is.EmailFormat, by(checkEmailDomain()), by(checkUniqueEmail())));
 
             baseFieldsRules.add(field(RecordUpsert::isVerified
                     // don't allow changing verified if the form doesn't have manage access permissions
@@ -411,10 +411,11 @@ public class RecordUpsert implements Validatable {
 
     private RuleFunc checkOldPassword() {
         return (value) -> {
-            String v = (String) value;
-            if (StrUtil.isEmpty(v)) {
+
+            if (StrUtil.isEmptyIfStr(value)) {
                 return null; // nothing to check
             }
+            String v = (String) value;
 
             if (!this.record.validatePassword(v)) {
                 return newError("validation_invalid_old_password", "Missing or invalid old password.");
@@ -486,8 +487,10 @@ public class RecordUpsert implements Validatable {
 
     private RuleFunc compare(String valueToCompare) {
         return value -> {
+            if (StrUtil.isEmptyIfStr(value)) {
+                return null; // nothing to check
+            }
             String v = (String) value;
-
             if (!v.equals(valueToCompare)) {
                 return newError("validation_values_mismatch", "Values don't match.");
             }
