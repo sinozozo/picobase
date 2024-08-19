@@ -103,10 +103,27 @@ public class DatabaseInitializer implements CommandLineRunner {
                                 
                 """;
 
+        String externalAuthsTable = """
+                        create table if not exists pb_external_auths
+                        (
+                            id           varchar(32)                            not null
+                                primary key,
+                            created      datetime     default CURRENT_TIMESTAMP not null,
+                            updated      datetime     default CURRENT_TIMESTAMP not null,
+                            collectionId varchar(255) default ''                null,
+                            recordId     varchar(255) default ''                null,
+                            provider     varchar(255) default ''                null,
+                            providerId   varchar(255) default ''                null
+                        );
+                                
+                                
+                """;
+
         StorageContextHolder.addSqlContext(adminTable);
         StorageContextHolder.addSqlContext(collectionTable);
         StorageContextHolder.addSqlContext(logTable);
         StorageContextHolder.addSqlContext(userTable);
+        StorageContextHolder.addSqlContext(externalAuthsTable);
 
         PbManager.getPbDatabaseOperate().blockUpdate(); //先创建表
     }
