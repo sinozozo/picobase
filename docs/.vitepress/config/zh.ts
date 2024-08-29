@@ -26,7 +26,7 @@ export const zh = defineConfig({
             copyright: `版权所有 © 2019-${new Date().getFullYear()} zozo`
         },*/
         footer: {
-            message: '',
+            message: '<a href="https://beian.miit.gov.cn/" target="_blank">沪ICP备2024078824号-1</a>',
             copyright: ` © 2019-${new Date().getFullYear()} zozo`
         },
 
