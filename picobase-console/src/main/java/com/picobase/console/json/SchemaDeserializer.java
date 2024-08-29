@@ -76,7 +76,9 @@ public class SchemaDeserializer extends JsonDeserializer<Schema> {
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> entry = fields.next();
             JsonNode value = entry.getValue();
-            if (value.isObject()) {
+            if (value.isNull()) {
+                map.put(entry.getKey(), null);
+            } else if (value.isObject()) {
                 map.put(entry.getKey(), convertObjectNodeToMap((ObjectNode) value));
             } else if (value.isArray()) {
                 map.put(entry.getKey(), convertArrayNodeToList((ArrayNode) value));
