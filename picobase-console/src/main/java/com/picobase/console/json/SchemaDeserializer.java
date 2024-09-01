@@ -82,6 +82,16 @@ public class SchemaDeserializer extends JsonDeserializer<Schema> {
                 map.put(entry.getKey(), convertObjectNodeToMap((ObjectNode) value));
             } else if (value.isArray()) {
                 map.put(entry.getKey(), convertArrayNodeToList((ArrayNode) value));
+            } else if (value.isBoolean()) {
+                map.put(entry.getKey(), value.asBoolean());
+            } else if (value.isNumber()) {
+                if (value.isInt() || value.isShort() || value.isLong()) {
+                    map.put(entry.getKey(), value.asLong());
+                } else if (value.isDouble() || value.isFloat()) {
+                    map.put(entry.getKey(), value.asDouble());
+                }
+                // never happen
+
             } else {
                 map.put(entry.getKey(), value.asText());
             }

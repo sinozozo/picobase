@@ -202,6 +202,12 @@ public class CollectionUpsert {
         boolean isView = Objects.equals(this.type, View);
         boolean isNew = isCreat;
 
+        // generate schema from the query (overwriting any explicit user defined schema)
+        if (isView) {
+            CollectionViewOptions options = decodeOptions(this.options, CollectionViewOptions.class);
+            this.schema = mapper.createViewSchema(options.getQuery());
+        }
+
         return PbUtil.validate(this,
                 field(CollectionUpsert::getId, when(isNew, length(DEFAULT_ID_LENGTH, DEFAULT_ID_LENGTH), match(ID_REGEX_P), by(uniqueId(this.collection.tableName())))
                         .otherwise(in(this.collection.getId()))),
@@ -219,6 +225,16 @@ public class CollectionUpsert {
         );
     }
 
+    public <T> T decodeOptions(Object options, Class<T> clazz) {
+        // raw serialize
+
+        PbJsonTemplate pbJsonTemplate = PbManager.getPbJsonTemplate();
+
+        String raw = pbJsonTemplate.toJsonString(options);
+
+        return pbJsonTemplate.parseJsonToObject(raw, clazz);
+
+    }
 
     private RuleFunc checkUniqueName() {
         return value -> {

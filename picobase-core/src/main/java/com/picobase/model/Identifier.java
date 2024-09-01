@@ -26,7 +26,7 @@ public class Identifier {
     public final static Pattern discardReplaceRegex = Pattern.compile("(?im)\\s+(where|group by|having|order|limit|with)\\s+?");
     public final static Pattern commentsReplaceRegex = Pattern.compile("(?m)(\\/\\*[\\s\\S]+\\*\\/)|(--.+$)");
 
-    public final static Pattern castRegex = Pattern.compile("(?i)^cast\\s*\\(.*\\s+as\\s+(\\w+)\\s*\\)$");
+    public final static Pattern castRegex = Pattern.compile("(?i)^cast\\s*\\(.*\\s+as\\s+(\\w+)\\s*\\)$"); // SELECT CAST(123 AS VARCHAR(10))
 
 
     public static IdentifiersParser parse(String selectQuery) {

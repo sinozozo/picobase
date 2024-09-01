@@ -45,7 +45,7 @@ public class CollectionModel extends BaseModel implements Model {
         this.type = source.type;
         this.system = source.system;
         this.schema = Schema.newSchema(source.schema.getFields());
-        this.indexes = new ArrayList<>(source.indexes);
+        this.indexes = source.indexes == null ? new ArrayList<>() : new ArrayList<>(source.indexes);
         this.listRule = source.listRule;
         this.viewRule = source.viewRule;
         this.createRule = source.createRule;

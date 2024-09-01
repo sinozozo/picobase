@@ -9,6 +9,8 @@ import com.picobase.persistence.resolver.ListUtil;
 import com.picobase.util.StringEscapeUtils;
 import com.picobase.util.TypeSafe;
 
+import java.util.Objects;
+
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_ADD;
 import static com.picobase.util.PbConstants.FIELD_VALUE_MODIFIER_SUBTRACT;
 import static com.picobase.util.PbConstants.FieldType.Number;
@@ -291,6 +293,20 @@ public class SchemaField {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SchemaField that = (SchemaField) o;
 
+// && Objects.equals(options, that.options)  TODO 针对于 viewCollection比较时会触发该equals ， 这里options类型可能不同，options中的value类型也可能不同， 这里暂不处理
+        return system == that.system && required == that.required && presentable == that.presentable && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(type, that.type)
+                ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(system, id, name, type, required, presentable, options);
+    }
 }
 

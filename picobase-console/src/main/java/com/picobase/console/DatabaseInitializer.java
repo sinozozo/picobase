@@ -48,10 +48,11 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 
         String collectionTable = """
+                               
                                 create table if not exists pb_collection
                                 (
-                                    id         char(20)     null,
-                                    name       varchar(255) null,
+                                    id         varchar(20)  not null primary key ,
+                                    name       varchar(255) not null unique ,
                                     type       varchar(255) null,
                                     `system`   bit          null,
                                     `schema`   json         null,
@@ -65,6 +66,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                                     created    datetime     null,
                                     updated    datetime     null
                                 );
+                                
+                                
                 """;
 
         String logTable = """

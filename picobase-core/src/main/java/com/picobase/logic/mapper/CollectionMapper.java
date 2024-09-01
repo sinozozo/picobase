@@ -118,7 +118,8 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
                 }
 
                 SchemaField field;
-                if (suggestedFields.containsKey(row.getName())) {
+
+                if (suggestedFields != null && suggestedFields.containsKey(row.getName())) {
                     field = suggestedFields.get(row.getName()).getField();
                 } else {
                     field = new SchemaField(row.getName(), PbConstants.FieldType.Json, new JsonOptions(1));
@@ -262,9 +263,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
         IdentifiersParser p = Identifier.parse(selectQuery);
 
         Map<String, CollectionModel> collections = findCollectionsByIdentifiers(p.getTables());
-        if (collections == null) {
-            return null;
-        }
+
 
         Map<String, QueryField> result = new HashMap<>();
         Identifier mainTable = new Identifier();
@@ -295,7 +294,7 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
                         result.put(col.getAlias(), queryField);
                         continue;
                     }
-                    case "text" -> {
+                    case "text", "varchar", "varchar2" -> {
                         queryField.setField(new SchemaField(col.getAlias(), Text));
                         result.put(col.getAlias(), queryField);
                         continue;
@@ -315,10 +314,10 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
             if (parts.length == 2) {
                 fieldName = parts[1];
-                collection = collections.get(parts[0]);
+                collection = collections == null ? null : collections.get(parts[0]);
             } else {
                 fieldName = parts[0];
-                collection = collections.get(mainTable.getAlias());
+                collection = collections == null ? null : collections.get(mainTable.getAlias());
             }
 
             // fallback to the default field if the found column is not from a collection schema
@@ -477,7 +476,12 @@ public class CollectionMapper extends AbstractMapper<CollectionModel> {
 
         newCollection.setSchema(viewSchema);
 
-        super.insertQuery(newCollection).execute();
+        if (StrUtil.isEmpty(newCollection.getId())) {
+            super.insertQuery(newCollection).execute();
+        } else {
+            super.updateQuery(newCollection, newExpr("id = :id", Map.of("id", newCollection.getId()))).execute();
+        }
+
     }
 
     // normalizeViewQueryId wraps (if necessary) the provided view query
