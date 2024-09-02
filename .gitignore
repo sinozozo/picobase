@@ -44,3 +44,5 @@ build/
 /docs/.vitepress/
 /pb_data/
 /picobase-console/src/main/resources/static/console/
+
+.flattened-pom.xml
