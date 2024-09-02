@@ -4,10 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.picobase</groupId>
+        <groupId>io.github.sinozozo</groupId>
         <artifactId>pico-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>0.0.2-ver</version>
     </parent>
 
     <artifactId>picobase-spring-boot-autoconfig</artifactId>
@@ -44,8 +43,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.picobase</groupId>
+            <groupId>io.github.sinozozo</groupId>
             <artifactId>picobase-core</artifactId>
+            <version>${project.parent.version}</version>
             <optional>true</optional>
         </dependency>
         <!-- 需要保持和spring-boot-starter-json里的jackson同样的版本-->

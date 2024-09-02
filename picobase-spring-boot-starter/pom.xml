@@ -4,10 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.picobase</groupId>
+        <groupId>io.github.sinozozo</groupId>
         <artifactId>pico-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>0.0.2-ver</version>
     </parent>
 
     <artifactId>picobase-spring-boot-starter</artifactId>
@@ -34,14 +33,16 @@
 
         <!-- picobase-servlet -->
         <dependency>
-            <groupId>com.picobase</groupId>
+            <groupId>io.github.sinozozo</groupId>
             <artifactId>picobase-servlet</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <!-- sa-token-spring-boot-autoconfig -->
         <dependency>
-            <groupId>com.picobase</groupId>
+            <groupId>io.github.sinozozo</groupId>
             <artifactId>picobase-spring-boot-autoconfig</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
     </dependencies>
