@@ -34,6 +34,11 @@ public class LogFilter implements Filter {
 
 
     @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String fullRequestUrl = getFullRequestUrl(request);
         log.info("{} {}", ((RequestFacade) request).getMethod(), fullRequestUrl);
@@ -96,5 +101,8 @@ public class LogFilter implements Filter {
 
     }
 
+    @Override
+    public void destroy() {
 
+    }
 }

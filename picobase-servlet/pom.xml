@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.sinozozo</groupId>
         <artifactId>pico-parent</artifactId>
-        <version>0.0.2-ver</version>
+        <version>0.0.4-ver</version>
     </parent>
 
     <artifactId>picobase-servlet</artifactId>
@@ -21,7 +21,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 

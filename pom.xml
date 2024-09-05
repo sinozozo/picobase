@@ -6,13 +6,21 @@
 
     <groupId>io.github.sinozozo</groupId>
     <artifactId>pico-parent</artifactId>
-    <version>0.0.2-ver</version>
+    <version>0.0.4-ver</version>
     <packaging>pom</packaging>
     <url>https://github.com/sinozozo/picobase.git</url>
 
     <description>
-        low code platform
+        a backend low code platform
     </description>
+
+    <!-- license -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <!-- 开发者 -->
     <developers>
@@ -41,13 +49,6 @@
         <url>https://github.com/sinozozo/picobase/issues</url>
     </issueManagement>
 
-    <!-- license -->
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
 
     <!-- 代码库 -->
     <scm>
@@ -56,6 +57,21 @@
         <url>https://github.com/sinozozo/picobase</url>
         <tag>main</tag>
     </scm>
+
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <springboot.version>2.5.15</springboot.version>
+        <jackson-databind.version>2.13.4.1</jackson-databind.version>
+        <jackson-datatype-jsr310.version>2.11.2</jackson-datatype-jsr310.version>
+        <servlet-api.version>3.1.0</servlet-api.version>
+        <hutool.version>5.8.27</hutool.version>
+        <!-- bytecode enhancement -->
+        <javassist.version>3.29.2-GA</javassist.version>
+    </properties>
 
 
     <modules>
@@ -156,19 +172,6 @@
         </repository>
     </distributionManagement>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <springboot.version>2.5.15</springboot.version>
-        <jackson-databind.version>2.13.4.1</jackson-databind.version>
-        <jackson-datatype-jsr310.version>2.11.2</jackson-datatype-jsr310.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
-        <hutool.version>5.8.27</hutool.version>
-        <!-- bytecode enhancement -->
-        <javassist.version>3.29.2-GA</javassist.version>
-    </properties>
 
     <!-- 项目构建 -->
     <build>
